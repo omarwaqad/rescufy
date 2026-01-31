@@ -23,7 +23,7 @@ const priorityStyles: Record<RequestPriority, string> = {
 export function StatusBadge({ status = "pending", priority }: StatusBadgeProps) {
   if (priority) {
     return (
-      <span className={`px-2 md:px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${priorityStyles[priority]}`}>
+      <span className={`px-4 md:px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${priorityStyles[priority]}`}>
         {priority}
       </span>
     );
