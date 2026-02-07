@@ -1,0 +1,61 @@
+import SearchBar from "@/shared/common/SearchBar";
+import HospitalsStates from "./HospitalsStates";
+import { HospitalCard } from "./HospitalCard";
+import { HospitalFormModal } from "./HospitalFormModal";
+import { useHospitals } from "../hooks/useHospitals";
+
+export default function AllHospitals() {
+  const {
+    hospitals,
+    search,
+    status,
+    setSearch,
+    setStatus,
+    isModalOpen,
+    modalMode,
+    selectedHospital,
+    openAddModal,
+    openEditModal,
+    closeModal,
+    submitHospital,
+  } = useHospitals();
+
+  return (
+    <>
+      <div className="my-6">
+        <SearchBar
+          value={search}
+          onSearchChange={setSearch}
+          placeholder="Search hospitals by name, address, or ID"
+        >
+          <HospitalsStates value={status} onChange={setStatus} />
+        </SearchBar>
+      </div>
+
+      <main className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+        {hospitals.map((hospital) => (
+          <HospitalCard
+            key={hospital.id}
+            {...hospital}
+            onEdit={() => openEditModal(hospital)}
+          />
+        ))}
+      </main>
+
+      <button
+        onClick={openAddModal}
+        className="fixed bottom-8 right-8 w-14 h-14 rounded-full bg-primary text-white text-xl shadow-lg"
+      >
+        +
+      </button>
+
+      <HospitalFormModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        onSubmit={submitHospital}
+        hospital={selectedHospital}
+        mode={modalMode}
+      />
+    </>
+  );
+}

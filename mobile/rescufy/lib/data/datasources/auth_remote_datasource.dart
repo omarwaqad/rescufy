@@ -8,15 +8,13 @@ abstract class AuthRemoteDataSource {
   Future<UserModel> login({required String email, required String password});
 
   Future<UserModel> register({
-    required String first_name,
-    required String last_name,
+    required String fullName,
     required String email,
     required String password,
-    required String confirmPassword,
-    required String phoneNumber,
     required String nationalId,
+    required String phoneNumber,
+    required int age,
     required String gender,
-    required String dateOfBirth,
   });
 
   Future<void> logout();
@@ -46,29 +44,25 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<UserModel> register({
-    required String first_name,
-    required String last_name,
+    required String fullName,
     required String email,
     required String password,
-    required String confirmPassword,
-    required String phoneNumber,
     required String nationalId,
+    required String phoneNumber,
+    required int age,
     required String gender,
-    required String dateOfBirth,
   }) async {
     try {
       final response = await dioClient.post(
         ApiEndpoints.register,
         data: {
-          'first_name': first_name,
-          'last_name': last_name,
+          'full_name': fullName,
           'email': email,
           'password': password,
-          'confirm_password': confirmPassword,
-          'phone_number': phoneNumber,
           'national_id': nationalId,
+          'phone_number': phoneNumber,
+          'age': age,
           'gender': gender,
-          'date_of_birth': dateOfBirth,
         },
       );
 

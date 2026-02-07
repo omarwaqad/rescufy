@@ -28,8 +28,14 @@ export default function AllRequests() {
   return (
     <>
       <SearchBar value={searchValue} onSearchChange={setSearchValue}>
-        <RequestsStateMenu value={status} onChange={setStatus} />
-        <RequestsTypesMenu value={priority} onChange={setPriority} />
+        <div className="flex flex-col md:flex-row gap-4 w-full ">
+          <div className="flex-1">
+            <RequestsStateMenu value={status} onChange={setStatus} />
+          </div>
+          <div className="flex-1 w-full md:w-auto">
+            <RequestsTypesMenu value={priority} onChange={setPriority} />
+          </div>
+        </div>
       </SearchBar>
 
       <div className="mt-6">

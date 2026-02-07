@@ -6,6 +6,7 @@ import 'package:rescufy/data/datasources/auth_remote_datasource.dart';
 import 'package:rescufy/data/repositories/auth_remote_impl.dart';
 import 'package:rescufy/domain/repositories/auth_repository.dart';
 import 'package:rescufy/domain/usecases/login_usecase.dart';
+import 'package:rescufy/domain/usecases/register_usecase.dart';
 
 final sl = GetIt.instance;
 
@@ -16,6 +17,7 @@ Future<void> init() async {
 
   // UseCases
   sl.registerLazySingleton(() => LoginUseCase(sl()));
+  sl.registerLazySingleton(() => RegisterUseCase(sl()));
 
   // Repositories
   sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl()));

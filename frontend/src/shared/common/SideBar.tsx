@@ -18,12 +18,12 @@ interface SideBarProps {
 }
 
 const navItems = [
-  { name: "Dashboard", icon: LayoutDashboard, path: "/admin" ,end: true},
+  { name: "Dashboard", icon: LayoutDashboard, path: "/admin", end: true },
   { name: "Requests", icon: PhoneCall, path: "/admin/requests" },
   { name: "Hospitals", icon: Hospital, path: "/admin/hospitals_management" },
   { name: "Ambulances", icon: Ambulance, path: "/admin/ambulances_management" },
   { name: "Users", icon: UsersIcon, path: "/admin/users" },
-  { name: "Audit", icon: FileText, path: "/admin/audit" },
+  { name: "Audit", icon: FileText, path: "/admin/audits" },
   { name: "Settings", icon: Settings, path: "/admin/settings" },
 ];
 
@@ -46,13 +46,13 @@ export default function SideBar({ isOpen, onClose }: SideBarProps) {
       {/* Mobile Header */}
       <div className="flex items-center justify-between mb-6 md:mb-0">
         <Logo text={null} />
-        <button
+        {/* <button
           onClick={onClose}
-          className="md:hidden p-2 rounded-lg hover:bg-muted transition-colors"
+          className="md:hidden  rounded-lg hover:bg-muted transition-colors"
           aria-label="Close sidebar"
         >
           <X size={20} className="text-muted" />
-        </button>
+        </button> */}
       </div>
 
       {/* Navigation */}
@@ -71,10 +71,11 @@ export default function SideBar({ isOpen, onClose }: SideBarProps) {
                  gap-3 md:gap-1 
                  px-4 md:px-0 py-3 
                  rounded-xl transition-all duration-200
-                 ${isActive
-                  ? "bg-primary text-gray-100 shadow-md shadow-primary/25"
-                  : "text-gray-600/90 dark:text-gray-300 hover:bg-primary/10 hover:text-primary"
-                }`
+                 ${
+                   isActive
+                     ? "bg-primary text-gray-100 shadow-md shadow-primary/25"
+                     : "text-gray-600/90 dark:text-gray-300 hover:bg-primary/10 hover:text-primary"
+                 }`
               }
             >
               <Icon size={20} />

@@ -13,6 +13,7 @@ import HospitalUserLayout from "../layouts/HospitalUserLayout";
 import AmbulanceUserLayout from "../layouts/AmbulanceUserLayout";
 import ProtectedRoute from "./ProtectedRoute";
 import NotFound from "@/shared/common/NotFound";
+import Audits from "@/features/audits/Audits";
 
 const router = createBrowserRouter([
   {
@@ -28,7 +29,9 @@ const router = createBrowserRouter([
       { path: "hospitals_management", element: <HospitalsManagement /> },
       { path: "ambulances_management", element: <AmbulancesManagement /> },
       { path: "users", element: <Users /> },
+      { path: "audits", element: <Audits /> },
       { path: "settings", element: <Settings /> },
+
     ],
   },
 
