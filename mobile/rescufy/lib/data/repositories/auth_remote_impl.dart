@@ -32,27 +32,23 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<Either<Failure, User>> register({
-    required String first_name,
-    required String last_name,
+    required String fullName,
     required String email,
     required String password,
-    required String confirmPassword,
-    required String phoneNumber,
     required String nationalId,
+    required String phoneNumber,
+    required int age,
     required String gender,
-    required String dateOfBirth,
   }) async {
     try {
       final user = await remoteDataSource.register(
-        first_name: first_name,
-        last_name: last_name,
+        fullName: fullName,
         email: email,
         password: password,
-        confirmPassword: confirmPassword,
-        phoneNumber: phoneNumber,
         nationalId: nationalId,
+        phoneNumber: phoneNumber,
+        age: age,
         gender: gender,
-        dateOfBirth: dateOfBirth,
       );
       return Right(user);
     } on DioException catch (e) {
@@ -65,8 +61,10 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, void>> logout() async {
     try {
-      // TODO: Implement logout
+      await remoteDataSource.logout();
       return const Right(null);
+    } on DioException catch (e) {
+      return Left(NetworkExceptions.handleDioException(e));
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }
