@@ -10,7 +10,7 @@ import 'package:rescufy/core/di/injection_container.dart' as di;
 import 'package:rescufy/presentation/screens/splash_screen.dart';
 import 'package:rescufy/presentation/features/home/views/home_screen.dart';
 import 'package:rescufy/presentation/features/auth/views/login_screen.dart';
-import 'package:rescufy/presentation/features/auth/views/signup_screen.dart';
+import 'package:rescufy/presentation/features/auth/views/register_screen.dart';
 import 'package:rescufy/presentation/features/request/views/emergency_form_screen.dart';
 import 'package:rescufy/presentation/features/request/views/request_history_screen.dart';
 import 'package:rescufy/presentation/features/profile/views/profile_screen.dart';
@@ -18,6 +18,8 @@ import 'package:rescufy/presentation/features/profile/views/profile_screen.dart'
 // Cubits
 import 'package:rescufy/presentation/features/auth/cubit/login_cubit.dart';
 import 'package:rescufy/domain/usecases/login_usecase.dart';
+import 'package:rescufy/presentation/features/auth/cubit/register_cubit.dart';
+import 'package:rescufy/domain/usecases/register_usecase.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,8 +55,13 @@ class RescufyApp extends StatelessWidget {
               ),
             );
 
-          case '/signup':
-            return MaterialPageRoute(builder: (_) => const SignupScreen());
+          case AppRoutes.signup:
+            return MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => RegisterCubit(di.sl<RegisterUseCase>()),
+                child: const SignupScreen(),
+              ),
+            );
 
           case '/home':
             return MaterialPageRoute(builder: (_) => const HomeScreen());
