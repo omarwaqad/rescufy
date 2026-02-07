@@ -1,12 +1,7 @@
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-
-import { z } from "zod";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import type { Hospital } from "../data/hospitals.data";
-
-import { zodResolver } from "@hookform/resolvers/zod";
+import useModal from "../hooks/useModal";
 
 interface HospitalFormModalProps {
   isOpen: boolean;
@@ -17,26 +12,6 @@ interface HospitalFormModalProps {
 }
 
 // Zod validation schema
-const hospitalSchema = z
-  .object({
-    id: z.string(),
-    name: z.string().min(1, "Hospital name is required"),
-    email: z.email("Invalid email format").min(1, "Email is required"),
-    phone: z
-      .string()
-      .min(1, "Phone number is required")
-      .regex(/^[\d\s\-+()]+$/, "Invalid phone number format"),
-    address: z.string().min(1, "Address is required"),
-    status: z.enum(["NORMAL", "BUSY", "CRITICAL", "FULL"]),
-    totalBeds: z.number().int().positive("Total beds must be greater than 0"),
-    usedBeds: z.number().int().min(0, "Used beds cannot be negative"),
-  })
-  .refine((data) => data.usedBeds <= data.totalBeds, {
-    message: "Used beds cannot exceed total beds",
-    path: ["usedBeds"],
-  });
-
-type HospitalFormData = z.infer<typeof hospitalSchema>;
 
 export function HospitalFormModal({
   isOpen,
@@ -45,46 +20,11 @@ export function HospitalFormModal({
   hospital,
   mode,
 }: HospitalFormModalProps) {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<HospitalFormData>({
-    resolver: zodResolver(hospitalSchema),
-    defaultValues: {
-      id: "",
-      name: "",
-      email: "",
-      phone: "",
-      address: "",
-      status: "NORMAL",
-      totalBeds: 0,
-      usedBeds: 0,
-    },
+  const { register, submitHandler, errors } = useModal({
+    onSubmit,
+    hospital,
+    mode,
   });
-
-  useEffect(() => {
-    if (hospital && mode === "edit") {
-      reset(hospital);
-    } else {
-      reset({
-        id: `Hospital-${Date.now()}`,
-        name: "",
-        email: "",
-        phone: "",
-        address: "",
-        status: "NORMAL",
-        totalBeds: 0,
-        usedBeds: 0,
-      });
-    }
-  }, [isOpen, hospital, mode, reset]);
-
-  const onSubmitForm = (data: HospitalFormData) => {
-    onSubmit(data as Hospital);
-    onClose();
-  };
 
   if (!isOpen) return null;
 
@@ -101,15 +41,15 @@ export function HospitalFormModal({
             className="text-muted hover:text-heading transition-colors p-2 hover:bg-surface-muted rounded-lg"
             aria-label="Close modal"
           >
-            <FontAwesomeIcon icon={faXmark} className="w-5 h-5 cursor-pointer" />
+            <FontAwesomeIcon
+              icon={faXmark}
+              className="w-5 h-5 cursor-pointer"
+            />
           </button>
         </div>
 
         {/* Form */}
-        <form
-          onSubmit={handleSubmit(onSubmitForm)}
-          className="flex-1 overflow-y-auto"
-        >
+        <form onSubmit={submitHandler} className="flex-1 overflow-y-auto">
           <div className="px-6 py-5 space-y-5">
             {/* Hidden ID field */}
             <input type="hidden" {...register("id")} />
