@@ -5,29 +5,28 @@ import SearchBar from "@/shared/common/SearchBar";
 import RequestsStateMenu from "./RequestsStateMenu";
 import RequestsTypesMenu from "./RequestsPriorityMenu";
 import { filterRequests } from "../utils/requests.filter";
+import { useTranslation } from "react-i18next";
 
 
 export default function AllRequests() {
   const requestsData = requests;
+  const { t } = useTranslation(['requests', 'common']);
 
-  const [status, setStatus] = useState<string>("all"); // ✅ ADD THIS
+  const [status, setStatus] = useState<string>("all");
   const [priority, setPriority] = useState<string>("all");
   const [searchValue, setSearchValue] = useState<string>("");
-  // const [Search]
-
-  // ✅ ADD THIS
 
   const filters = {
-  status,
-  priority,
-  search: searchValue,
-};
+    status,
+    priority,
+    search: searchValue,
+  };
 
   const filteredRequests = filterRequests(requestsData, filters);
 
   return (
     <>
-      <SearchBar value={searchValue} onSearchChange={setSearchValue}>
+      <SearchBar value={searchValue} onSearchChange={setSearchValue}  placeholder={t('requests:filters.searchPlaceholder')}   >
         <div className="flex flex-col md:flex-row gap-4 w-full ">
           <div className="flex-1">
             <RequestsStateMenu value={status} onChange={setStatus} />
@@ -39,8 +38,8 @@ export default function AllRequests() {
       </SearchBar>
 
       <div className="mt-6">
-        <span className=" text-body font-medium ml-1">
-          Showing 5 of 5 requests
+        <span className=" text-body font-medium ml-1 rtl:ml-0 rtl:mr-1">
+          {t('requests:pagination.showing')} {filteredRequests.length} {t('requests:pagination.of')} {requestsData.length} {t('requests:pagination.requests')}
         </span>
 
         <div className="bg-bg-card mt-6 rounded-lg shadow-card overflow-x-auto ">
@@ -60,11 +59,11 @@ export default function AllRequests() {
           </div>
 
           <div className="text-sm flex items-center py-4 px-4 justify-between text-muted">
-            <span className="text-muted">Page 1 of 5</span>
+            <span className="text-muted">{t('requests:pagination.page')} 1 {t('requests:pagination.of')} 5</span>
 
             <div className="flex items-center gap-3">
               <button className="px-3 py-1 bg-background-second rounded-md hover:bg-gray-200 text-muted transition">
-                Previous
+                {t('requests:pagination.previous')}
               </button>
               <button>
                 <span className="px-3 py-1 bg-primary text-white rounded-md hover:bg-primary/90 transition">
@@ -82,7 +81,7 @@ export default function AllRequests() {
                 </span>
               </button>
               <button className="px-3 py-1 bg-primary text-white rounded-md hover:bg-primary/90 transition">
-                Next
+                {t('requests:pagination.next')}
               </button>
             </div>
           </div>
@@ -92,4 +91,3 @@ export default function AllRequests() {
   );
 }
 
-//

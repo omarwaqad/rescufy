@@ -5,6 +5,7 @@ import {
   faLocationDot,
 } from "@fortawesome/free-solid-svg-icons";
 import { faAmbulance } from "@fortawesome/free-solid-svg-icons";
+import { useTranslation } from "react-i18next";
 
 interface AmbulanceCardProps {
   id: string;
@@ -27,6 +28,8 @@ export function AmbulanceCard({
   onEdit,
   onDelete,
 }: AmbulanceCardProps) {
+  const { t } = useTranslation('ambulances');
+
   const statusStyle: Record<typeof status, string> = {
     AVAILABLE: "text-emerald-600 dark:text-emerald-400",
     IN_TRANSIT: "text-blue-600 dark:text-blue-400",
@@ -35,10 +38,10 @@ export function AmbulanceCard({
   };
 
   const statusLabel: Record<typeof status, string> = {
-    AVAILABLE: "Available",
-    IN_TRANSIT: "In transit",
-    BUSY: "Busy",
-    MAINTENANCE: "Maintenance",
+    AVAILABLE: t('status.available'),
+    IN_TRANSIT: t('status.inTransit'),
+    BUSY: t('status.busy'),
+    MAINTENANCE: t('status.maintenance'),
   };
 
   return (
@@ -76,14 +79,14 @@ export function AmbulanceCard({
           <button
             onClick={onEdit}
             className="p-1.5 rounded hover:bg-surface-muted text-muted hover:text-heading transition"
-            aria-label="Edit ambulance"
+            aria-label={t('card.editTooltip')}
           >
             <FontAwesomeIcon icon={faPenToSquare} />
           </button>
           <button
             onClick={onDelete}
             className="p-1.5 rounded hover:bg-danger/10 text-muted hover:text-danger transition"
-            aria-label="Delete ambulance"
+            aria-label={t('card.deleteTooltip')}
           >
             <FontAwesomeIcon icon={faTrash} />
           </button>
@@ -93,14 +96,14 @@ export function AmbulanceCard({
       {/* Meta */}
       <div className="mt-3 space-y-1 text-xs">
         <div className="flex items-center justify-between">
-          <span className="text-muted">Status</span>
+          <span className="text-muted">{t('table.status')}</span>
           <span className={`font-semibold ${statusStyle[status]}`}>
             {statusLabel[status]}
           </span>
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="text-muted">Hospital</span>
+          <span className="text-muted">{t('table.hospital')}</span>
           <span className="text-text-body font-medium">
             {hospitalId}
           </span>

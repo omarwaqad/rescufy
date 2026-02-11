@@ -8,6 +8,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface UserRowProps {
   id: string;
@@ -29,6 +30,7 @@ export function UserRow({
   onDelete,
 }: UserRowProps) {
   const [showPassword, setShowPassword] = useState(false);
+  const { t } = useTranslation(['users', 'common']);
 
   const roleColor: Record<typeof roleId, string> = {
     ADMIN: "bg-purple-500",
@@ -37,9 +39,9 @@ export function UserRow({
   };
 
   const roleLabel: Record<typeof roleId, string> = {
-    ADMIN: "Admin",
-    HOSPITAL_USER: "Hospital",
-    AMBULANCE_USER: "Ambulance",
+    ADMIN: t('users:roles.admin'),
+    HOSPITAL_USER: t('users:roles.hospitalUser'),
+    AMBULANCE_USER: t('users:roles.ambulanceUser'),
   };
 
   const roleBgColor: Record<typeof roleId, string> = {
@@ -51,7 +53,7 @@ export function UserRow({
   return (
     <div className={`relative flex flex-col md:flex-row md:items-center gap-3 md:gap-4 px-4 md:px-6 py-4 md:py-4 bg-card border-b border-border hover:bg-surface-muted/50 transition-colors`}>
       {/* Indicator Bar */}
-      <div className={`absolute left-0 top-0 h-1 md:h-full w-full md:w-1 ${roleColor[roleId]} md:rounded-r rounded-t`} />
+      <div className={`absolute left-0 rtl:left-auto rtl:right-0 top-0 h-1 md:h-full w-full md:w-1 ${roleColor[roleId]} md:rounded-r rtl:md:rounded-r-none rtl:md:rounded-l rounded-t`} />
 
       {/* Top Row - Mobile */}
       <div className="md:hidden flex items-start justify-between gap-3 pt-1 w-full">
@@ -100,7 +102,7 @@ export function UserRow({
           <span className="text-body truncate">{email}</span>
         </div>
         <div className="flex items-center gap-2 text-xs text-body">
-          <span className="font-medium">Pass:</span>
+          <span className="font-medium">{t('users:row.password')}</span>
           <span className="font-mono">{showPassword ? password : "•".repeat(8)}</span>
           <button
             onClick={() => setShowPassword(!showPassword)}
@@ -119,7 +121,7 @@ export function UserRow({
         <button
           onClick={() => setShowPassword(!showPassword)}
           className="text-muted hover:text-heading transition-colors cursor-pointer p-1 shrink-0"
-          aria-label={showPassword ? "Hide password" : "Show password"}
+          aria-label={showPassword ? t('common:aria.hidePassword') : t('common:aria.showPassword')}
         >
           <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} className="text-xs" />
         </button>
@@ -141,7 +143,7 @@ export function UserRow({
         <button
           onClick={onEdit}
           className="p-2 text-muted hover:text-heading hover:bg-surface-muted rounded-lg transition-colors cursor-pointer"
-          aria-label="Edit user"
+          aria-label={t('users:row.editTooltip')}
         >
           <FontAwesomeIcon icon={faPenToSquare} className="w-4 h-4" />
         </button>
@@ -150,7 +152,7 @@ export function UserRow({
         <button
           onClick={onDelete}
           className="p-2 text-muted hover:text-danger hover:bg-danger/10 rounded-lg transition-colors cursor-pointer"
-          aria-label="Delete user"
+          aria-label={t('users:row.deleteTooltip')}
         >
           <FontAwesomeIcon icon={faTrash} className="w-4 h-4" />
         </button>

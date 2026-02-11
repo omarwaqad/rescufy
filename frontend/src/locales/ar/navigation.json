@@ -1,0 +1,22 @@
+{
+    "sidebar": {
+        "dashboard": "لوحة التحكم",
+        "requests": "الطلبات",
+        "hospitals": "المستشفيات",
+        "ambulances": "سيارات الإسعاف",
+        "users": "المستخدمون",
+        "audit": "السجلات",
+        "settings": "الإعدادات"
+    },
+    "navbar": {
+        "search": "بحث...",
+        "notifications": "الإشعارات",
+        "profile": "الملف الشخصي",
+        "logout": "تسجيل الخروج",
+        "settings": "الإعدادات"
+    },
+    "breadcrumbs": {
+        "home": "الرئيسية",
+        "dashboard": "لوحة التحكم"
+    }
+}

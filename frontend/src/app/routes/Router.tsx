@@ -14,6 +14,7 @@ import AmbulanceUserLayout from "../layouts/AmbulanceUserLayout";
 import ProtectedRoute from "./ProtectedRoute";
 import NotFound from "@/shared/common/NotFound";
 import Audits from "@/features/audits/Audits";
+import RequestDetails from "@/features/request-details/pages/RequestDetails";
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,7 @@ const router = createBrowserRouter([
       { path: "users", element: <Users /> },
       { path: "audits", element: <Audits /> },
       { path: "settings", element: <Settings /> },
+      {path: "request_details/:id", element: <RequestDetails />},
 
     ],
   },

@@ -1,0 +1,108 @@
+{
+    "pageHeader": {
+        "title": "طلبات الطوارئ",
+        "subtitle": "إدارة ومتابعة جميع طلبات الاستجابة للطوارئ"
+    },
+    "title": "الطلبات",
+    "subtitle": "إدارة طلبات الطوارئ",
+    "table": {
+        "id": "المعرّف",
+        "userName": "اسم المستخدم",
+        "userPhone": "الهاتف",
+        "location": "الموقع",
+        "priority": "الأولوية",
+        "status": "الحالة",
+        "timestamp": "الوقت",
+        "actions": "الإجراءات"
+    },
+    "filters": {
+        "all": "الكل",
+        "status": "الحالة",
+        "priority": "الأولوية",
+        "searchPlaceholder": "البحث بالاسم أو رقم الطلب"
+    },
+    "status": {
+        "all": "جميع الحالات",
+        "pending": "قيد الانتظار",
+        "assigned": "تم التعيين",
+        "enRoute": "في الطريق",
+        "inProgress": "قيد التنفيذ",
+        "dispatched": "تم الإرسال",
+        "completed": "مكتمل",
+        "cancelled": "ملغى"
+    },
+    "priority": {
+        "all": "جميع الأولويات",
+        "low": "منخفضة",
+        "medium": "متوسطة",
+        "high": "عالية",
+        "critical": "حرجة"
+    },
+    "pagination": {
+        "showing": "عرض",
+        "of": "من",
+        "requests": "طلبات",
+        "page": "صفحة",
+        "previous": "السابق",
+        "next": "التالي"
+    },
+    "actions": {
+        "view": "عرض التفاصيل",
+        "assign": "تعيين سيارة إسعاف",
+        "cancel": "إلغاء الطلب",
+        "complete": "تحديد كمكتمل"
+    },
+    "details": {
+        "title": "تفاصيل الطلب",
+        "requestInfo": "معلومات الطلب",
+        "patientInfo": "معلومات المريض",
+        "locationInfo": "معلومات الموقع",
+        "assignedAmbulance": "سيارة الإسعاف المعينة",
+        "timeline": "الجدول الزمني",
+        "patient": "المريض",
+        "ambulance": "الإسعاف",
+        "hospital": "المستشفى",
+        "description": "الوصف",
+        "aiAnalysis": "تحليل الذكاء الاصطناعي",
+        "actions": "الإجراءات",
+        "additionalNotes": "ملاحظات إضافية",
+        "vehicle": "المركبة",
+        "type": "النوع",
+        "eta": "الوقت المقدر للوصول",
+        "distance": "المسافة",
+        "reassign": "إعادة التعيين",
+        "changeHospital": "تغيير المستشفى",
+        "override": "تجاوز",
+        "cancelRequest": "إلغاء الطلب",
+        "confidence": "الثقة",
+        "requestIdLabel": "معرّف الطلب",
+        "critical": "حرجة",
+        "gender": {
+            "male": "ذكر",
+            "female": "أنثى",
+            "other": "آخر"
+        },
+        "timelineEvents": {
+            "requestReceived": {
+                "title": "تم استلام الطلب",
+                "desc": "تم استلام مكالمة الطوارئ من مكان العمل"
+            },
+            "ambulanceDispatched": {
+                "title": "تم إرسال الإسعاف",
+                "desc": "تم تعيين أقرب سيارة إسعاف متاحة"
+            },
+            "hospitalNotified": {
+                "title": "تم إشعار المستشفى",
+                "desc": "أعدت وحدة القلب في المستشفى استقبال المريض"
+            },
+            "enRoute": {
+                "title": "في الطريق",
+                "desc": "حالياً تبقى 3 دقائق للوصول إلى موقع المريض"
+            }
+        }
+    },
+    "empty": {
+        "title": "لم يتم العثور على طلبات",
+        "description": "لا توجد طلبات تطابق معاييرك."
+    }
+}

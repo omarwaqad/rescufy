@@ -1,0 +1,67 @@
+{
+    "pageHeader": {
+        "title": "إدارة المستشفيات",
+        "subtitle": "إدارة معلومات المستشفيات وتوفر الأسرّة"
+    },
+    "title": "المستشفيات",
+    "subtitle": "إدارة معلومات المستشفيات",
+    "addHospital": "إضافة مستشفى",
+    "editHospital": "تعديل المستشفى",
+    "table": {
+        "name": "اسم المستشفى",
+        "address": "العنوان",
+        "phone": "الهاتف",
+        "email": "البريد الإلكتروني",
+        "capacity": "السعة",
+        "status": "الحالة",
+        "actions": "الإجراءات"
+    },
+    "form": {
+        "name": "اسم المستشفى",
+        "namePlaceholder": "أدخل اسم المستشفى",
+        "address": "العنوان",
+        "addressPlaceholder": "أدخل العنوان الكامل",
+        "phone": "رقم الهاتف",
+        "phonePlaceholder": "‎+966 5X XXX XXXX",
+        "email": "البريد الإلكتروني",
+        "emailPlaceholder": "hospital@example.com",
+        "capacity": "سعة الأسرّة",
+        "capacityPlaceholder": "أدخل سعة الأسرّة",
+        "totalBeds": "إجمالي الأسرّة",
+        "usedBeds": "الأسرّة المستخدمة",
+        "specialties": "التخصصات",
+        "specialtiesPlaceholder": "اختر التخصصات",
+        "emergencyServices": "خدمات الطوارئ",
+        "operatingHours": "ساعات العمل"
+    },
+    "card": {
+        "capacity": "السعة",
+        "used": "مستخدم",
+        "free": "متاح",
+        "usage": "الاستخدام",
+        "call": "اتصال",
+        "editTooltip": "تعديل المستشفى",
+        "deleteTooltip": "حذف المستشفى"
+    },
+    "status": {
+        "active": "نشط",
+        "inactive": "غير نشط",
+        "full": "السعة كاملة",
+        "normal": "عادي",
+        "busy": "مشغول",
+        "critical": "حرج"
+    },
+    "filters": {
+        "allStates": "جميع الحالات",
+        "searchPlaceholder": "البحث بالاسم أو العنوان أو المعرّف"
+    },
+    "buttons": {
+        "cancel": "إلغاء",
+        "add": "إضافة مستشفى",
+        "update": "تحديث المستشفى"
+    },
+    "empty": {
+        "title": "لم يتم العثور على مستشفيات",
+        "description": "ابدأ بإضافة مستشفى جديد."
+    }
+}

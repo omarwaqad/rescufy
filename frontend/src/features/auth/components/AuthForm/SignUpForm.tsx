@@ -1,10 +1,11 @@
 import InputFiled from "../../../../shared/ui/FormInput/InputFiled";
 import { faUser, faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons";
-import SelectFiled from "../../../../shared/ui/SelectFiled";
 import { Link } from "react-router";
-// import { Link } from 'react-dom';
+import { useTranslation } from "react-i18next";
 
 export default function SignUpForm() {
+  const { t } = useTranslation(['auth', 'validation']);
+
   return (
     <div
       className="
@@ -21,44 +22,46 @@ export default function SignUpForm() {
       <form className="text-sm">
         {/* Title */}
         <h2 className="text-3xl font-bold text-center my-6 text-heading">
-          Create Account
+          {t('auth:signUp.title')}
         </h2>
 
         {/* Inputs */}
         <div className=" px-6">
           <InputFiled
-            label="Full Name"
+            label={t('auth:signUp.fullNameLabel')}
             id="fullName"
+            name="fullName"
             icon={faUser}
-            placeholder="Enter your full name"
+            placeholder={t('auth:signUp.fullNamePlaceholder')}
             type="text"
           />
 
           <InputFiled
-            label="Email Address"
+            label={t('auth:signUp.emailLabel')}
             id="email"
+            name="email"
             icon={faEnvelope}
-            placeholder="Enter your email address"
+            placeholder={t('auth:signUp.emailPlaceholder')}
             type="email"
           />
 
           <InputFiled
-            label="Password"
+            label={t('auth:signUp.passwordLabel')}
             id="password"
+            name="password"
             icon={faLock}
-            placeholder="Enter your password"
+            placeholder={t('auth:signUp.passwordPlaceholder')}
             type="password"
           />
 
           <InputFiled
-            label={"Confirm Password"}
-            id={"confirmPassword"}
+            label={t('auth:signUp.confirmPasswordLabel')}
+            id="confirmPassword"
+            name="confirmPassword"
             icon={faLock}
-            placeholder={"Re-enter your password"}
-            type={"password"}
+            placeholder={t('auth:signUp.confirmPasswordPlaceholder')}
+            type="password"
           />
-
-          <SelectFiled label={"Role"} role={"admin"} id={"role"} />
 
           {/* Submit */}
           <div className="pt-4">
@@ -78,7 +81,7 @@ export default function SignUpForm() {
                 transition
               "
             >
-              Sign Up
+              {t('auth:signUp.submitButton')}
             </button>
           </div>
         </div>
@@ -86,15 +89,16 @@ export default function SignUpForm() {
 
       <div className="mt-6 px-6 pt-6 border-t border-slate-300 dark:border-white/10 text-center">
         <p className="text-gray-600 dark:text-gray-400 text-sm">
-          Do you have an account?{" "}
+          {t('auth:signUp.hasAccount')}{" "}
           <Link
             to={"/signin"}
             className="text-primary font-semibold hover:text-primary/80 transition"
           >
-            Sign In
+            {t('auth:signUp.signInLink')}
           </Link>
         </p>
       </div>
     </div>
   );
 }
+

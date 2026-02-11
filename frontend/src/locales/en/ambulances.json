@@ -1,0 +1,58 @@
+{
+    "pageHeader": {
+        "title": "Ambulances Management",
+        "subtitle": "Manage ambulance information and locations"
+    },
+    "title": "Ambulances",
+    "subtitle": "Manage ambulance fleet",
+    "addAmbulance": "Add Ambulance",
+    "table": {
+        "vehicleId": "Vehicle ID",
+        "plateNumber": "Plate Number",
+        "driver": "Driver",
+        "phone": "Phone",
+        "status": "Status",
+        "hospital": "Hospital",
+        "location": "Current Location",
+        "actions": "Actions"
+    },
+    "form": {
+        "vehicleId": "Vehicle ID",
+        "vehicleIdPlaceholder": "Enter vehicle ID",
+        "plateNumber": "Plate Number",
+        "plateNumberPlaceholder": "Enter plate number",
+        "driver": "Driver Name",
+        "driverPlaceholder": "Enter driver name",
+        "phone": "Phone Number",
+        "phonePlaceholder": "Enter phone number",
+        "type": "Ambulance Type",
+        "typePlaceholder": "Select ambulance type",
+        "equipment": "Equipment",
+        "equipmentPlaceholder": "Select equipment"
+    },
+    "status": {
+        "all": "All States",
+        "available": "Available",
+        "inTransit": "In Transit",
+        "busy": "Busy",
+        "onRoute": "On Route",
+        "maintenance": "Maintenance",
+        "offline": "Offline"
+    },
+    "card": {
+        "editTooltip": "Edit ambulance",
+        "deleteTooltip": "Delete ambulance"
+    },
+    "filters": {
+        "searchPlaceholder": "Search ambulances by plate number or ID"
+    },
+    "types": {
+        "basic": "Basic Life Support",
+        "advanced": "Advanced Life Support",
+        "critical": "Critical Care"
+    },
+    "empty": {
+        "title": "No ambulances found",
+        "description": "Start by adding a new ambulance."
+    }
+}

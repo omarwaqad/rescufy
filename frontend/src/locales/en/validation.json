@@ -1,0 +1,33 @@
+{
+    "required": "This field is required",
+    "email": {
+        "required": "Email is required",
+        "invalid": "Invalid email address"
+    },
+    "password": {
+        "required": "Password is required",
+        "minLength": "Password must be at least {{min}} characters",
+        "maxLength": "Password must be at most {{max}} characters",
+        "uppercase": "Password must contain at least one uppercase letter",
+        "lowercase": "Password must contain at least one lowercase letter",
+        "number": "Password must contain at least one number",
+        "special": "Password must contain at least one special character",
+        "mismatch": "Passwords do not match"
+    },
+    "phone": {
+        "required": "Phone number is required",
+        "invalid": "Invalid phone number"
+    },
+    "name": {
+        "required": "Name is required",
+        "minLength": "Name must be at least {{min}} characters",
+        "maxLength": "Name must be at most {{max}} characters"
+    },
+    "general": {
+        "minLength": "Must be at least {{min}} characters",
+        "maxLength": "Must be at most {{max}} characters",
+        "min": "Must be at least {{min}}",
+        "max": "Must be at most {{max}}",
+        "pattern": "Invalid format"
+    }
+}

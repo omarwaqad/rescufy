@@ -7,9 +7,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import signUpImg from "../../../../assets/images/authImages/signUpImg.jpg";
 import Logo from "@/shared/common/Logo";
-
+import { useTranslation } from "react-i18next";
 
 export default function SignUpHero() {
+  const { t } = useTranslation('auth');
+
   return (
     <div
       className="min-h-screen flex items-center justify-center bg-cover bg-center relative overflow-hidden"
@@ -29,10 +31,10 @@ export default function SignUpHero() {
 
         {/* Headline */}
         <h1 className="text-4xl md:text-5xl text-indigo-950 dark:text-white font-black leading-tight tracking-tight drop-shadow-sm transition-colors">
-          Real-Time Emergency
+          {t('signUpHero.mainHeadline')}
           <br />
           <span className="bg-linear-to-r from-violet-600 to-indigo-500 dark:from-cyan-400 dark:to-blue-500 bg-clip-text text-transparent">
-            Saving seconds, Saving lives
+            {t('signUpHero.mainHeadlineHighlight')}
           </span>
         </h1>
 
@@ -43,7 +45,7 @@ export default function SignUpHero() {
           <div className="flex items-center gap-3 mb-10">
             <div className="h-px w-8 bg-violet-500 dark:bg-cyan-500/50"></div>
             <h2 className="text-sm uppercase tracking-wider text-indigo-600 dark:text-cyan-400 font-bold">
-              Mission-Critical Capabilities
+              {t('signUpHero.missionTitle')}
             </h2>
           </div>
 
@@ -56,10 +58,10 @@ export default function SignUpHero() {
               </div>
               <div>
                 <p className="font-semibold text-slate-800 dark:text-white">
-                  Real-Time Dispatch
+                  {t('signUpHero.features.dispatch.title')}
                 </p>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                  Assign units instantly & track fleet movement live.
+                  {t('signUpHero.features.dispatch.description')}
                 </p>
               </div>
             </div>
@@ -74,10 +76,10 @@ export default function SignUpHero() {
               </div>
               <div>
                 <p className="font-semibold text-slate-800 dark:text-white">
-                  Location Intelligence
+                  {t('signUpHero.features.location.title')}
                 </p>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                  GPS routing with ETA context & route awareness.
+                  {t('signUpHero.features.location.description')}
                 </p>
               </div>
             </div>
@@ -89,10 +91,10 @@ export default function SignUpHero() {
               </div>
               <div>
                 <p className="font-semibold text-slate-800 dark:text-white">
-                  Smart Alerts
+                  {t('signUpHero.features.alerts.title')}
                 </p>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                  Priority-based notifications for critical cases.
+                  {t('signUpHero.features.alerts.description')}
                 </p>
               </div>
             </div>
@@ -104,10 +106,10 @@ export default function SignUpHero() {
               </div>
               <div>
                 <p className="font-semibold text-slate-800 dark:text-white">
-                  Incident Reports
+                  {t('signUpHero.features.reports.title')}
                 </p>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                  Structured medical & operational documentation.
+                  {t('signUpHero.features.reports.description')}
                 </p>
               </div>
             </div>

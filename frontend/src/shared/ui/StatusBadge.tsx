@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 type RequestStatus = "pending" | "assigned" | "enRoute" | "completed";
 type RequestPriority = "critical" | "high" | "medium" | "low";
 
@@ -21,17 +23,53 @@ const priorityStyles: Record<RequestPriority, string> = {
 };
 
 export function StatusBadge({ status = "pending", priority }: StatusBadgeProps) {
+  const { t } = useTranslation('requests');
+  const statusLabels: Record<RequestStatus, string> = {
+    pending: t('status.pending'),
+    assigned: t('status.assigned'),
+    enRoute: t('status.enRoute'),
+    completed: t('status.completed'),
+  };
+
+  const priorityLabels: Record<RequestPriority, string> = {
+    critical: t('priority.critical'),
+    high: t('priority.high'),
+    medium: t('priority.medium'),
+    low: t('priority.low'),
+  };
+
+  // Fallback: humanize camelCase keys (e.g., enRoute -> En Route) when translation is missing
+  const humanize = (key: string) =>
+    key
+      .replace(/([A-Z])/g, ' $1')
+      .replace(/_/g, ' ')
+      .replace(/^./, (s) => s.toUpperCase())
+      .trim();
+
+  const getSafeLabel = (nsKey: string, fallbackKey: string) => {
+    const translated = t(nsKey);
+    // i18next returns the key when missing; if so, return humanized fallback
+    if (!translated || translated === nsKey) return humanize(fallbackKey);
+    return translated;
+  };
+
+  const baseClasses = 'py-1 rounded-full text-xs font-semibold inline-block align-middle';
+  // allow wrapping on small screens, truncate on md and above; increase md width for longer labels
+  const desktopWidth = 'md:w-36 md:truncate text-center';
+
   if (priority) {
+    const label = getSafeLabel(`priority.${priority}`, priority);
     return (
-      <span className={`px-4 md:px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${priorityStyles[priority]}`}>
-        {priority}
+      <span className={`${baseClasses} px-4 md:px-3 ${desktopWidth} whitespace-normal md:whitespace-nowrap ${priorityStyles[priority]}`}>
+        {label}
       </span>
     );
   }
 
+  const statusLabel = getSafeLabel(`status.${status}`, status);
   return (
-    <span className={`px-2 md:px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${statusStyles[status]}`}>
-      {status.replace("-", " ")}
+    <span className={`${baseClasses} px-2 md:px-3 ${desktopWidth} whitespace-normal md:whitespace-nowrap ${statusStyles[status]}`}>
+      {statusLabel}
     </span>
   );
 }

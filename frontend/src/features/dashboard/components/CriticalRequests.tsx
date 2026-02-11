@@ -1,8 +1,11 @@
-import { faBell, faClock } from "@fortawesome/free-regular-svg-icons";
+import { faBell } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CriticalRequestCard from "./CriticalRequestCard";
+import { useTranslation } from "react-i18next";
 
 export default function CriticalRequests() {
+  const { t } = useTranslation('dashboard');
+
   return (
     <div
       className="
@@ -20,12 +23,12 @@ export default function CriticalRequests() {
       <div className="absolute -inset-1 rounded-2xl bg-red-500/10 blur-3xl pointer-events-none" />
 
       <div className="relative">
-        <header className=" border-b border-red-500/20 space-x-2 flex items-center py-3 md:py-1  mb-4 md:mb-6">
+        <header className=" border-b border-red-500/20 gap-2 rtl:space-x-reverse flex items-center py-3 md:py-1  mb-4 md:mb-6">
           <span>
             <FontAwesomeIcon icon={faBell} style={{ color: "#E63946" }} />
           </span>
           <span className="font-medium text-sm md:text-base">
-            Critical Requests
+            {t('criticalRequests.title')}
           </span>
         </header>
 

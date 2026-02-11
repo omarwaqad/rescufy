@@ -1,4 +1,5 @@
 import SelectField from "@/shared/ui/SelectFiled";
+import { useTranslation } from "react-i18next";
 
 export default function AmbulancesStates({
   value,
@@ -7,19 +8,21 @@ export default function AmbulancesStates({
   value: string;
   onChange: (value: string) => void;
 }) {
+  const { t } = useTranslation('ambulances');
+
   const AllStates = [
-    { label: "All States", value: "all" },
-    { label: "Available", value: "AVAILABLE" },
-    { label: "In Transit", value: "IN_TRANSIT" },
-    { label: "Busy", value: "BUSY" },
-    { label: "Maintenance", value: "MAINTENANCE" },
+    { label: t('status.all'), value: "all" },
+    { label: t('status.available'), value: "AVAILABLE" },
+    { label: t('status.inTransit'), value: "IN_TRANSIT" },
+    { label: t('status.busy'), value: "BUSY" },
+    { label: t('status.maintenance'), value: "MAINTENANCE" },
   ];
 
   return (
     <>
       <SelectField
         label=""
-        placeholder="All States"
+        placeholder={t('status.all')}
         value={value}
         onChange={onChange}
         options={AllStates}

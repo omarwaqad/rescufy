@@ -17,8 +17,8 @@ export default function SearchBar({
   return (
     <>
       <div className="bg-bg-card py-4 px-4 md:px-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-4 rounded-lg shadow-card">
-        <div className="w-full md:w-1/2">
-          <SearchInput value={value} onSearchChange={onSearchChange} placeholder={placeholder} />
+        <div  className="w-full md:w-1/2">
+          <SearchInput  value={value} onSearchChange={onSearchChange} placeholder={placeholder} />
         </div>
  
     {/* filter props */}

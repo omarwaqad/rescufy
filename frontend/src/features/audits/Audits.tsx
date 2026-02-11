@@ -1,9 +1,8 @@
-import React from 'react'
-
 export default function Aduits() {
   return <>
-  
-      <div>Audits Page</div>
-  
+
+    <div>Audits Page</div>
+
   </>
-    }
+}
+

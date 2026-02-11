@@ -6,6 +6,7 @@ import {
   faPhone,
 } from "@fortawesome/free-solid-svg-icons";
 import { faHospital } from "@fortawesome/free-regular-svg-icons";
+import { useTranslation } from "react-i18next";
 
 interface HospitalCardProps {
   id: string;
@@ -32,6 +33,7 @@ export function HospitalCard({
   onEdit,
   onDelete,
 }: HospitalCardProps) {
+  const { t } = useTranslation('hospitals');
   const percent = Math.round((usedBeds / totalBeds) * 100);
   const freeBeds = totalBeds - usedBeds;
 
@@ -61,6 +63,13 @@ export function HospitalCard({
     BUSY: "from-amber-400 to-amber-600",
     CRITICAL: "from-orange-400 to-orange-600",
     FULL: "from-red-400 to-red-600",
+  };
+
+  const statusLabels: Record<typeof status, string> = {
+    NORMAL: t('status.normal'),
+    BUSY: t('status.busy'),
+    CRITICAL: t('status.critical'),
+    FULL: t('status.full'),
   };
 
   return (
@@ -105,7 +114,7 @@ export function HospitalCard({
                 mt-1
               `}
                 >
-                  {status}
+                  {statusLabels[status]}
                 </span>
               </div>
 
@@ -137,7 +146,7 @@ export function HospitalCard({
               text-xs
               cursor-pointer
             "
-            title="Edit hospital"
+            title={t('card.editTooltip')}
           >
             <FontAwesomeIcon icon={faPenToSquare} />
           </button>
@@ -158,7 +167,7 @@ export function HospitalCard({
               text-xs
               cursor-pointer
             "
-            title="Delete hospital"
+            title={t('card.deleteTooltip')}
           >
             <FontAwesomeIcon icon={faTrash} />
           </button>
@@ -169,7 +178,7 @@ export function HospitalCard({
       <div className={`mb-3 p-3 rounded-lg ${capacityBgColor[status]}`}>
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs font-medium text-neutral-600 dark:text-neutral-400">
-            Capacity
+            {t('card.capacity')}
           </span>
           <span className="text-xs font-bold text-neutral-900 dark:text-neutral-100">
             {usedBeds}/{totalBeds}
@@ -188,7 +197,7 @@ export function HospitalCard({
         <div className="grid grid-cols-3 gap-2 mt-2">
           <div className="text-center">
             <div className="text-xs text-neutral-600 dark:text-neutral-400">
-              Used
+              {t('card.used')}
             </div>
             <div className="text-sm font-bold text-neutral-900 dark:text-neutral-100">
               {usedBeds}
@@ -196,7 +205,7 @@ export function HospitalCard({
           </div>
           <div className="text-center">
             <div className="text-xs text-neutral-600 dark:text-neutral-400">
-              Free
+              {t('card.free')}
             </div>
             <div className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
               {freeBeds}
@@ -204,7 +213,7 @@ export function HospitalCard({
           </div>
           <div className="text-center">
             <div className="text-xs text-neutral-600 dark:text-neutral-400">
-              Usage
+              {t('card.usage')}
             </div>
             <div className="text-sm font-bold text-neutral-900 dark:text-neutral-100">
               {percent}%
@@ -257,7 +266,7 @@ export function HospitalCard({
         "
       >
         <FontAwesomeIcon icon={faPhone} className="text-xs" />
-        <span>Call</span>
+        <span>{t('card.call')}</span>
       </button>
     </div>
   );
