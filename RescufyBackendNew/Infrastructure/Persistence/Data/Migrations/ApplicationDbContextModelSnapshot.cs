@@ -148,9 +148,6 @@ namespace Persistence.Data.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<int>("Age")
-                        .HasColumnType("int");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -162,10 +159,6 @@ namespace Persistence.Data.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Gender")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("IsBanned")
                         .HasColumnType("bit");
 
@@ -176,10 +169,6 @@ namespace Persistence.Data.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NationalId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -602,9 +591,6 @@ namespace Persistence.Data.Migrations
                     b.Property<decimal>("Longitude")
                         .HasPrecision(9, 6)
                         .HasColumnType("decimal(9,6)");
-
-                    b.Property<int>("NumberOfPeopleAffected")
-                        .HasColumnType("int");
 
                     b.Property<int>("RequestStatus")
                         .HasColumnType("int");

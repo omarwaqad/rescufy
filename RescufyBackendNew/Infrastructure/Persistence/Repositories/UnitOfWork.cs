@@ -1,5 +1,6 @@
 ﻿using Domain.Contracts;
 using Domain.Models;
+using Microsoft.EntityFrameworkCore;
 using Persistence.Data;
 
 namespace Persistence.Repositories
@@ -8,6 +9,8 @@ namespace Persistence.Repositories
     : IUnitOfWork
     {
         private readonly Dictionary<string/*typeName*/, object/*Repo*/> _repositories = [];
+
+        public DbContext Context => _context;
 
         public IGenericRepository<TEntity, TKey> GetRepository<TEntity, TKey>()
             where TEntity : BaseEntity<TKey>

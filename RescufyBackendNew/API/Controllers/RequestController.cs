@@ -49,6 +49,17 @@ namespace API.Controllers
 
             return await requestService.GetRequestsAsync(filter);
         }
+
+        [HttpGet("{id}")]
+        [Authorize(Roles = nameof(Roles.Admin) + "," + nameof(Roles.SuperAdmin) + "," + nameof(Roles.HospitalAdmin) + "," + nameof(Roles.User) + "," + nameof(Roles.AmbulanceDriver))]
+        public async Task<IActionResult> GetRequestById(int id)
+        {
+            var request = await requestService.GetRequestByIdAsync(id);
+            if (request == null)
+                return NotFound(new { Message = "Request not found" });
+
+            return Ok(request);
+        }
     }
 
     public class CreateRequestDto

@@ -1,4 +1,5 @@
 ﻿using Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Contracts
 {
@@ -8,5 +9,7 @@ namespace Domain.Contracts
 
         IGenericRepository<TEntity, TKey> GetRepository<TEntity, TKey>()
             where TEntity : BaseEntity<TKey>;
+
+        DbContext Context { get; }
     }
 }
