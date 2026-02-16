@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Persistence.Data;
 using Persistence.Repositories;
 using Persistence.Seeding;
+using ServiceAbstraction;
+using Persistence.Services;
 
 namespace Persistence
 {
@@ -25,6 +27,9 @@ namespace Persistence
 			services.AddScoped<UsersSeeder>();
 			services.AddScoped<AmbulanceSeeder>();
 			services.AddScoped<HospitalSeeder>();
+
+            services.AddHttpClient<IAIService, AIService>();
+
 			return services;
 		}
 	}

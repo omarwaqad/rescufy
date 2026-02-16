@@ -7,7 +7,7 @@ using Shared.Enums;
 
 namespace Service
 {
-    public class RequestService(IUnitOfWork unitOfWork) : IRequestService
+    public class RequestService(IUnitOfWork unitOfWork, IAIService aiService) : IRequestService
     {
         public async Task<Request> CreateRequestAsync(string userId, string description, decimal latitude, decimal longitude, string address, bool isSelfCase, int numberOfPeopleAffected)
         {
@@ -27,9 +27,30 @@ namespace Service
 
             try
             {
-                await unitOfWork.GetRepository<Request, int>().AddAsync(request);
+                var (aiDescription, aiStatus, aiSeverity) = await aiService.AnalyzeRequestAsync(description);
+                
+                // Map AI status to RequestStatus if possible, otherwise keep Pending or use a default
+                // For now, we'll keep RequestStatus as Pending initially or map if the AI returns a valid status string matching the enum.
+                // Assuming we just want to store the AI analysis for now.
 
-            await unitOfWork.SaveChangesAsync(); // Save to get RequestId
+                var aiAnalysis = new AIAnalysis
+                {
+                    RequestId = request.Id, // Will be set after save? No, call AddAsync doesn't give ID immediately for Identity columns usually until SaveChanges.
+                    // But we can add it to the request's collection or set it after saving request.
+                    Summary = aiDescription,
+                    Urgency = aiSeverity,
+                    EmergencyType = EmergencyType.Medium, // Defaulting to Medium for now
+                    Confidence = 0.0f, // Placeholder
+                    CreatedAt = DateTime.UtcNow,
+                    Request = request
+                };
+                
+                // We need to save request first to get ID, or add AIAnalysis to Request.AIAnalysis (if it's 1:1 and configured correctly)
+                // Request entity has: public AIAnalysis AIAnalysis { get; set; } = default!;
+                request.AIAnalysis = aiAnalysis;
+
+               await unitOfWork.GetRepository<Request, int>().AddAsync(request);
+               await unitOfWork.SaveChangesAsync();
             }
             catch (Exception ex)
             {
