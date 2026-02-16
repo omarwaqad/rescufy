@@ -140,5 +140,27 @@ namespace Service
                     (!filter.EndDate.HasValue || r.CreatedAt <= filter.EndDate)
                 );
         }
+
+        public async Task<Request?> GetRequestByIdAsync(int id)
+        {
+            return await unitOfWork.Context.Set<Request>()
+                .Include(r => r.ApplicationUser)
+                    .ThenInclude(u => u.UserProfile)
+                        .ThenInclude(p => p.ChronicDiseases)
+                .Include(r => r.ApplicationUser)
+                    .ThenInclude(u => u.UserProfile)
+                        .ThenInclude(p => p.Medications)
+                .Include(r => r.ApplicationUser)
+                    .ThenInclude(u => u.UserProfile)
+                        .ThenInclude(p => p.Allergies)
+                .Include(r => r.AIAnalysis)
+                .Include(r => r.Assignments)
+                    .ThenInclude(a => a.Ambulance)
+                        .ThenInclude(amb => amb.Driver)
+                .Include(r => r.Assignments)
+                    .ThenInclude(a => a.Hospital)
+                .Include(r => r.AuditLogs)
+                .FirstOrDefaultAsync(r => r.Id == id);
+        }
     }
 }

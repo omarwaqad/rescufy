@@ -326,6 +326,7 @@ namespace Service
                 NationalId = dto.NationalId,
                 Gender = dto.Gender,
                 Age = dto.Age
+                EmailConfirmed = false
             };
 
             var result = await userManager.CreateAsync(user, dto.Password);

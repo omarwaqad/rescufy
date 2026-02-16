@@ -15,7 +15,7 @@ namespace Persistence
 			services.AddDbContext<ApplicationDbContext>(options =>
 			{
 				var connectionString = configuration.GetConnectionString("DefaultConnection");
-				options.UseSqlServer("Server=localhost;Database=rescufy_test;Trusted_Connection=True;TrustServerCertificate=True;");
+				options.UseSqlServer(connectionString);
 			});
 
 			services.AddScoped<IDataSeeding, DataSeeding>();
@@ -25,6 +25,7 @@ namespace Persistence
 			services.AddScoped<UsersSeeder>();
 			services.AddScoped<AmbulanceSeeder>();
 			services.AddScoped<HospitalSeeder>();
+			services.AddScoped<RequestSeeder>();
 			return services;
 		}
 	}

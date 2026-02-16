@@ -12,7 +12,8 @@ namespace Persistence.Seeding
         RolesSeeder _rolesSeeder,
         UsersSeeder _usersSeeder,
         AmbulanceSeeder _ambulanceSeeder,
-        HospitalSeeder _hospitalSeeder
+        HospitalSeeder _hospitalSeeder,
+        RequestSeeder _requestSeeder
         ) : IDataSeeding
     {
         public void DataSeed()
@@ -26,6 +27,7 @@ namespace Persistence.Seeding
             _usersSeeder.SeedAsync().GetAwaiter().GetResult();
             _ambulanceSeeder.SeedAsync().GetAwaiter().GetResult();
             _hospitalSeeder.SeedAsync().GetAwaiter().GetResult();
+            _requestSeeder.SeedAsync().GetAwaiter().GetResult();
 
             _context.SaveChanges();
         }
