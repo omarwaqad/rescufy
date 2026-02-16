@@ -303,6 +303,9 @@ namespace Service
                 else
                     await userManager.DeleteAsync(existingUser);
 
+            if (await userManager.Users.AnyAsync(u => u.NationalId == dto.NationalId))
+                 throw new Exception("National ID is already registered.");
+
             ValidateUserName(dto.UserName);
 
             string? imageUrl = null;
@@ -319,7 +322,10 @@ namespace Service
                 UserName = dto.UserName,
                 Name = dto.Name,
                 ProfileImageUrl = imageUrl,
-                EmailConfirmed = false
+                EmailConfirmed = false,
+                NationalId = dto.NationalId,
+                Gender = dto.Gender,
+                Age = dto.Age
             };
 
             var result = await userManager.CreateAsync(user, dto.Password);

@@ -10,6 +10,7 @@ namespace Domain.Models
         public decimal Latitude { get; set; }
         public decimal Longitude { get; set; }
         public string Address { get; set; } = default!;
+        public int NumberOfPeopleAffected { get; set; }
         public RequestStatus RequestStatus { get; set; }
         public int? AnalysisId { get; set; }
         public DateTime CreatedAt { get; set; }

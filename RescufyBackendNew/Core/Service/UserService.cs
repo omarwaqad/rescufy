@@ -11,13 +11,19 @@ namespace Service
     {
         public async Task<UserDto> CreateUserAsync(CreateUserDto dto)
         {
+             if (await userManager.Users.AnyAsync(u => u.NationalId == dto.NationalId))
+                 throw new Exception("National ID is already registered.");
+
             var user = new ApplicationUser
             {
                 UserName = dto.Email, // Use full email as username to avoid conflicts
                 Email = dto.Email,
                 Name = dto.Name,
                 PhoneNumber = dto.PhoneNumber,
-                EmailConfirmed = true // Auto-confirm for admin created users
+                EmailConfirmed = true, // Auto-confirm for admin created users
+                NationalId = dto.NationalId,
+                Gender = dto.Gender,
+                Age = dto.Age
             };
 
             var result = await userManager.CreateAsync(user, dto.Password);
@@ -118,6 +124,9 @@ namespace Service
                 Id = user.Id,
                 Email = user.Email ?? "",
                 Name = user.Name,
+                NationalId = user.NationalId,
+                Gender = user.Gender,
+                Age = user.Age,
                 PhoneNumber = user.PhoneNumber,
                 Roles = roles,
                 IsBanned = user.IsBanned

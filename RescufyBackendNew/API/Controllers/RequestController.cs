@@ -19,7 +19,7 @@ namespace API.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null) return Unauthorized();
 
-            var request = await requestService.CreateRequestAsync(userId, dto.Description, dto.Latitude, dto.Longitude, dto.Address, dto.IsSelfCase);
+            var request = await requestService.CreateRequestAsync(userId, dto.Description, dto.Latitude, dto.Longitude, dto.Address, dto.IsSelfCase, dto.NumberOfPeopleAffected);
             return Ok(request);
         }
 
@@ -58,5 +58,6 @@ namespace API.Controllers
         public decimal Latitude { get; set; }
         public decimal Longitude { get; set; }
         public string Address { get; set; } = string.Empty;
+        public int NumberOfPeopleAffected { get; set; }
     }
 }

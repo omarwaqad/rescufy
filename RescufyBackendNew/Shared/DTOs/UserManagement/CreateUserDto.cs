@@ -9,6 +9,19 @@ namespace Shared.DTOs.UserManagement
         public string Email { get; set; } = default!;
 
         [Required]
+        [StringLength(14, MinimumLength = 14, ErrorMessage = "National ID must be exactly 14 digits")]
+        [RegularExpression("^[0-9]*$", ErrorMessage = "National ID must be numeric")]
+        public string NationalId { get; set; } = default!;
+
+        [Required]
+        [RegularExpression("^(Male|Female)$", ErrorMessage = "Gender must be 'Male' or 'Female'")]
+        public string Gender { get; set; } = default!;
+
+        [Required]
+        [Range(1, 120, ErrorMessage = "Age must be between 1 and 120")]
+        public int Age { get; set; }
+
+        [Required]
         public string Password { get; set; } = default!;
 
         [Required]

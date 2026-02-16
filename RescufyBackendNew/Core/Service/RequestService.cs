@@ -9,7 +9,7 @@ namespace Service
 {
     public class RequestService(IUnitOfWork unitOfWork) : IRequestService
     {
-        public async Task<Request> CreateRequestAsync(string userId, string description, decimal latitude, decimal longitude, string address, bool isSelfCase)
+        public async Task<Request> CreateRequestAsync(string userId, string description, decimal latitude, decimal longitude, string address, bool isSelfCase, int numberOfPeopleAffected)
         {
             var request = new Request
             {
@@ -19,6 +19,7 @@ namespace Service
                 Latitude = latitude,
                 Longitude = longitude,
                 Address = address,
+                NumberOfPeopleAffected = numberOfPeopleAffected,
                 RequestStatus = RequestStatus.Pending,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
