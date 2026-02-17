@@ -1,0 +1,58 @@
+{
+    "pageHeader": {
+        "title": "Users Management",
+        "subtitle": "Manage user accounts and role assignments"
+    },
+    "title": "Users",
+    "subtitle": "Manage system users",
+    "addUser": "Add User",
+    "table": {
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "role": "Role",
+        "status": "Status",
+        "lastLogin": "Last Login",
+        "actions": "Actions"
+    },
+    "form": {
+        "name": "Full Name",
+        "namePlaceholder": "Enter full name",
+        "email": "Email Address",
+        "emailPlaceholder": "Enter email address",
+        "phone": "Phone Number",
+        "phonePlaceholder": "Enter phone number",
+        "role": "Role",
+        "rolePlaceholder": "Select role",
+        "password": "Password",
+        "passwordPlaceholder": "Enter password",
+        "confirmPassword": "Confirm Password",
+        "confirmPasswordPlaceholder": "Confirm password"
+    },
+    "roles": {
+        "all": "All Roles",
+        "admin": "Admin",
+        "hospital": "Hospital Staff",
+        "hospitalUser": "Hospital User",
+        "ambulance": "Ambulance Driver",
+        "ambulanceUser": "Ambulance User",
+        "dispatcher": "Dispatcher"
+    },
+    "row": {
+        "password": "Pass:",
+        "editTooltip": "Edit user",
+        "deleteTooltip": "Delete user"
+    },
+    "filters": {
+        "searchPlaceholder": "Search users by name, email, or ID"
+    },
+    "status": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "suspended": "Suspended"
+    },
+    "empty": {
+        "title": "No users found",
+        "description": "Start by adding a new user."
+    }
+}

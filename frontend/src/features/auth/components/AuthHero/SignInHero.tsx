@@ -1,6 +1,9 @@
 import Logo from "@/shared/common/Logo";
+import { useTranslation } from "react-i18next";
 
 export default function SignInHero() {
+  const { t } = useTranslation('auth');
+
   return (
     <>
       {/* Background glow */}
@@ -15,13 +18,12 @@ export default function SignInHero() {
 
           {/* Headline */}
           <h1 className="text-5xl font-extrabold text-heading">
-            Welcome <span className="text-indigo-600">Back</span>
+            {t('signInHero.headline')} <span className="text-indigo-600">{t('signInHero.headlineHighlight')}</span>
           </h1>
 
           {/* Description */}
           <p className="mt-6 text-lg text-gray-600 dark:text-gray-400 max-w-md">
-            Your command center for coordinating critical emergency response
-            operations in real-time.
+            {t('signInHero.description')}
           </p>
         </div>
       </div>

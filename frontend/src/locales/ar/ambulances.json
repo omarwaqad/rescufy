@@ -1,0 +1,58 @@
+{
+    "pageHeader": {
+        "title": "إدارة سيارات الإسعاف",
+        "subtitle": "إدارة معلومات سيارات الإسعاف والمواقع"
+    },
+    "title": "سيارات الإسعاف",
+    "subtitle": "إدارة أسطول سيارات الإسعاف",
+    "addAmbulance": "إضافة سيارة إسعاف",
+    "table": {
+        "vehicleId": "معرّف المركبة",
+        "plateNumber": "رقم اللوحة",
+        "driver": "السائق",
+        "phone": "الهاتف",
+        "status": "الحالة",
+        "hospital": "المستشفى",
+        "location": "الموقع الحالي",
+        "actions": "الإجراءات"
+    },
+    "form": {
+        "vehicleId": "معرّف المركبة",
+        "vehicleIdPlaceholder": "أدخل معرّف المركبة",
+        "plateNumber": "رقم اللوحة",
+        "plateNumberPlaceholder": "أدخل رقم اللوحة",
+        "driver": "اسم السائق",
+        "driverPlaceholder": "أدخل اسم السائق",
+        "phone": "رقم الهاتف",
+        "phonePlaceholder": "أدخل رقم الهاتف",
+        "type": "نوع سيارة الإسعاف",
+        "typePlaceholder": "اختر نوع سيارة الإسعاف",
+        "equipment": "المعدات",
+        "equipmentPlaceholder": "اختر المعدات"
+    },
+    "status": {
+        "all": "جميع الحالات",
+        "available": "متاح",
+        "inTransit": "في الطريق",
+        "busy": "مشغول",
+        "onRoute": "في الطريق",
+        "maintenance": "صيانة",
+        "offline": "غير متصل"
+    },
+    "card": {
+        "editTooltip": "تعديل سيارة الإسعاف",
+        "deleteTooltip": "حذف سيارة الإسعاف"
+    },
+    "filters": {
+        "searchPlaceholder": "البحث برقم اللوحة أو المعرّف"
+    },
+    "types": {
+        "basic": "دعم الحياة الأساسي",
+        "advanced": "دعم الحياة المتقدم",
+        "critical": "الرعاية الحرجة"
+    },
+    "empty": {
+        "title": "لم يتم العثور على سيارات إسعاف",
+        "description": "ابدأ بإضافة سيارة إسعاف جديدة."
+    }
+}

@@ -3,10 +3,12 @@ import { useSelector } from "react-redux";
 import { selectRole } from "@/features/auth/store/auth.slice";
 import { ROLE_ROUTES } from "@/features/auth/roles/auth.roles";
 import { Button } from "@/shared/ui/button";
+import { useTranslation } from "react-i18next";
 
 export default function NotFound() {
   const navigate = useNavigate();
   const role = useSelector(selectRole);
+  const { t } = useTranslation('common');
 
   const handleNavigateHome = () => {
     if (role && ROLE_ROUTES[role as keyof typeof ROLE_ROUTES]) {
@@ -39,12 +41,12 @@ export default function NotFound() {
 
             {/* Heading */}
             <h1 className="text-2xl sm:text-3xl font-bold text-heading dark:text-heading mb-2">
-              Page Not Found
+              {t('pages.notFound.title')}
             </h1>
 
             {/* Description */}
             <p className="text-text-muted dark:text-muted text-sm sm:text-base mb-4">
-              The page you're looking for doesn't exist or has been moved.
+              {t('pages.notFound.description')}
             </p>
 
             {/* Action Buttons */}
@@ -53,14 +55,14 @@ export default function NotFound() {
                 onClick={handleNavigateHome}
                 className="bg-primary hover:bg-primary/90 text-heading font-medium transition-all duration-300 h-10 px-6 text-sm"
               >
-                Go to Dashboard
+                {t('pages.notFound.goToDashboard')}
               </Button>
               <Button
                 onClick={() => navigate(-1)}
                 variant="outline"
                 className="border-border-default dark:border-border-default/50 text-text-heading dark:text-heading hover:bg-surface-muted dark:hover:bg- font-medium h-10 px-6 text-sm"
               >
-                Go Back
+                {t('pages.notFound.goBack')}
               </Button>
             </div>
           </div>

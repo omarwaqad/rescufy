@@ -22,6 +22,10 @@ namespace Persistence
 			services.AddScoped<IUnitOfWork, UnitOfWork>();
 			services.AddScoped<SuperAdminSeeder>();
 			services.AddScoped<RolesSeeder>();
+			services.AddScoped<UsersSeeder>();
+			services.AddScoped<AmbulanceSeeder>();
+			services.AddScoped<HospitalSeeder>();
+			services.AddScoped<RequestSeeder>();
 			return services;
 		}
 	}

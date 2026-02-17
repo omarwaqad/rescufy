@@ -1,4 +1,5 @@
 import SelectField from "@/shared/ui/SelectFiled";
+import { useTranslation } from "react-i18next";
 
 export default function UsersRoles({
   value,
@@ -7,18 +8,20 @@ export default function UsersRoles({
   value: string;
   onChange: (value: string) => void;
 }) {
+  const { t } = useTranslation('users');
+
   const AllRoles = [
-    { label: "All Roles", value: "all" },
-    { label: "Admin", value: "ADMIN" },
-    { label: "Hospital User", value: "HOSPITAL_USER" },
-    { label: "Ambulance User", value: "AMBULANCE_USER" },
+    { label: t('roles.all'), value: "all" },
+    { label: t('roles.admin'), value: "ADMIN" },
+    { label: t('roles.hospitalUser'), value: "HOSPITAL_USER" },
+    { label: t('roles.ambulanceUser'), value: "AMBULANCE_USER" },
   ];
 
   return (
     <>
       <SelectField
         label=""
-        placeholder="All Roles"
+        placeholder={t('roles.all')}
         value={value}
         onChange={onChange}
         options={AllRoles}

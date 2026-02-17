@@ -1,0 +1,109 @@
+{
+    "pageHeader": {
+        "title": "Emergency Requests",
+        "subtitle": "Manage and track all emergency response requests"
+    },
+    "title": "Requests",
+    "subtitle": "Manage emergency requests",
+    "table": {
+        "id": "ID",
+        "userName": "User Name",
+        "userPhone": "Phone",
+        "location": "Location",
+        "priority": "Priority",
+        "status": "Status",
+        "timestamp": "Time",
+        "actions": "Actions"
+    },
+    "filters": {
+        "all": "All",
+        "status": "Status",
+        "priority": "Priority",
+        "searchPlaceholder": "Search by name  or request id "
+    },
+    "status": {
+        "all": "All Statuses",
+        "pending": "Pending",
+        "assigned": "Assigned",
+        "enRoute": "En Route",
+        "inProgress": "In Progress",
+        "dispatched": "Dispatched",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
+    },
+    "priority": {
+        "all": "All Priorities",
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High",
+        "critical": "Critical"
+    },
+    "pagination": {
+        "showing": "Showing",
+        "of": "of",
+        "requests": "requests",
+        "page": "Page",
+        "previous": "Previous",
+        "next": "Next"
+    },
+    "actions": {
+        "view": "View Details",
+        "assign": "Assign Ambulance",
+        "cancel": "Cancel Request",
+        "complete": "Mark Complete"
+    },
+    "details": {
+        "title": "Request Details",
+        "requestInfo": "Request Information",
+        "patientInfo": "Patient Information",
+        "locationInfo": "Location Information",
+        "assignedAmbulance": "Assigned Ambulance",
+        "timeline": "Timeline",
+        "patient": "Patient",
+        "ambulance": "Ambulance",
+        "hospital": "Hospital",
+        "description": "Description",
+        "aiAnalysis": "AI Analysis",
+        "actions": "Actions",
+        "additionalNotes": "Additional Notes",
+        "vehicle": "Vehicle",
+        "type": "Type",
+        "eta": "ETA",
+        "distance": "Distance",
+        "reassign": "Reassign",
+        "changeHospital": "Change Hospital",
+        "override": "Override",
+        "cancelRequest": "Cancel Request",
+        "confidence": "Confidence",
+        "requestIdLabel": "Request ID",
+        "critical": "Critical",
+        "gender": {
+            "male": "Male",
+            "female": "Female",
+            "other": "Other"
+        },
+        "timelineEvents": {
+            "requestReceived": {
+                "title": "Request Received",
+                "desc": "Emergency call received from workplace"
+            },
+            "ambulanceDispatched": {
+                "title": "Ambulance Dispatched",
+                "desc": "Nearest available ambulance assigned"
+            },
+            "hospitalNotified": {
+                "title": "Hospital Notified",
+                "desc": "Cardiology department prepared for patient arrival"
+            },
+            "enRoute": {
+                "title": "En Route",
+                "desc": "Currently 3 minutes away from patient location"
+            }
+        }
+    },
+    "empty": {
+        "title": "No requests found",
+        "description": "There are no requests matching your criteria."
+    }
+    
+}

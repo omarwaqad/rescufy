@@ -3,8 +3,10 @@ import AmbulancesStates from "./AmbulancesStates";
 import { AmbulanceCard } from "./AmbulanceCard";
 import { AmbulanceFormModal } from "./AmbulanceFormModal";
 import { useAmbulances } from "../hooks/useAmbulances";
+import { useTranslation } from "react-i18next";
 
 export default function AllAmbulances() {
+  const { t } = useTranslation('ambulances');
   const {
     ambulances,
     search,
@@ -26,7 +28,7 @@ export default function AllAmbulances() {
         <SearchBar
           value={search}
           onSearchChange={setSearch}
-          placeholder="Search ambulances by license plate, ID, or hospital"
+          placeholder={t('filters.searchPlaceholder')}
         >
           <AmbulancesStates value={status} onChange={setStatus} />
         </SearchBar>
@@ -44,7 +46,7 @@ export default function AllAmbulances() {
 
       <button
         onClick={openAddModal}
-        className="fixed bottom-8 right-8 w-14 h-14 rounded-full bg-primary text-white text-xl shadow-lg hover:shadow-xl hover:bg-primary/90 transition-all"
+        className="fixed bottom-8 right-8 rtl:right-auto rtl:left-8 w-14 h-14 rounded-full bg-primary text-white text-xl shadow-lg hover:shadow-xl hover:bg-primary/90 transition-all"
       >
         +
       </button>

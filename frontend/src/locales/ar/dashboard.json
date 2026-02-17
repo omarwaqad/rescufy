@@ -1,0 +1,44 @@
+{
+    "title": "لوحة التحكم",
+    "welcome": "مرحباً بعودتك، {{name}}!",
+    "overview": "نظرة عامة",
+    "stats": {
+        "totalRequests": "إجمالي الطلبات",
+        "activeAmbulances": "سيارات الإسعاف النشطة",
+        "totalHospitals": "إجمالي المستشفيات",
+        "totalUsers": "إجمالي المستخدمين",
+        "pendingRequests": "الطلبات المعلقة",
+        "completedToday": "المكتملة اليوم",
+        "responseTime": "متوسط وقت الاستجابة",
+        "successRate": "معدل النجاح",
+        "activeSessions": "الجلسات النشطة",
+        "totalRevenue": "إجمالي الإيرادات",
+        "pendingTasks": "المهام المعلقة"
+    },
+    "charts": {
+        "requestsOverview": "نظرة عامة على الطلبات",
+        "weeklyStats": "الإحصائيات الأسبوعية",
+        "monthlyTrends": "الاتجاهات الشهرية",
+        "requestsByType": "الطلبات حسب النوع",
+        "requestsByPriority": "الطلبات حسب الأولوية"
+    },
+    "recentActivity": {
+        "title": "النشاط الأخير",
+        "viewAll": "عرض الكل",
+        "noActivity": "لا يوجد نشاط حديث"
+    },
+    "recentRequests": {
+        "title": "الطلبات الأخيرة",
+        "viewAll": "عرض الكل"
+    },
+    "criticalRequests": {
+        "title": "الطلبات الحرجة"
+    },
+    "quickActions": {
+        "title": "إجراءات سريعة",
+        "newRequest": "طلب جديد",
+        "addHospital": "إضافة مستشفى",
+        "addAmbulance": "إضافة سيارة إسعاف",
+        "viewReports": "عرض التقارير"
+    }
+}

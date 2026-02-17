@@ -51,7 +51,11 @@ namespace API
 			);
 			#endregion
 
-			builder.Services.AddControllers();
+			builder.Services.AddControllers()
+				.AddJsonOptions(options =>
+				{
+					options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+				});
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen(options =>
 			{
@@ -199,15 +203,13 @@ namespace API
 			#region CORS
 			var allowedOrigins = new[]
 			{
-
+				"http://localhost:4200",              // Angular frontend
 				"http://localhost:5173",              // dev
 				"https://your-frontend.vercel.app" ,
 				"http://localhost:5174",
 				"http://localhost:5172",
 				"http://localhost:5175",  // prod
-		
-
-		};
+			};
 
 			builder.Services.AddCors(options =>
 			{
@@ -215,7 +217,8 @@ namespace API
 				{
 					policy.WithOrigins(allowedOrigins)
 						  .AllowAnyHeader()
-						  .AllowAnyMethod();
+						  .AllowAnyMethod()
+						  .AllowCredentials();
 				});
 			});
 			#endregion

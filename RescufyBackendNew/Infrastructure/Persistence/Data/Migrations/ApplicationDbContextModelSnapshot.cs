@@ -60,6 +60,36 @@ namespace Persistence.Data.Migrations
                     b.ToTable("AIAnalyses", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Models.Allergy", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Notes")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProfileId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Severity")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProfileId");
+
+                    b.ToTable("Allergies");
+                });
+
             modelBuilder.Entity("Domain.Models.Ambulance", b =>
                 {
                     b.Property<int>("Id")
@@ -73,6 +103,14 @@ namespace Persistence.Data.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("DriverId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("DriverPhone")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -96,6 +134,8 @@ namespace Persistence.Data.Migrations
                         .HasColumnType("nvarchar(300)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DriverId");
 
                     b.ToTable("Ambulances", (string)null);
                 });
@@ -193,11 +233,23 @@ namespace Persistence.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<float>("AssignmentScore")
+                        .HasColumnType("real");
+
+                    b.Property<bool>("AutoAssigned")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("CompletedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<float>("DistanceKm")
+                        .HasColumnType("real");
+
                     b.Property<int?>("EtaMinutes")
                         .HasColumnType("int");
+
+                    b.Property<float>("HospitalDistanceKm")
+                        .HasColumnType("real");
 
                     b.Property<int?>("HospitalId")
                         .HasColumnType("int");
@@ -207,7 +259,13 @@ namespace Persistence.Data.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
+                    b.Property<int>("ReassignmentCount")
+                        .HasColumnType("int");
+
                     b.Property<int>("RequestId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -260,6 +318,38 @@ namespace Persistence.Data.Migrations
                     b.ToTable("AuditLogs", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Models.ChronicDisease", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("DiagnosedYear")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("ProfileId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Severity")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProfileId");
+
+                    b.ToTable("ChronicDiseases");
+                });
+
             modelBuilder.Entity("Domain.Models.EmailVerificationCode", b =>
                 {
                     b.Property<int>("Id")
@@ -284,7 +374,45 @@ namespace Persistence.Data.Migrations
                     b.HasIndex("ApplicationUserId")
                         .IsUnique();
 
-                    b.ToTable("EmailVerificationCode");
+                    b.ToTable("EmailVerificationCodes");
+                });
+
+            modelBuilder.Entity("Domain.Models.EmergencyContact", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("ProfileId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Relation")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProfileId");
+
+                    b.ToTable("EmergencyContacts");
                 });
 
             modelBuilder.Entity("Domain.Models.Hospital", b =>
@@ -300,10 +428,11 @@ namespace Persistence.Data.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<string>("CapacityNotes")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                    b.Property<int>("AvailableBeds")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BedCapacity")
+                        .HasColumnType("int");
 
                     b.Property<string>("ContactPhone")
                         .IsRequired()
@@ -312,6 +441,14 @@ namespace Persistence.Data.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Latitude")
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
+
+                    b.Property<decimal>("Longitude")
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -324,6 +461,37 @@ namespace Persistence.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Hospitals", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Models.Medication", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Dosage")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Frequency")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("ProfileId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProfileId");
+
+                    b.ToTable("Medications");
                 });
 
             modelBuilder.Entity("Domain.Models.Notification", b =>
@@ -358,7 +526,35 @@ namespace Persistence.Data.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.ToTable("Notification");
+                    b.ToTable("Notifications");
+                });
+
+            modelBuilder.Entity("Domain.Models.PastSurgery", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Notes")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProfileId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProfileId");
+
+                    b.ToTable("PastSurgeries");
                 });
 
             modelBuilder.Entity("Domain.Models.Request", b =>
@@ -491,20 +687,16 @@ namespace Persistence.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("EmergencyContactName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("EmergencyContactPhone")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                    b.Property<decimal>("HeightCm")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("MedicalNotes")
                         .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
+
+                    b.Property<bool>("PregnancyStatus")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -512,6 +704,9 @@ namespace Persistence.Data.Migrations
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal>("WeightKg")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -665,6 +860,26 @@ namespace Persistence.Data.Migrations
                     b.Navigation("Request");
                 });
 
+            modelBuilder.Entity("Domain.Models.Allergy", b =>
+                {
+                    b.HasOne("Domain.Models.UserProfile", "UserProfile")
+                        .WithMany("Allergies")
+                        .HasForeignKey("ProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserProfile");
+                });
+
+            modelBuilder.Entity("Domain.Models.Ambulance", b =>
+                {
+                    b.HasOne("Domain.Models.ApplicationUser", "Driver")
+                        .WithMany()
+                        .HasForeignKey("DriverId");
+
+                    b.Navigation("Driver");
+                });
+
             modelBuilder.Entity("Domain.Models.Assignment", b =>
                 {
                     b.HasOne("Domain.Models.Ambulance", "Ambulance")
@@ -717,6 +932,17 @@ namespace Persistence.Data.Migrations
                     b.Navigation("Request");
                 });
 
+            modelBuilder.Entity("Domain.Models.ChronicDisease", b =>
+                {
+                    b.HasOne("Domain.Models.UserProfile", "UserProfile")
+                        .WithMany("ChronicDiseases")
+                        .HasForeignKey("ProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserProfile");
+                });
+
             modelBuilder.Entity("Domain.Models.EmailVerificationCode", b =>
                 {
                     b.HasOne("Domain.Models.ApplicationUser", "ApplicationUser")
@@ -728,6 +954,28 @@ namespace Persistence.Data.Migrations
                     b.Navigation("ApplicationUser");
                 });
 
+            modelBuilder.Entity("Domain.Models.EmergencyContact", b =>
+                {
+                    b.HasOne("Domain.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("ProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Models.Medication", b =>
+                {
+                    b.HasOne("Domain.Models.UserProfile", "UserProfile")
+                        .WithMany("Medications")
+                        .HasForeignKey("ProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserProfile");
+                });
+
             modelBuilder.Entity("Domain.Models.Notification", b =>
                 {
                     b.HasOne("Domain.Models.ApplicationUser", "ApplicationUser")
@@ -737,6 +985,17 @@ namespace Persistence.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("ApplicationUser");
+                });
+
+            modelBuilder.Entity("Domain.Models.PastSurgery", b =>
+                {
+                    b.HasOne("Domain.Models.UserProfile", "UserProfile")
+                        .WithMany("PastSurgeries")
+                        .HasForeignKey("ProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserProfile");
                 });
 
             modelBuilder.Entity("Domain.Models.Request", b =>
@@ -847,6 +1106,17 @@ namespace Persistence.Data.Migrations
                     b.Navigation("Assignments");
 
                     b.Navigation("AuditLogs");
+                });
+
+            modelBuilder.Entity("Domain.Models.UserProfile", b =>
+                {
+                    b.Navigation("Allergies");
+
+                    b.Navigation("ChronicDiseases");
+
+                    b.Navigation("Medications");
+
+                    b.Navigation("PastSurgeries");
                 });
 #pragma warning restore 612, 618
         }

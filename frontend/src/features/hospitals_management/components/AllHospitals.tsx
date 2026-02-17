@@ -3,8 +3,10 @@ import HospitalsStates from "./HospitalsStates";
 import { HospitalCard } from "./HospitalCard";
 import { HospitalFormModal } from "./HospitalFormModal";
 import { useHospitals } from "../hooks/useHospitals";
+import { useTranslation } from "react-i18next";
 
 export default function AllHospitals() {
+  const { t } = useTranslation('hospitals');
   const {
     hospitals,
     search,
@@ -26,7 +28,7 @@ export default function AllHospitals() {
         <SearchBar
           value={search}
           onSearchChange={setSearch}
-          placeholder="Search hospitals by name, address, or ID"
+          placeholder={t('filters.searchPlaceholder')}
         >
           <HospitalsStates value={status} onChange={setStatus} />
         </SearchBar>
@@ -44,7 +46,7 @@ export default function AllHospitals() {
 
       <button
         onClick={openAddModal}
-        className="fixed bottom-8 right-8 w-14 h-14 rounded-full bg-primary text-white text-xl shadow-lg"
+        className="fixed bottom-8 right-8 rtl:right-auto rtl:left-8 w-14 h-14 rounded-full bg-primary text-white text-xl shadow-lg"
       >
         +
       </button>

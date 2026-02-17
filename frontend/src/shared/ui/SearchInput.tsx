@@ -15,7 +15,8 @@ export default function SearchInput({
     <div className="flex bg-background-second px-3 shadow border border-gray-200 dark:border-gray-800 rounded-md items-center">
       <Search size={16} className="text-gray-500" />
 
-      <input
+          <input
+       
         value={value }
         onChange={(e) => onSearchChange(e.target.value)}
         placeholder={placeholder}

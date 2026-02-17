@@ -1,0 +1,58 @@
+{
+    "pageHeader": {
+        "title": "إدارة المستخدمين",
+        "subtitle": "إدارة حسابات المستخدمين وتعيينات الأدوار"
+    },
+    "title": "المستخدمون",
+    "subtitle": "إدارة مستخدمي النظام",
+    "addUser": "إضافة مستخدم",
+    "table": {
+        "name": "الاسم",
+        "email": "البريد الإلكتروني",
+        "phone": "الهاتف",
+        "role": "الدور",
+        "status": "الحالة",
+        "lastLogin": "آخر تسجيل دخول",
+        "actions": "الإجراءات"
+    },
+    "form": {
+        "name": "الاسم الكامل",
+        "namePlaceholder": "أدخل الاسم الكامل",
+        "email": "البريد الإلكتروني",
+        "emailPlaceholder": "أدخل البريد الإلكتروني",
+        "phone": "رقم الهاتف",
+        "phonePlaceholder": "أدخل رقم الهاتف",
+        "role": "الدور",
+        "rolePlaceholder": "اختر الدور",
+        "password": "كلمة المرور",
+        "passwordPlaceholder": "أدخل كلمة المرور",
+        "confirmPassword": "تأكيد كلمة المرور",
+        "confirmPasswordPlaceholder": "أكد كلمة المرور"
+    },
+    "roles": {
+        "all": "جميع الأدوار",
+        "admin": "مدير",
+        "hospital": "موظف مستشفى",
+        "hospitalUser": "مستخدم مستشفى",
+        "ambulance": "سائق إسعاف",
+        "ambulanceUser": "مستخدم إسعاف",
+        "dispatcher": "منسق"
+    },
+    "row": {
+        "password": "كلمة المرور:",
+        "editTooltip": "تعديل المستخدم",
+        "deleteTooltip": "حذف المستخدم"
+    },
+    "filters": {
+        "searchPlaceholder": "البحث بالاسم أو البريد أو المعرّف"
+    },
+    "status": {
+        "active": "نشط",
+        "inactive": "غير نشط",
+        "suspended": "موقوف"
+    },
+    "empty": {
+        "title": "لم يتم العثور على مستخدمين",
+        "description": "ابدأ بإضافة مستخدم جديد."
+    }
+}

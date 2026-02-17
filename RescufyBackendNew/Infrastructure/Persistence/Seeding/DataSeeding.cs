@@ -9,7 +9,11 @@ namespace Persistence.Seeding
         ApplicationDbContext _context,
         IHostEnvironment _env,
         SuperAdminSeeder _superAdminSeeder,
-        RolesSeeder _rolesSeeder
+        RolesSeeder _rolesSeeder,
+        UsersSeeder _usersSeeder,
+        AmbulanceSeeder _ambulanceSeeder,
+        HospitalSeeder _hospitalSeeder,
+        RequestSeeder _requestSeeder
         ) : IDataSeeding
     {
         public void DataSeed()
@@ -20,6 +24,10 @@ namespace Persistence.Seeding
 
             _rolesSeeder.SeedAsync().GetAwaiter().GetResult();
             _superAdminSeeder.SeedAsync().GetAwaiter().GetResult();
+            _usersSeeder.SeedAsync().GetAwaiter().GetResult();
+            _ambulanceSeeder.SeedAsync().GetAwaiter().GetResult();
+            _hospitalSeeder.SeedAsync().GetAwaiter().GetResult();
+            _requestSeeder.SeedAsync().GetAwaiter().GetResult();
 
             _context.SaveChanges();
         }

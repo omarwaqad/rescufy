@@ -1,5 +1,5 @@
 import { createContext, useContext, type ReactNode, useState, useEffect } from "react";
-import type { JwtPayload, Role } from "../../features/auth/types/auth.types";
+import type { Role } from "../../features/auth/types/auth.types";
 
 /**
  * AuthUser

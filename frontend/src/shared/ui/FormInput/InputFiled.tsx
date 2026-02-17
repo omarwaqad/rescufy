@@ -1,4 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
 
 export default function InputFiled({
   label,
@@ -23,6 +25,10 @@ export default function InputFiled({
   onChange?: any;
   error?: string;
 }) {
+  const [showPassword, setShowPassword] = useState(false);
+  const isPasswordField = type === "password";
+  const inputType = isPasswordField ? (showPassword ? "text" : "password") : type;
+
   return (
     <div className=" text-sm mb-4">
       {/* Label */}
@@ -40,7 +46,7 @@ export default function InputFiled({
 
           {/* Input */}
           <input
-            type={type}
+            type={inputType}
             name={name}
             id={id}
             value={value}
@@ -48,7 +54,7 @@ export default function InputFiled({
             onChange={onChange}
             placeholder={placeholder}
             className="
-            w-full pl-11 pr-4 py-3 rounded-lg
+            w-full pl-11 pr-11 py-3 rounded-lg
             bg-gray-100 
             dark:bg-background-second
             text-gray-900 dark:text-gray-100
@@ -58,6 +64,20 @@ export default function InputFiled({
             focus:ring-gray-300/50 dark:focus:ring-gray-300/50
           "
           />
+
+          {/* Password Toggle Button */}
+          {isPasswordField && (
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-1/2 -translate-y-1/3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition"
+            >
+              <FontAwesomeIcon
+                icon={showPassword ? faEyeSlash : faEye}
+                className="w-4 h-4"
+              />
+            </button>
+          )}
           
         </div>
         

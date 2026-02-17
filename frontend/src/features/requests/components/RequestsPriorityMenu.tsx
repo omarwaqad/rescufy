@@ -1,20 +1,23 @@
 import SelectField from "@/shared/ui/SelectFiled";
+import { useTranslation } from "react-i18next";
 
 export default function RequestsPriorityMenu({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+  const { t } = useTranslation('requests');
+
   const AllPriorities = [
-    { label: "All priorities", value: "all" },
-    { label: "Critical", value: "critical" },
-    { label: "High", value: "high" },
-    { label: "Medium", value: "medium" },
-    { label: "Low", value: "low" },
+    { label: t('priority.all'), value: "all" },
+    { label: t('priority.critical'), value: "critical" },
+    { label: t('priority.high'), value: "high" },
+    { label: t('priority.medium'), value: "medium" },
+    { label: t('priority.low'), value: "low" },
   ];
 
-  
+
   return (
     <>
       <SelectField
         label=""
-        placeholder="All priorities"
+        placeholder={t('priority.all')}
         value={value}
         onChange={onChange}
         options={AllPriorities}

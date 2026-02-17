@@ -1,0 +1,22 @@
+{
+    "sidebar": {
+        "dashboard": "Dashboard",
+        "requests": "Requests",
+        "hospitals": "Hospitals",
+        "ambulances": "Ambulances",
+        "users": "Users",
+        "audit": "Audit",
+        "settings": "Settings"
+    },
+    "navbar": {
+        "search": "Search...",
+        "notifications": "Notifications",
+        "profile": "Profile",
+        "logout": "Logout",
+        "settings": "Settings"
+    },
+    "breadcrumbs": {
+        "home": "Home",
+        "dashboard": "Dashboard"
+    }
+}

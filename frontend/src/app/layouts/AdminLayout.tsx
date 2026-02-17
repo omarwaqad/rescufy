@@ -23,7 +23,7 @@ export default function AdminLayout() {
       <SideBar isOpen={sidebarOpen} onClose={closeSidebar} />
 
       {/* Main Content Wrapper */}
-      <div className="flex-1 flex flex-col min-w-0 md:ml-22">
+      <div className="flex-1 flex flex-col min-w-0 md:ltr:ml-22 md:rtl:mr-22">
         <AdminNavbar onMenuClick={toggleSidebar} />
 
         {/* Main Content with top padding for fixed navbar */}
@@ -34,3 +34,4 @@ export default function AdminLayout() {
     </div>
   );
 }
+

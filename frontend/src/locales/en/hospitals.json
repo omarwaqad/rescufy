@@ -1,0 +1,67 @@
+{
+    "pageHeader": {
+        "title": "Hospitals Management",
+        "subtitle": "Manage hospital information and bed availability"
+    },
+    "title": "Hospitals",
+    "subtitle": "Manage hospital information",
+    "addHospital": "Add Hospital",
+    "editHospital": "Edit Hospital",
+    "table": {
+        "name": "Hospital Name",
+        "address": "Address",
+        "phone": "Phone",
+        "email": "Email",
+        "capacity": "Capacity",
+        "status": "Status",
+        "actions": "Actions"
+    },
+    "form": {
+        "name": "Hospital Name",
+        "namePlaceholder": "Enter hospital name",
+        "address": "Address",
+        "addressPlaceholder": "Enter full address",
+        "phone": "Phone Number",
+        "phonePlaceholder": "+1 (555) 123-4567",
+        "email": "Email",
+        "emailPlaceholder": "hospital@example.com",
+        "capacity": "Bed Capacity",
+        "capacityPlaceholder": "Enter bed capacity",
+        "totalBeds": "Total Beds",
+        "usedBeds": "Used Beds",
+        "specialties": "Specialties",
+        "specialtiesPlaceholder": "Select specialties",
+        "emergencyServices": "Emergency Services",
+        "operatingHours": "Operating Hours"
+    },
+    "card": {
+        "capacity": "Capacity",
+        "used": "Used",
+        "free": "Free",
+        "usage": "Usage",
+        "call": "Call",
+        "editTooltip": "Edit hospital",
+        "deleteTooltip": "Delete hospital"
+    },
+    "status": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "full": "Full Capacity",
+        "normal": "Normal",
+        "busy": "Busy",
+        "critical": "Critical"
+    },
+    "filters": {
+        "allStates": "All States",
+        "searchPlaceholder": "Search hospitals by name, address, or ID"
+    },
+    "buttons": {
+        "cancel": "Cancel",
+        "add": "Add Hospital",
+        "update": "Update Hospital"
+    },
+    "empty": {
+        "title": "No hospitals found",
+        "description": "Start by adding a new hospital."
+    }
+}

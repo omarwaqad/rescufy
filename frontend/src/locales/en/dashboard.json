@@ -1,0 +1,44 @@
+{
+    "title": "Dashboard",
+    "welcome": "Welcome back, {{name}}!",
+    "overview": "Overview",
+    "stats": {
+        "totalRequests": "Total Requests",
+        "activeAmbulances": "Active Ambulances",
+        "totalHospitals": "Total Hospitals",
+        "totalUsers": "Total Users",
+        "pendingRequests": "Pending Requests",
+        "completedToday": "Completed Today",
+        "responseTime": "Avg. Response Time",
+        "successRate": "Success Rate",
+        "activeSessions": "Active Sessions",
+        "totalRevenue": "Total Revenue",
+        "pendingTasks": "Pending Tasks"
+    },
+    "charts": {
+        "requestsOverview": "Requests Overview",
+        "weeklyStats": "Weekly Statistics",
+        "monthlyTrends": "Monthly Trends",
+        "requestsByType": "Requests by Type",
+        "requestsByPriority": "Requests by Priority"
+    },
+    "recentActivity": {
+        "title": "Recent Activity",
+        "viewAll": "View All",
+        "noActivity": "No recent activity"
+    },
+    "recentRequests": {
+        "title": "Recent Requests",
+        "viewAll": "View All"
+    },
+    "criticalRequests": {
+        "title": "Critical Requests"
+    },
+    "quickActions": {
+        "title": "Quick Actions",
+        "newRequest": "New Request",
+        "addHospital": "Add Hospital",
+        "addAmbulance": "Add Ambulance",
+        "viewReports": "View Reports"
+    }
+}

@@ -3,8 +3,10 @@ import UsersRoles from "./UsersRoles";
 import { UserRow } from "./UserRow";
 import { UserFormModal } from "./UserFormModal";
 import { useUsers } from "../hooks/useUsers";
+import { useTranslation } from "react-i18next";
 
 export default function AllUsers() {
+  const { t } = useTranslation('users');
   const {
     users,
     search,
@@ -26,7 +28,7 @@ export default function AllUsers() {
         <SearchBar
           value={search}
           onSearchChange={setSearch}
-          placeholder="Search users by name, email, or ID"
+          placeholder={t('filters.searchPlaceholder')}
         >
           <UsersRoles value={roleId} onChange={setRoleId} />
         </SearchBar>
@@ -42,27 +44,27 @@ export default function AllUsers() {
           </div>
           <div className="w-48">
             <p className="text-xs font-semibold text-muted uppercase tracking-wider">
-              Name
+              {t('table.name')}
             </p>
           </div>
           <div className="w-85">
             <p className="text-xs font-semibold text-muted uppercase tracking-wider">
-              Email
+              {t('table.email')}
             </p>
           </div>
           <div className="w-30">
             <p className="text-xs font-semibold text-muted uppercase tracking-wider">
-              Password
+              {t('form.password')}
             </p>
           </div>
           <div className="w-40">
             <p className="text-xs font-semibold text-muted uppercase tracking-wider text-center">
-              Role
+              {t('table.role')}
             </p>
           </div>
-          <div className="w-20 text-right">
+          <div className="w-20 text-right rtl:text-left">
             <p className="text-xs font-semibold text-muted uppercase tracking-wider">
-              Actions
+              {t('table.actions')}
             </p>
           </div>
         </div>
@@ -79,7 +81,7 @@ export default function AllUsers() {
             ))
           ) : (
             <div className="flex items-center justify-center py-12">
-              <p className="text-muted text-sm">No users found</p>
+              <p className="text-muted text-sm">{t('empty.title')}</p>
             </div>
           )}
         </div>
@@ -87,7 +89,7 @@ export default function AllUsers() {
 
       <button
         onClick={openAddModal}
-        className="fixed bottom-8 right-8 w-14 h-14 rounded-full bg-primary text-white text-xl shadow-lg hover:shadow-xl hover:bg-primary/90 transition-all"
+        className="fixed bottom-8 right-8 rtl:right-auto rtl:left-8 w-14 h-14 rounded-full bg-primary text-white text-xl shadow-lg hover:shadow-xl hover:bg-primary/90 transition-all"
       >
         +
       </button>

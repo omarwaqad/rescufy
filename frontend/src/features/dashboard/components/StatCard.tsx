@@ -1,4 +1,5 @@
 import { type LucideIcon } from "lucide-react";
+import { useLanguage } from "@/i18n/useLanguage";
 
 interface StatCardProps {
   title: string;
@@ -25,6 +26,7 @@ export function StatCard({
   badge,
   chart,
 }: StatCardProps) {
+  const { isRTL } = useLanguage();
   const variantStyles = {
     default: {
       card: "bg-bg-card dark:bg-bg-card backdrop-blur-sm text-heading ",
@@ -70,6 +72,7 @@ export function StatCard({
       <div className="flex items-start justify-between mb-3">
         {/* Icon */}
         <div
+         
           className={`
             flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-lg md:rounded-xl
             ${styles.iconBg}
@@ -115,7 +118,18 @@ export function StatCard({
               height="12"
               viewBox="0 0 12 12"
               fill="none"
-              className={trend.isPositive ? "rotate-0" : "rotate-180"}
+              className={`
+                ${
+                  isRTL
+                    ? trend.isPositive
+                      ? "rotate-20"
+                      : "rotate-0"
+                    : trend.isPositive
+                      ? "rotate-200"
+                      : "rotate-180"
+                }
+              `}
+             
             >
               <path
                 d="M6 2L10 6L6 10M10 6H2"
