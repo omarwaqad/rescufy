@@ -5,8 +5,9 @@ import '../../domain/core/failures.dart';
 import '../../core/network/network_exceptions.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/repositories/auth_repository.dart';
-import '../datasources/auth_remote_datasource.dart';
+import '../datasources/remote/auth_remote_datasource.dart';
 import '../datasources/local/auth_local_datasource.dart';
+import '../models/user_model.dart'; // Import to access AdminLoginNotAllowedException
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
@@ -20,16 +21,23 @@ class AuthRepositoryImpl implements AuthRepository {
     required String password,
   }) async {
     try {
-      final user = await remoteDataSource.login(
+      final userModel = await remoteDataSource.login(
         email: email,
         password: password,
       );
 
-      if (user.token != null) {
-        await localDataSource.saveToken(user.token!);
+      // Save token and user data
+      if (userModel.token != null) {
+        await localDataSource.saveToken(userModel.token!);
+        await localDataSource.saveUser(
+          userModel,
+        ); // Fixed: was using undefined 'userModel'
       }
 
-      return Right(user);
+      return Right(userModel);
+    } on AdminLoginNotAllowedException catch (e) {
+      // Handle admin blocking specifically
+      return Left(AdminLoginFailure(e.message));
     } on DioException catch (e) {
       return Left(NetworkExceptions.handleDioException(e));
     } catch (e) {
@@ -48,7 +56,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String gender,
   }) async {
     try {
-      final user = await remoteDataSource.register(
+      final userModel = await remoteDataSource.register(
         fullName: fullName,
         email: email,
         password: password,
@@ -58,11 +66,16 @@ class AuthRepositoryImpl implements AuthRepository {
         gender: gender,
       );
 
-      if (user.token != null) {
-        await localDataSource.saveToken(user.token!);
+      // Save token and user data
+      if (userModel.token != null) {
+        await localDataSource.saveToken(userModel.token!);
+        await localDataSource.saveUser(userModel);
       }
 
-      return Right(user);
+      return Right(userModel);
+    } on AdminLoginNotAllowedException catch (e) {
+      // Also block admin registration from mobile
+      return Left(AdminLoginFailure(e.message));
     } on DioException catch (e) {
       return Left(NetworkExceptions.handleDioException(e));
     } catch (e) {
@@ -75,6 +88,7 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       await remoteDataSource.logout();
       await localDataSource.deleteToken();
+      await localDataSource.deleteUser(); // Also clear user data
       return const Right(null);
     } on DioException catch (e) {
       return Left(NetworkExceptions.handleDioException(e));
@@ -83,7 +97,6 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
-  // ✅ NEW: Forgot Password
   @override
   Future<Either<Failure, String>> forgotPassword({
     required String email,
@@ -98,7 +111,6 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
-  // ✅ NEW: Verify OTP
   @override
   Future<Either<Failure, void>> verifyResetPasswordOtp({
     required String email,
@@ -114,7 +126,6 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
-  // ✅ NEW: Reset Password
   @override
   Future<Either<Failure, void>> resetPassword({
     required String email,

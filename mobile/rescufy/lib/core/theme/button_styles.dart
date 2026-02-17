@@ -1,7 +1,7 @@
 // lib/core/theme/button_styles.dart
 import 'package:flutter/material.dart';
 import 'colors.dart';
-import 'text_styles.dart';
+import 'app_text_styles.dart';
 
 class AppButtonStyles {
   // Primary Button (Emergency Red)
@@ -29,11 +29,11 @@ class AppButtonStyles {
   // Secondary Button (Outlined)
   static ButtonStyle get secondary => OutlinedButton.styleFrom(
     foregroundColor: AppColors.primary,
-    side: BorderSide(color: AppColors.primary, width: 2),
+    side: const BorderSide(color: AppColors.primary, width: 2),
     minimumSize: const Size(double.infinity, 56),
     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-    textStyle: AppTextStyles.buttonLarge.copyWith(color: AppColors.primary),
+    textStyle: AppTextStyles.buttonLarge,
   );
 
   // Emergency Button (Prominent)
@@ -56,7 +56,7 @@ class AppButtonStyles {
   static ButtonStyle get text => TextButton.styleFrom(
     foregroundColor: AppColors.primary,
     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-    textStyle: AppTextStyles.labelLarge.copyWith(color: AppColors.primary),
+    textStyle: AppTextStyles.buttonMedium,
   );
 
   // Icon Button
