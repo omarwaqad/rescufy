@@ -10,11 +10,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   StreamSubscription? _localeSubscription;
 
   ProfileCubit(this._localeCubit) : super(const ProfileState()) {
-    // Listen to locale changes
-    _localeSubscription = _localeCubit.stream.listen((localeState) {
-      _updateLanguage();
-    });
-    // Set initial language
+    _localeSubscription = _localeCubit.stream.listen((_) => _updateLanguage());
     _updateLanguage();
   }
 
@@ -32,20 +28,16 @@ class ProfileCubit extends Cubit<ProfileState> {
   void _loadProfileData() {
     emit(
       ProfileState(
-        // Basic Info
         fullName: 'Sara John',
         email: 'sara.john@email.com',
         phone: '+1 (555) 123-4567',
         profileImageUrl: null,
-        currentLanguage: _localeCubit.currentLanguageName, // ← GET FROM CUBIT
-        // Medical Stats
+        currentLanguage: _localeCubit.currentLanguageName,
         bloodType: 'O+',
         heightCm: 170,
         weightKg: 65,
         pregnancyStatus: 'Not Pregnant',
         medicalNotes: 'Regular checkups needed',
-
-        // Medications
         medications: [
           {
             'name': 'Albuterol Inhaler',
@@ -54,8 +46,6 @@ class ProfileCubit extends Cubit<ProfileState> {
           },
           {'name': 'Vitamin D', 'dosage': '1000 IU', 'frequency': 'Daily'},
         ],
-
-        // Allergies
         allergies: [
           {
             'name': 'Penicillin',
@@ -68,13 +58,9 @@ class ProfileCubit extends Cubit<ProfileState> {
             'notes': 'Hives and swelling',
           },
         ],
-
-        // Chronic Diseases
         chronicDiseases: [
           {'name': 'Asthma', 'severity': 'Moderate', 'diagnosed_year': '2015'},
         ],
-
-        // Past Surgeries
         pastSurgeries: [
           {
             'name': 'Appendectomy',
@@ -82,8 +68,6 @@ class ProfileCubit extends Cubit<ProfileState> {
             'notes': 'Routine procedure, no complications',
           },
         ],
-
-        // Emergency Contacts
         emergencyContacts: [
           {
             'name': 'John Doe',
@@ -100,6 +84,237 @@ class ProfileCubit extends Cubit<ProfileState> {
     );
   }
 
+  // ─────────────────────────────────────────────
+  // MEDICAL INFO (pregnancyStatus + medicalNotes)
+  // ─────────────────────────────────────────────
+  void updateMedicalInfo({
+    required String pregnancyStatus,
+    required String medicalNotes,
+  }) {
+    emit(
+      state.copyWith(
+        pregnancyStatus: pregnancyStatus,
+        medicalNotes: medicalNotes,
+        updateSuccess: 'Medical information updated',
+        clearUpdateError: true,
+      ),
+    );
+    _clearFeedback();
+  }
+
+  // ─────────────────────────────────────────────
+  // MEDICATIONS
+  // ─────────────────────────────────────────────
+  void addMedication(Map<String, String> medication) {
+    final updated = List<Map<String, String>>.from(state.medications)
+      ..add(medication);
+    emit(
+      state.copyWith(
+        medications: updated,
+        updateSuccess: 'Medication added',
+        clearUpdateError: true,
+      ),
+    );
+    _clearFeedback();
+  }
+
+  void updateMedication(int index, Map<String, String> medication) {
+    final updated = List<Map<String, String>>.from(state.medications);
+    updated[index] = medication;
+    emit(
+      state.copyWith(
+        medications: updated,
+        updateSuccess: 'Medication updated',
+        clearUpdateError: true,
+      ),
+    );
+    _clearFeedback();
+  }
+
+  void deleteMedication(int index) {
+    final updated = List<Map<String, String>>.from(state.medications)
+      ..removeAt(index);
+    emit(
+      state.copyWith(
+        medications: updated,
+        updateSuccess: 'Medication removed',
+        clearUpdateError: true,
+      ),
+    );
+    _clearFeedback();
+  }
+
+  // ─────────────────────────────────────────────
+  // ALLERGIES
+  // ─────────────────────────────────────────────
+  void addAllergy(Map<String, String> allergy) {
+    final updated = List<Map<String, String>>.from(state.allergies)
+      ..add(allergy);
+    emit(
+      state.copyWith(
+        allergies: updated,
+        updateSuccess: 'Allergy added',
+        clearUpdateError: true,
+      ),
+    );
+    _clearFeedback();
+  }
+
+  void updateAllergy(int index, Map<String, String> allergy) {
+    final updated = List<Map<String, String>>.from(state.allergies);
+    updated[index] = allergy;
+    emit(
+      state.copyWith(
+        allergies: updated,
+        updateSuccess: 'Allergy updated',
+        clearUpdateError: true,
+      ),
+    );
+    _clearFeedback();
+  }
+
+  void deleteAllergy(int index) {
+    final updated = List<Map<String, String>>.from(state.allergies)
+      ..removeAt(index);
+    emit(
+      state.copyWith(
+        allergies: updated,
+        updateSuccess: 'Allergy removed',
+        clearUpdateError: true,
+      ),
+    );
+    _clearFeedback();
+  }
+
+  // ─────────────────────────────────────────────
+  // CHRONIC DISEASES
+  // ─────────────────────────────────────────────
+  void addDisease(Map<String, String> disease) {
+    final updated = List<Map<String, String>>.from(state.chronicDiseases)
+      ..add(disease);
+    emit(
+      state.copyWith(
+        chronicDiseases: updated,
+        updateSuccess: 'Disease added',
+        clearUpdateError: true,
+      ),
+    );
+    _clearFeedback();
+  }
+
+  void updateDisease(int index, Map<String, String> disease) {
+    final updated = List<Map<String, String>>.from(state.chronicDiseases);
+    updated[index] = disease;
+    emit(
+      state.copyWith(
+        chronicDiseases: updated,
+        updateSuccess: 'Disease updated',
+        clearUpdateError: true,
+      ),
+    );
+    _clearFeedback();
+  }
+
+  void deleteDisease(int index) {
+    final updated = List<Map<String, String>>.from(state.chronicDiseases)
+      ..removeAt(index);
+    emit(
+      state.copyWith(
+        chronicDiseases: updated,
+        updateSuccess: 'Disease removed',
+        clearUpdateError: true,
+      ),
+    );
+    _clearFeedback();
+  }
+
+  // ─────────────────────────────────────────────
+  // PAST SURGERIES
+  // ─────────────────────────────────────────────
+  void addSurgery(Map<String, String> surgery) {
+    final updated = List<Map<String, String>>.from(state.pastSurgeries)
+      ..add(surgery);
+    emit(
+      state.copyWith(
+        pastSurgeries: updated,
+        updateSuccess: 'Surgery added',
+        clearUpdateError: true,
+      ),
+    );
+    _clearFeedback();
+  }
+
+  void updateSurgery(int index, Map<String, String> surgery) {
+    final updated = List<Map<String, String>>.from(state.pastSurgeries);
+    updated[index] = surgery;
+    emit(
+      state.copyWith(
+        pastSurgeries: updated,
+        updateSuccess: 'Surgery updated',
+        clearUpdateError: true,
+      ),
+    );
+    _clearFeedback();
+  }
+
+  void deleteSurgery(int index) {
+    final updated = List<Map<String, String>>.from(state.pastSurgeries)
+      ..removeAt(index);
+    emit(
+      state.copyWith(
+        pastSurgeries: updated,
+        updateSuccess: 'Surgery removed',
+        clearUpdateError: true,
+      ),
+    );
+    _clearFeedback();
+  }
+
+  // ─────────────────────────────────────────────
+  // EMERGENCY CONTACTS
+  // ─────────────────────────────────────────────
+  void addContact(Map<String, String> contact) {
+    final updated = List<Map<String, String>>.from(state.emergencyContacts)
+      ..add(contact);
+    emit(
+      state.copyWith(
+        emergencyContacts: updated,
+        updateSuccess: 'Contact added',
+        clearUpdateError: true,
+      ),
+    );
+    _clearFeedback();
+  }
+
+  void updateContact(int index, Map<String, String> contact) {
+    final updated = List<Map<String, String>>.from(state.emergencyContacts);
+    updated[index] = contact;
+    emit(
+      state.copyWith(
+        emergencyContacts: updated,
+        updateSuccess: 'Contact updated',
+        clearUpdateError: true,
+      ),
+    );
+    _clearFeedback();
+  }
+
+  void deleteContact(int index) {
+    final updated = List<Map<String, String>>.from(state.emergencyContacts)
+      ..removeAt(index);
+    emit(
+      state.copyWith(
+        emergencyContacts: updated,
+        updateSuccess: 'Contact removed',
+        clearUpdateError: true,
+      ),
+    );
+    _clearFeedback();
+  }
+
+  // ─────────────────────────────────────────────
+  // NAVIGATION / MISC
+  // ─────────────────────────────────────────────
   void navigateToEditProfile() {
     if (_context == null) return;
     ScaffoldMessenger.of(
@@ -107,32 +322,14 @@ class ProfileCubit extends Cubit<ProfileState> {
     ).showSnackBar(const SnackBar(content: Text('Edit Profile - Coming Soon')));
   }
 
-  void navigateToEditMedicalInfo() {
-    if (_context == null) return;
-    ScaffoldMessenger.of(_context!).showSnackBar(
-      const SnackBar(content: Text('Edit Medical Info - Coming Soon')),
-    );
-  }
-
-  void navigateToNotifications() {
-    if (_context == null) return;
-    // TODO: Navigate to notifications settings
-  }
-
+  void navigateToNotifications() {}
   void navigateToLanguage() {
     if (_context == null) return;
     Navigator.of(_context!).pushNamed('/language');
   }
 
-  void navigateToPrivacy() {
-    if (_context == null) return;
-    // TODO: Navigate to privacy settings
-  }
-
-  void navigateToHelp() {
-    if (_context == null) return;
-    // TODO: Navigate to help screen
-  }
+  void navigateToPrivacy() {}
+  void navigateToHelp() {}
 
   void callEmergencyContact(String phone) {
     if (_context == null) return;
@@ -143,7 +340,6 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   void showLogoutDialog() {
     if (_context == null) return;
-
     showDialog(
       context: _context!,
       builder: (context) => AlertDialog(
@@ -157,7 +353,7 @@ class ProfileCubit extends Cubit<ProfileState> {
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
-              _performLogout();
+              Navigator.of(_context!).pushReplacementNamed('/login');
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             child: const Text('Logout'),
@@ -167,9 +363,12 @@ class ProfileCubit extends Cubit<ProfileState> {
     );
   }
 
-  void _performLogout() {
-    if (_context == null) return;
-    Navigator.of(_context!).pushReplacementNamed('/login');
+  void _clearFeedback() {
+    Future.delayed(const Duration(seconds: 3), () {
+      if (!isClosed) {
+        emit(state.copyWith(clearUpdateSuccess: true, clearUpdateError: true));
+      }
+    });
   }
 
   @override

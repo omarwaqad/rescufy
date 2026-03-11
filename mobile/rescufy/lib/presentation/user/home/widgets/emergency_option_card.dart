@@ -37,13 +37,6 @@ class EmergencyOptionCard extends StatelessWidget {
               color: color.withOpacity(isDark ? 0.3 : 0.15),
               width: 1.5,
             ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 20,
-                offset: const Offset(0, 4),
-              ),
-            ],
           ),
           child: Row(
             children: [

@@ -1,5 +1,4 @@
-// lib/presentation/features/profile/widgets/medical_info_card.dart
-// ============================================
+// lib/presentation/user/profile/widgets/medical_info_card.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -46,6 +45,7 @@ class MedicalInfoCard extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.edit),
                   onPressed: onEditPressed,
+                  tooltip: 'Edit medical info',
                 ),
               ],
             ),

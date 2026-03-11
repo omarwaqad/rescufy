@@ -40,7 +40,7 @@ class HomeScreen extends StatelessWidget {
           children: [
             // User Greeting
             Text(
-              l10n.helloUser('Sara'),
+              l10n.helloUser('Omar'),
               style: textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.w700,
               ),

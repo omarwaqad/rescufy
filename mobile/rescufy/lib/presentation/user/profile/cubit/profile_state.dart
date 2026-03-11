@@ -7,7 +7,7 @@ class ProfileState extends Equatable {
   final String email;
   final String phone;
   final String? profileImageUrl;
-  final String currentLanguage; // ← ADD THIS
+  final String currentLanguage;
 
   // Medical Stats
   final String bloodType;
@@ -16,19 +16,24 @@ class ProfileState extends Equatable {
   final String pregnancyStatus;
   final String medicalNotes;
 
-  // Medical Details (Lists of Maps for flexibility)
+  // Medical Details
   final List<Map<String, String>> medications;
   final List<Map<String, String>> allergies;
   final List<Map<String, String>> chronicDiseases;
   final List<Map<String, String>> pastSurgeries;
   final List<Map<String, String>> emergencyContacts;
 
+  // Edit/Update state
+  final bool isUpdating;
+  final String? updateError;
+  final String? updateSuccess;
+
   const ProfileState({
     this.fullName = '',
     this.email = '',
     this.phone = '',
     this.profileImageUrl,
-    this.currentLanguage = 'English', // ← ADD THIS
+    this.currentLanguage = 'English',
     this.bloodType = '',
     this.heightCm = 0,
     this.weightKg = 0,
@@ -39,6 +44,9 @@ class ProfileState extends Equatable {
     this.chronicDiseases = const [],
     this.pastSurgeries = const [],
     this.emergencyContacts = const [],
+    this.isUpdating = false,
+    this.updateError,
+    this.updateSuccess,
   });
 
   @override
@@ -47,7 +55,7 @@ class ProfileState extends Equatable {
     email,
     phone,
     profileImageUrl,
-    currentLanguage, // ← ADD THIS
+    currentLanguage,
     bloodType,
     heightCm,
     weightKg,
@@ -58,8 +66,11 @@ class ProfileState extends Equatable {
     chronicDiseases,
     pastSurgeries,
     emergencyContacts,
+    isUpdating,
+    updateError,
+    updateSuccess,
   ];
-  // Add this method to ProfileState class
+
   ProfileState copyWith({
     String? fullName,
     String? email,
@@ -76,6 +87,11 @@ class ProfileState extends Equatable {
     List<Map<String, String>>? chronicDiseases,
     List<Map<String, String>>? pastSurgeries,
     List<Map<String, String>>? emergencyContacts,
+    bool? isUpdating,
+    String? updateError,
+    String? updateSuccess,
+    bool clearUpdateError = false,
+    bool clearUpdateSuccess = false,
   }) {
     return ProfileState(
       fullName: fullName ?? this.fullName,
@@ -93,6 +109,11 @@ class ProfileState extends Equatable {
       chronicDiseases: chronicDiseases ?? this.chronicDiseases,
       pastSurgeries: pastSurgeries ?? this.pastSurgeries,
       emergencyContacts: emergencyContacts ?? this.emergencyContacts,
+      isUpdating: isUpdating ?? this.isUpdating,
+      updateError: clearUpdateError ? null : (updateError ?? this.updateError),
+      updateSuccess: clearUpdateSuccess
+          ? null
+          : (updateSuccess ?? this.updateSuccess),
     );
   }
 }

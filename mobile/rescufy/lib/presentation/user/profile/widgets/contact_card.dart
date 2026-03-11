@@ -1,16 +1,19 @@
-// lib/presentation/features/profile/widgets/contact_card.dart
-
+// lib/presentation/user/profile/widgets/contact_card.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ContactCard extends StatelessWidget {
   final Map<String, String> contact;
   final VoidCallback onCallPressed;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
 
   const ContactCard({
     super.key,
     required this.contact,
     required this.onCallPressed,
+    this.onEdit,
+    this.onDelete,
   });
 
   @override
@@ -63,7 +66,34 @@ class ContactCard extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.phone, color: Colors.red),
             onPressed: onCallPressed,
+            tooltip: 'Call',
           ),
+          if (onEdit != null)
+            InkWell(
+              onTap: onEdit,
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: EdgeInsets.all(4.w),
+                child: Icon(
+                  Icons.edit_outlined,
+                  size: 18.sp,
+                  color: Colors.grey.shade500,
+                ),
+              ),
+            ),
+          if (onDelete != null)
+            InkWell(
+              onTap: onDelete,
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: EdgeInsets.all(4.w),
+                child: Icon(
+                  Icons.delete_outline,
+                  size: 18.sp,
+                  color: Colors.red.shade300,
+                ),
+              ),
+            ),
         ],
       ),
     );
