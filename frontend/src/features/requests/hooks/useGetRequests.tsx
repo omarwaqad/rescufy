@@ -6,6 +6,7 @@ import { getApiUrl, API_CONFIG } from "@/config/api.config";
 import type { Request, ApiRequest } from "../types/request.types";
 import { REQUEST_STATUS_MAP } from "../types/request.types";
 import { useLanguage } from "@/i18n/useLanguage";
+import { getAuthToken } from "@/features/auth/utils/auth.utils";
 
 /** Query-parameter filters matching GET /api/Request */
 export interface RequestFilters {
@@ -49,7 +50,7 @@ export function useGetRequests() {
     const toastPosition = isRTL ? "top-left" : "top-right";
 
     try {
-      const token = localStorage.getItem("auth_token");
+      const token = getAuthToken();
 
       if (!token) {
         toast.error(t("auth:signIn.tokenNotFound"), {

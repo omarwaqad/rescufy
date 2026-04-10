@@ -23,3 +23,8 @@ ZNotes.md
 *.njsproj
 *.sln
 *.sw?
+
+#docs
+AUTH_CONTEXT_GUIDE.md
+AUTH_CONTEXT_API.md
+TOKEN_LOCALSTORAGE_USAGE.md

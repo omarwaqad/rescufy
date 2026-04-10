@@ -295,10 +295,10 @@ export function ProtectedAction() {
 
 ## Token Storage
 
-Tokens are stored in `localStorage`:
+Authentication data is stored as follows:
 
-- **auth_token**: The JWT token
-- **auth_user**: The decoded user data (JSON stringified)
+- **auth_token**: The JWT token (cookie)
+- **auth_user**: The decoded user data (localStorage, JSON stringified)
 
 To access the token in API calls:
 
@@ -340,10 +340,10 @@ Make sure `AuthProvider` wraps your entire app in `App.tsx`.
 
 ### User data not persisting after refresh
 
-The data is auto-restored from localStorage. If it's not working:
+The data is restored from cookie + localStorage. If it's not working:
 
 1. Check if the token is valid in browser DevTools
-2. Clear localStorage and login again
+2. Clear auth cookie/localStorage and login again
 3. Check browser console for errors
 
 ### Role-based access not working
@@ -365,7 +365,7 @@ user?.Role === "Admin"
 1. **Always check `isLoading`** before rendering protected content
 2. **Use `useAuthUser()`** for quick field access
 3. **Use `isAuthenticated`** for conditional rendering
-4. **Store token in localStorage** with `"auth_token"` key
+4. **Store token in cookies** with `"auth_token"` key
 5. **Use Context API** instead of Redux for auth state
 6. **Call `logout()`** to clear all auth data
 

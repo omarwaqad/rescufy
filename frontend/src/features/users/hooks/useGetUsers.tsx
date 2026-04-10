@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { getApiUrl, API_CONFIG } from "@/config/api.config";
 import type { User } from "../types/users.types";
 import { useLanguage } from "@/i18n/useLanguage";
+import { getAuthToken } from "@/features/auth/utils/auth.utils";
 
 /**
  * Hook for fetching users with optional role filtering
@@ -21,7 +22,7 @@ export function useGetUsers() {
     const toastPosition = isRTL ? "top-left" : "top-right";
 
     try {
-      const token = localStorage.getItem("auth_token");
+      const token = getAuthToken();
 
       if (!token) {
         toast.error(t("auth:signIn.tokenNotFound"), {
