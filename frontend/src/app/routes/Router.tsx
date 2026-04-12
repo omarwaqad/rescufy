@@ -9,7 +9,6 @@ import HospitalProfile from "@/features/hospitals_management/pages/HospitalProfi
 import Users from "@/features/users/pages/Users";
 import AdminLayout from "@/app/layouts/AdminLayout";
 import SignIn from "@/features/auth/pages/SignIn";
-import SignUp from "@/features/auth/pages/SignUp";
 import ForgotPassword from "@/features/auth/pages/ForgotPassword";
 import ResetPassword from "@/features/auth/pages/ResetPassword";
 import Settings from "@/features/settings/pages/Settings";
@@ -66,10 +65,7 @@ const router = createBrowserRouter([
       </AuthRoute>
     ),
   },
-  {
-    path: "/signup",
-    element: <SignUp />,
-  },
+  
   {
     path: "/forgot-password",
     element: <ForgotPassword />,

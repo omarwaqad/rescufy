@@ -23,7 +23,7 @@ export default function RecentRequests() {
               id={"REQ-2025-001"}
               userName="khaled mahmoud"
               userPhone="+966501234567"
-              location="King Fahd Road, Riyadh"
+              address="King Fahd Road, Riyadh"
               priority="critical"
               status="pending"
               timestamp="2 mins ago"
@@ -33,7 +33,7 @@ export default function RecentRequests() {
               id={"REQ-2025-001"}
               userName="khale ahmed"
               userPhone="+966501234567"
-              location="King Fahd Road, Riyadh"
+              address="King Fahd Road, Riyadh"
               priority="high"
               status="enRoute"
               timestamp="2 mins ago"
@@ -43,7 +43,7 @@ export default function RecentRequests() {
               id={"REQ-2025-001"}
               userName="khale ahmed"
               userPhone="+966501234567"
-              location="King Fahd Road, Riyadh"
+              address="King Fahd Road, Riyadh"
               priority="medium"
               status="pending"
               timestamp="2 mins ago"
@@ -53,7 +53,7 @@ export default function RecentRequests() {
               id={"REQ-2025-001"}
               userName="mohamed ahmed"
               userPhone="+966501234567"
-              location="King Fahd Road, Riyadh"
+              address="King Fahd Road, Riyadh"
               priority="low"
               status="completed"
               timestamp="2 mins ago"

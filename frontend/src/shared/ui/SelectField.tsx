@@ -31,18 +31,15 @@ export default function SelectField({
   onChange,
   options,
 }: SelectFieldProps) {
-  return (
-    <div className="text-sm ">
-      <label className=" font-medium text-gray-600 block">{label}</label>
+  const { isRTL } = useLanguage();
+  const direction = isRTL ? "rtl" : "ltr";
 
-      <Select
-        dir="auto"
-        value={value}
-        onValueChange={(value) => {
-          onChange(value);
-        }}
-      >
-        <SelectTrigger className="w-full   rounded-md bg-background-second  data-placeholder:text-gray-700   border-gray-200  dark:border-gray-800   dark:text-white  transition">
+  return (
+    <div className="text-sm">
+      <label className="font-medium text-gray-600 block">{label}</label>
+
+      <Select dir={direction} value={value} onValueChange={onChange}>
+        <SelectTrigger className="w-full rounded-md bg-background-second data-placeholder:text-gray-700 border-gray-200 dark:border-gray-800 dark:text-white transition">
           <div className="flex items-center gap-3">
             {icon && <FontAwesomeIcon icon={icon} className="text-gray-400" />}
             <SelectValue
@@ -52,10 +49,10 @@ export default function SelectField({
           </div>
         </SelectTrigger>
 
-        <SelectContent dir="auto" className=" bg-background-second">
+        <SelectContent dir={direction} className="bg-background-second">
           {options.map((option) => (
             <SelectItem
-              dir="auto"
+              dir={direction}
               className="text-heading focus:bg-blue-100 dark:hover:bg-gray-500 dark:text-white"
               key={option.value}
               value={option.value}

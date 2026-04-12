@@ -38,7 +38,6 @@ import arAmbulances from "../locales/ar/ambulances.json";
 import arUsers from "../locales/ar/users.json";
 import arValidation from "../locales/ar/validation.json";
 import arSettings from "../locales/ar/settings.json";
-import { set } from "zod";
 
 // Resources object containing all translations
 const resources = {

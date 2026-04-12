@@ -4,10 +4,10 @@ import {
   faTrash,
   faLocationDot,
   faPhone,
-  faBed,
 } from "@fortawesome/free-solid-svg-icons";
 import { faHospital } from "@fortawesome/free-regular-svg-icons";
 import { useTranslation } from "react-i18next";
+import { motion, useReducedMotion } from "framer-motion";
 
 interface HospitalCardProps {
   id: string;
@@ -35,6 +35,7 @@ export function HospitalCard({
   onDelete,
 }: HospitalCardProps) {
   const { t } = useTranslation('hospitals');
+  const shouldReduceMotion = useReducedMotion();
   const usedBeds = bedCapacity - availableBeds;
   const percent = bedCapacity > 0 ? Math.round((usedBeds / bedCapacity) * 100) : 0;
 
@@ -46,6 +47,7 @@ export function HospitalCard({
     return "NORMAL" as const;
   };
   const status = getStatus();
+  const isEmergency = status === "CRITICAL" || status === "FULL";
 
   const statusColor: Record<typeof status, string> = {
     NORMAL: "text-emerald-600 dark:text-emerald-400",
@@ -83,36 +85,50 @@ export function HospitalCard({
   };
 
   return (
-    <div
+    <motion.article
       className="
       group
+      relative
+      overflow-hidden
       w-full
       rounded-xl
       bg-bg-card
+      border border-border/60
       
       p-4
-      shadow-sm
-      hover:shadow-md
-      dark:hover:shadow-lg
+      shadow-none
       transition-all
       duration-300
       ease-out
     "
+      initial={shouldReduceMotion ? undefined : { opacity: 0, y: 14, scale: 0.985 }}
+      whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] as const }}
+      whileHover={shouldReduceMotion ? undefined : { y: -6, scale: 1.01 }}
     >
       {/* Header with status badge */}
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10 dark:bg-primary/20 text-primary shrink-0 text-sm">
+            <motion.div
+              className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10 dark:bg-primary/20 text-primary shrink-0 text-sm"
+              animate={
+                isEmergency && !shouldReduceMotion
+                  ? { rotate: [0, -8, 8, -6, 0], scale: [1, 1.06, 1] }
+                  : undefined
+              }
+              transition={{ duration: 1.8, repeat: Infinity, ease: [0.42, 0, 0.58, 1] as const }}
+            >
               <FontAwesomeIcon icon={faHospital} />
-            </div>
+            </motion.div>
 
             <div className="flex-1 min-w-0 ">
               <div className="flex items-center gap-2 mb-1">
                 <h3 className="text-sm font-bold text-neutral-900 dark:text-neutral-100 truncate">
                   {name}
                 </h3>
-                <span
+                <motion.span
                   className={`
                 inline-flex
                 px-1 py-0.5
@@ -123,9 +139,15 @@ export function HospitalCard({
                 ${statusColor[status]}
                 mt-1
               `}
+                  animate={
+                    isEmergency && !shouldReduceMotion
+                      ? { scale: [1, 1.08, 1], opacity: [0.85, 1, 0.85] }
+                      : undefined
+                  }
+                  transition={{ duration: 1.5, repeat: Infinity, ease: [0.42, 0, 0.58, 1] as const }}
                 >
                   {statusLabels[status]}
-                </span>
+                </motion.span>
               </div>
 
               <div className="flex items-center gap-2 mt-0.5 text-xs text-neutral-600 dark:text-neutral-400">
@@ -198,9 +220,18 @@ export function HospitalCard({
 
         {/* Animated progress bar */}
         <div className="h-2 rounded-full bg-neutral-200 dark:bg-neutral-700 overflow-hidden">
-          <div
+          <motion.div
             className={`h-full bg-linear-to-r ${barColor[status]} transition-all duration-500 ease-out`}
-            style={{ width: `${percent}%` }}
+            style={{ width: `${percent}%`, transformOrigin: "0% 50%" }}
+            initial={shouldReduceMotion ? undefined : { scaleX: 0 }}
+            whileInView={shouldReduceMotion ? undefined : { scaleX: 1 }}
+            viewport={{ once: true, amount: 0.8 }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] as const }}
+            animate={
+              isEmergency && !shouldReduceMotion
+                ? { opacity: [0.8, 1, 0.8] }
+                : undefined
+            }
           />
         </div>
 
@@ -250,7 +281,7 @@ export function HospitalCard({
       </div>
 
       {/* Call button */}
-      <button
+      <motion.button
         onClick={onCall}
         className="
           w-full
@@ -275,10 +306,18 @@ export function HospitalCard({
           active:scale-95
           cursor-pointer
         "
+        whileHover={
+          shouldReduceMotion
+            ? undefined
+            : isEmergency
+              ? { scale: 1.02, y: -1 }
+              : { scale: 1.01 }
+        }
+        whileTap={shouldReduceMotion ? undefined : { scale: 0.97 }}
       >
         <FontAwesomeIcon icon={faPhone} className="text-xs" />
         <span>{t('card.call')}</span>
-      </button>
-    </div>
+      </motion.button>
+    </motion.article>
   );
 }

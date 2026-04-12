@@ -27,8 +27,8 @@ export function UserRow({
   email,
   password,
   role,
-  phoneNumber,
-  isBanned,
+  phoneNumber: _phoneNumber,
+  isBanned: _isBanned,
   onEdit,
   onDelete,
 }: UserRowProps) {
