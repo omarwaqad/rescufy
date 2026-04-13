@@ -46,7 +46,7 @@ export default function NotificationPanel({
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -8, scale: 0.98 }}
           transition={{ duration: 0.18 }}
-          className="absolute top-12 rtl:left-0 ltr:right-0 z-50 w-[22.5rem] max-w-[92vw] overflow-hidden rounded-2xl border border-border bg-bg-card shadow-2xl"
+          className="absolute top-12 rtl:left-0 ltr:right-0 z-50 w-90 max-w-[92vw] overflow-hidden rounded-2xl border border-border bg-bg-card shadow-2xl"
         >
           <div className="border-b border-border bg-linear-to-br from-primary/15 via-primary/5 to-transparent px-4 py-3">
             <div className="flex items-start justify-between gap-3">
@@ -70,7 +70,7 @@ export default function NotificationPanel({
             />
           </div>
 
-          <div className="max-h-[24rem] space-y-2 overflow-y-auto p-3">
+          <div className="max-h-96 space-y-2 overflow-y-auto p-3">
             {notifications.length === 0 ? (
               <NotificationEmptyState isCriticalView={activeFilter === "critical"} />
             ) : (
