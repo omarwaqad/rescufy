@@ -1,6 +1,8 @@
 <div align="center">
-<img src="assets/Rescufy-Logo.svg" alt="Rescufy Logo" width="280" />
+<img src="assets/Rescufy-Logo.png" alt="Rescufy Logo" width="100" />
   
+### *RESCUFY*
+
 ### *AI-Powered Emergency Intelligence & Response Platform*
 
 <p>
