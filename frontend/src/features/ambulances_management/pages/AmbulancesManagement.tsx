@@ -1,6 +1,7 @@
 import AllAmbulances from "../components/AllAmbulances";
 import { useTranslation } from "react-i18next";
 
+
 export default function AmbulancesManagement() {
   const { t } = useTranslation('ambulances');
 
