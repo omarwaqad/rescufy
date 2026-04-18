@@ -27,27 +27,27 @@ const SEVERITY_THEME: Record<
 > = {
   critical: {
     accent: "bg-red-500",
-    badge: "bg-red-500/18 text-red-300 border-red-500/45",
-    waiting: "text-red-300",
-    row: "hover:bg-red-500/8",
+    badge: "border-red-300 bg-red-100 text-red-700 dark:border-red-500/45 dark:bg-red-500/18 dark:text-red-300",
+    waiting: "text-red-700 dark:text-red-300",
+    row: "hover:bg-red-100/80 dark:hover:bg-red-500/8",
   },
   high: {
     accent: "bg-orange-500",
-    badge: "bg-orange-500/18 text-orange-300 border-orange-500/40",
-    waiting: "text-orange-300",
-    row: "hover:bg-orange-500/8",
+    badge: "border-orange-300 bg-orange-100 text-orange-700 dark:border-orange-500/40 dark:bg-orange-500/18 dark:text-orange-300",
+    waiting: "text-orange-700 dark:text-orange-300",
+    row: "hover:bg-orange-100/80 dark:hover:bg-orange-500/8",
   },
   medium: {
     accent: "bg-amber-500",
-    badge: "bg-amber-500/18 text-amber-300 border-amber-500/35",
-    waiting: "text-amber-300",
-    row: "hover:bg-amber-500/8",
+    badge: "border-amber-300 bg-amber-100 text-amber-700 dark:border-amber-500/35 dark:bg-amber-500/18 dark:text-amber-300",
+    waiting: "text-amber-700 dark:text-amber-300",
+    row: "hover:bg-amber-100/80 dark:hover:bg-amber-500/8",
   },
   low: {
     accent: "bg-cyan-500",
-    badge: "bg-cyan-500/16 text-cyan-300 border-cyan-500/35",
-    waiting: "text-cyan-300",
-    row: "hover:bg-cyan-500/8",
+    badge: "border-cyan-300 bg-cyan-100 text-cyan-700 dark:border-cyan-500/35 dark:bg-cyan-500/16 dark:text-cyan-300",
+    waiting: "text-cyan-700 dark:text-cyan-300",
+    row: "hover:bg-cyan-100/80 dark:hover:bg-cyan-500/8",
   },
 };
 
@@ -58,34 +58,34 @@ const DISPATCH_THEME: Record<
   { badge: string; dot: string; row: string }
 > = {
   RECEIVED: {
-    badge: "border-slate-500/35 bg-slate-500/12 text-slate-300",
-    dot: "bg-slate-400",
+    badge: "border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-500/35 dark:bg-slate-500/12 dark:text-slate-300",
+    dot: "bg-slate-500 dark:bg-slate-400",
     row: "",
   },
   SEARCHING: {
-    badge: "border-amber-500/35 bg-amber-500/12 text-amber-300",
+    badge: "border-amber-300 bg-amber-100 text-amber-700 dark:border-amber-500/35 dark:bg-amber-500/12 dark:text-amber-300",
     dot: "bg-amber-500",
-    row: "ring-1 ring-amber-500/20",
+    row: "ring-1 ring-amber-300/80 dark:ring-amber-500/20",
   },
   ASSIGNED: {
-    badge: "border-emerald-500/35 bg-emerald-500/12 text-emerald-300",
+    badge: "border-emerald-300 bg-emerald-100 text-emerald-700 dark:border-emerald-500/35 dark:bg-emerald-500/12 dark:text-emerald-300",
     dot: "bg-emerald-500",
     row: "",
   },
   ARRIVING: {
-    badge: "border-cyan-500/35 bg-cyan-500/12 text-cyan-300",
+    badge: "border-cyan-300 bg-cyan-100 text-cyan-700 dark:border-cyan-500/35 dark:bg-cyan-500/12 dark:text-cyan-300",
     dot: "bg-cyan-500",
     row: "",
   },
   COMPLETED: {
-    badge: "border-emerald-500/35 bg-emerald-500/12 text-emerald-300",
+    badge: "border-emerald-300 bg-emerald-100 text-emerald-700 dark:border-emerald-500/35 dark:bg-emerald-500/12 dark:text-emerald-300",
     dot: "bg-emerald-500",
     row: "",
   },
   FAILED: {
-    badge: "border-red-500/35 bg-red-500/12 text-red-300",
+    badge: "border-red-300 bg-red-100 text-red-700 dark:border-red-500/35 dark:bg-red-500/12 dark:text-red-300",
     dot: "bg-red-500",
-    row: "ring-1 ring-red-500/25",
+    row: "ring-1 ring-red-300/80 dark:ring-red-500/25",
   },
 };
 
@@ -132,10 +132,10 @@ export function RequestItem({ request, isSelected, onSelect }: RequestItemProps)
     <button
       type="button"
       onClick={onSelect}
-      className={`relative flex w-full items-start gap-4 border-b border-border/60 px-4 py-3 text-left transition ${theme.row} ${
+      className={`relative flex w-full items-start gap-4 border-b border-border/80 px-4 py-3 text-left transition dark:border-border/60 ${theme.row} ${
         isSelected ? "bg-primary/10 shadow-[inset_0_0_0_1px_rgba(59,130,246,0.25)]" : "bg-transparent"
       } ${dispatchTheme.row} ${
-        request.dispatchState === "FAILED" ? "bg-red-500/6" : ""
+        request.dispatchState === "FAILED" ? "bg-red-50 dark:bg-red-500/6" : ""
       }`}
     >
       <span className={`absolute inset-y-0 left-0 w-1 ${theme.accent}`} aria-hidden />
@@ -157,7 +157,7 @@ export function RequestItem({ request, isSelected, onSelect }: RequestItemProps)
           <span
             className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.08em] ${dispatchTheme.badge}`}
           >
-            <span className={`inline-flex h-3.5 w-3.5 items-center justify-center ${dispatchTheme.dot} rounded-full text-background-second`}>
+            <span className={`inline-flex h-3.5 w-3.5 items-center justify-center ${dispatchTheme.dot} rounded-full text-white dark:text-background-second`}>
               {statusIcon}
             </span>
             {statusLabel}
@@ -171,18 +171,18 @@ export function RequestItem({ request, isSelected, onSelect }: RequestItemProps)
             <MapPin className="h-3.5 w-3.5 shrink-0" />
             <span className="truncate">{request.address}</span>
           </p>
-          <span className="rounded-full border border-border bg-surface-muted/50 px-2 py-0.5 text-[11px] text-body">
+          <span className="rounded-full border border-border/80 bg-surface-muted/80 px-2 py-0.5 text-[11px] text-body dark:border-border dark:bg-surface-muted/50">
             {t("board.item.assignedAmbulance")}: {assignedAmbulanceLabel}
           </span>
-          <span className="rounded-full border border-border bg-surface-muted/50 px-2 py-0.5 text-[11px] text-body">
+          <span className="rounded-full border border-border/80 bg-surface-muted/80 px-2 py-0.5 text-[11px] text-body dark:border-border dark:bg-surface-muted/50">
             {t("board.item.eta")} {etaLabel}
           </span>
         </div>
 
         {request.interventionRequired ? (
-          <div className="mt-2 rounded-lg border border-red-500/35 bg-red-500/10 px-2.5 py-2 text-xs text-red-300">
+          <div className="mt-2 rounded-lg border border-red-300 bg-red-50 px-2.5 py-2 text-xs text-red-700 dark:border-red-500/35 dark:bg-red-500/10 dark:text-red-300">
             <p className="font-semibold">{t("board.intervention.title")}</p>
-            <p className="mt-0.5 text-red-200">{request.interventionReason}</p>
+            <p className="mt-0.5 text-red-600 dark:text-red-200">{request.interventionReason}</p>
           </div>
         ) : null}
 
@@ -197,8 +197,8 @@ export function RequestItem({ request, isSelected, onSelect }: RequestItemProps)
                 key={`${request.id}-${state}`}
                 className={`rounded-md border px-2 py-1.5 ${
                   reached
-                    ? "border-primary/25 bg-primary/8"
-                    : "border-border/60 bg-surface-muted/25"
+                    ? "border-primary/35 bg-primary/12 dark:border-primary/25 dark:bg-primary/8"
+                    : "border-border/80 bg-surface-muted/60 dark:border-border/60 dark:bg-surface-muted/25"
                 }`}
               >
                 <p className={`text-[10px] font-semibold uppercase tracking-[0.08em] ${active ? "text-primary" : "text-muted"}`}>

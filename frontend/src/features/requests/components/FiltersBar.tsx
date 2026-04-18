@@ -47,7 +47,7 @@ export function FiltersBar({
   ];
 
   return (
-    <section className="rounded-2xl border border-border bg-bg-card p-4 shadow-card">
+    <section className="rounded-2xl border border-border/80 bg-bg-card p-4 shadow-card dark:border-border">
       <div className="mb-4 flex items-center gap-2 text-heading">
         <SlidersHorizontal className="h-4 w-4 text-primary" />
         <p className="text-sm font-semibold">{t("board.filters.title")}</p>
@@ -55,17 +55,17 @@ export function FiltersBar({
 
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
         <div className="xl:col-span-2">
-          <label className="mb-1 block text-xs uppercase tracking-[0.08em] text-muted">
+          <label className="mb-1 block text-xs uppercase tracking-[0.08em] text-body dark:text-muted">
             {t("board.filters.searchLabel")}
           </label>
           <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-body dark:text-muted" />
             <input
               type="text"
               value={search}
               onChange={(event) => onSearchChange(event.target.value)}
               placeholder={t("board.filters.searchPlaceholder")}
-              className="h-11 w-full rounded-lg border border-border bg-background-second pl-9 pr-3 text-sm text-heading outline-none transition focus:border-primary/60 focus:ring-2 focus:ring-primary/20"
+              className="h-11 w-full rounded-lg border border-border/80 bg-background-second/80 pl-9 pr-3 text-sm text-heading outline-none transition focus:border-primary/60 focus:ring-2 focus:ring-primary/20 dark:border-border dark:bg-background-second"
             />
           </div>
         </div>
@@ -77,7 +77,7 @@ export function FiltersBar({
             value={severity}
             onChange={(value) => onSeverityChange(value as RequestPriority | "all")}
             options={severityOptions}
-            labelClassName="mb-1 block text-xs uppercase tracking-[0.08em] text-muted"
+            labelClassName="mb-1 block text-xs uppercase tracking-[0.08em] text-body dark:text-muted"
             triggerClassName="h-11 rounded-lg text-sm"
           />
         </div>
@@ -90,7 +90,7 @@ export function FiltersBar({
               value={status}
               onChange={(value) => onStatusChange(value as DispatchState | "all")}
               options={statusOptions}
-              labelClassName="mb-1 block text-xs uppercase tracking-[0.08em] text-muted"
+              labelClassName="mb-1 block text-xs uppercase tracking-[0.08em] text-body dark:text-muted"
               triggerClassName="h-11 rounded-lg text-sm"
             />
           </div>
@@ -105,7 +105,7 @@ export function FiltersBar({
                 { value: "newest", label: t("board.filters.sortNewest") },
                 { value: "longestWaiting", label: t("board.filters.sortLongest") },
               ]}
-              labelClassName="mb-1 block text-xs uppercase tracking-[0.08em] text-muted"
+              labelClassName="mb-1 block text-xs uppercase tracking-[0.08em] text-body dark:text-muted"
               triggerClassName="h-11 rounded-lg text-sm"
             />
           </div>

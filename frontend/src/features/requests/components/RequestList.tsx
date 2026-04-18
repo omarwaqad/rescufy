@@ -14,8 +14,8 @@ export function RequestList({ requests, selectedId, isLoading, onSelect }: Reque
 
   if (isLoading) {
     return (
-      <div className="rounded-xl border border-dashed border-border bg-surface-muted/30 px-4 py-8 text-center">
-        <ShieldAlert className="mx-auto h-7 w-7 text-muted" />
+      <div className="rounded-xl border border-dashed border-border/80 bg-surface-muted/65 px-4 py-8 text-center dark:border-border dark:bg-surface-muted/30">
+        <ShieldAlert className="mx-auto h-7 w-7 text-body dark:text-muted" />
         <p className="mt-3 text-sm font-medium text-heading">{t("board.loading")}</p>
       </div>
     );
@@ -23,8 +23,8 @@ export function RequestList({ requests, selectedId, isLoading, onSelect }: Reque
 
   if (requests.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-border bg-surface-muted/30 px-4 py-8 text-center">
-        <ShieldAlert className="mx-auto h-7 w-7 text-muted" />
+      <div className="rounded-xl border border-dashed border-border/80 bg-surface-muted/65 px-4 py-8 text-center dark:border-border dark:bg-surface-muted/30">
+        <ShieldAlert className="mx-auto h-7 w-7 text-body dark:text-muted" />
         <p className="mt-3 text-sm font-medium text-heading">{t("board.list.emptyTitle")}</p>
         <p className="mt-1 text-xs text-muted">{t("board.list.emptyDescription")}</p>
       </div>
