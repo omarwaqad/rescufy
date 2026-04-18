@@ -300,6 +300,6 @@ Rescufy demonstrates:
 ---
 
 <div align="center">
-  <img src="assets/Rescufy-Logo.svg" alt="Rescufy Footer Logo" width="150" />
+  <img src="assets/Rescufy-Logo.png" alt="Rescufy Footer Logo" width="150" />
   <p><i>Built to prioritize urgency. Built to protect lives.</i></p>
 </div>
