@@ -9,6 +9,7 @@ import {
   faLocationDot,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { RefreshCcw } from "lucide-react";
 import InputFiled from "@/shared/ui/FormInput/InputFiled";
 import { useState, useEffect } from "react";
 import { useGetMyHospital } from "../hooks/useGetMyHospital";
@@ -87,13 +88,26 @@ export default function HospitalProfile() {
     <div className="min-h-screen bg-background p-4 sm:p-6 lg:p-8">
       <div className="max-w-4xl mx-auto">
         {/* Page Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold text-heading mb-2">
-            {t("hospitals:hospitalProfile.title")}
-          </h1>
-          <p className="text-body text-sm sm:text-base">
-            {t("hospitals:hospitalProfile.subtitle")}
-          </p>
+        <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h1 className="text-3xl sm:text-4xl font-bold text-heading mb-2">
+              {t("hospitals:hospitalProfile.title")}
+            </h1>
+            <p className="text-body text-sm sm:text-base">
+              {t("hospitals:hospitalProfile.subtitle")}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              void fetchMyHospital();
+            }}
+            disabled={isLoading}
+            className="inline-flex items-center gap-2 self-start rounded-xl border border-border bg-background-second px-4 py-2 text-sm font-medium text-heading transition hover:bg-background disabled:cursor-not-allowed disabled:opacity-70"
+          >
+            <RefreshCcw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
+            {isLoading ? t("common:loading", "Refreshing") : "Refresh"}
+          </button>
         </div>
 
         {/* Hospital Identity Card */}

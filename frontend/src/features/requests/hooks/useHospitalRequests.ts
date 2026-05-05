@@ -1,17 +1,19 @@
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/app/provider/AuthContext";
 import { getAuthToken } from "@/features/auth/utils/auth.utils";
 import { useLanguage } from "@/i18n/useLanguage";
 import { onNewRequest, onRequestUpdated, startConnection } from "@/services/signalrService";
 import type { Request } from "../types/request.types";
-import { fetchHospitalRequestsApi } from "../data/hospitalRequests.api";
+import { fetchHospitalActiveRequestsApi } from "@/features/hospital_dashboard/data/hospitalRecentRequests.api";
 
 type LoadOptions = {
   silent?: boolean;
 };
 
 export function useHospitalRequests() {
+  const { user } = useAuth();
   const [requests, setRequests] = useState<Request[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -20,6 +22,8 @@ export function useHospitalRequests() {
   const { isRTL } = useLanguage();
 
   const toastPosition = isRTL ? "top-left" : "top-right";
+  const hospitalId = Number(user?.HospitalId);
+  const hasHospitalId = Number.isFinite(hospitalId) && hospitalId > 0;
 
   const loadRequests = useCallback(async ({ silent = false }: LoadOptions = {}) => {
     if (silent) {
@@ -36,7 +40,12 @@ export function useHospitalRequests() {
         return;
       }
 
-      const items = await fetchHospitalRequestsApi(token);
+      if (!hasHospitalId) {
+        setRequests([]);
+        return;
+      }
+
+      const items = await fetchHospitalActiveRequestsApi(token, hospitalId);
 
       setRequests(items);
       setLastSyncedAt(new Date().toISOString());
@@ -54,7 +63,7 @@ export function useHospitalRequests() {
       setIsLoading(false);
       setIsRefreshing(false);
     }
-  }, [t, toastPosition]);
+  }, [hasHospitalId, hospitalId, t, toastPosition]);
 
   useEffect(() => {
     let unsubscribeNewRequest = () => {};

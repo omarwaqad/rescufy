@@ -55,7 +55,7 @@ export default function HospitalRecentRequests() {
           return;
         }
 
-        setRequests(items.slice(0, 4));
+        setRequests(items);
         setLastSyncedAt(new Date().toISOString());
       } catch (error) {
         console.error("Fetch hospital recent requests error:", error);
@@ -139,7 +139,7 @@ export default function HospitalRecentRequests() {
 
                   try {
                     const items = await fetchHospitalActiveRequestsApi(token, hospitalId);
-                    setRequests(items.slice(0, 4));
+                    setRequests(items);
                     setLastSyncedAt(new Date().toISOString());
                   } finally {
                     setIsRefreshing(false);
@@ -218,16 +218,16 @@ export default function HospitalRecentRequests() {
         ) : (
           <div className="divide-y divide-border bg-bg-card dark:bg-bg-card">
             {visibleRequests.map((request) => (
+              console.log(request),
               <HospitalRequestRow
-                key={request.id}
-                id={String(request.id)}
-                userName={request.patientName || "-"}
-                userPhone={String(request.id)}
-                location={request.location || "-"}
-                priority={request.priority || "-"}
-                status={request.status || "Pending"}
-                timestamp={request.createdAt || "-"}
-                compact
+              key={request.id}
+              id={String(request.id)}
+              userName={request.patientName || ""}
+              userPhone={request.assignedAmbulancePlate || "-"}
+              location={request.location || request.address || ""}
+              priority={request.priority || "normal"}
+              status={request.status || request.requestStatus || "Pending"}
+              timestamp={request.createdAt || "-"}
               />
             ))}
           </div>
@@ -242,7 +242,7 @@ export default function HospitalRecentRequests() {
       </div>
 
       <div className="lg:col-span-4">
-        <CriticalRequests />
+        <CriticalRequests requests={requests} />
       </div>
     </div>
   );

@@ -71,12 +71,13 @@
                         <HospitalRequestRow
                           key={request.id}
                           id={String(request.id)}
-                          userName={request.patientName || "-"}
-                          userPhone={String(request.id)}
-                          location={request.location || "-"}
-                          priority={request.priority || "-"}
-                          status={request.status || "Pending"}
+                          userName={request.patientName || ""}
+                          userPhone={request.assignedAmbulancePlate || "-"}
+                          location={request.location || request.address || ""}
+                          priority={request.priority || "normal"}
+                          status={request.status || request.requestStatus || "Pending"}
                           timestamp={request.createdAt || "-"}
+                          
                         />
                       ))}
                     </div>

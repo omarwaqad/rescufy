@@ -10,9 +10,16 @@ export default function HospitalRequests() {
   const { user } = useAuth();
   const { requests, isLoading, isRefreshing, lastSyncedAt, refreshRequests } = useHospitalRequests();
 
-  const pendingCount = requests.filter((request) => request.status === "Pending").length;
-  const activeCount = requests.filter((request) => request.status === "Assigned" || request.status === "Accepted" || request.status === "OnTheWay" || request.status === "Arrived" || request.status === "PickedUp").length;
-  const completedCount = requests.filter((request) => request.status === "Delivered" || request.status === "Finished").length;
+  const getStatus = (request: { status?: string | null; requestStatus?: string | null }) =>
+    (request.status || request.requestStatus || "").toLowerCase();
+
+  const pendingCount = requests.filter((request) => getStatus(request) === "pending" || getStatus(request) === "searching").length;
+  const activeCount = requests.filter((request) =>
+    ["assigned", "accepted", "ontheway", "arrived", "pickedup", "active"].includes(getStatus(request)),
+  ).length;
+  const completedCount = requests.filter((request) =>
+    ["delivered", "finished", "completed"].includes(getStatus(request)),
+  ).length;
 
   return (
     <section className="page-enter min-h-screen w-full px-4 py-6 sm:px-6 lg:px-8">
@@ -71,7 +78,7 @@ export default function HospitalRequests() {
               <p className="text-sm font-semibold text-heading">What this page does</p>
               <ul className="mt-3 space-y-3 text-sm text-muted">
                 <li>Shows only requests for the authenticated hospital.</li>
-                <li>Refreshes automatically from the `/api/Hospital/my-requests` endpoint.</li>
+                <li>Refreshes automatically from the hospital active requests endpoint.</li>
                 <li>Re-pulls data when the SignalR hub announces new or updated requests.</li>
               </ul>
             </div>

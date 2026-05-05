@@ -7,6 +7,7 @@ const PRIORITY_COLOR_MAP: Record<string, string> = {
   high: "#f97316",
   medium: "#f59e0b",
   low: "#3b82f6",
+  normal: "#10b981",
 };
 
 export function useHospitalRequestRow({
@@ -17,7 +18,7 @@ export function useHospitalRequestRow({
   const navigate = useNavigate();
   const { isRTL } = useLanguage();
 
-  const priorityColor = PRIORITY_COLOR_MAP[priority || "low"] || "#3b82f6";
+  const priorityColor = PRIORITY_COLOR_MAP[priority?.toLowerCase() || "normal"] || "#10b981";
 
   const openRequestDetails = () => {
     if (!id || id === "-") return;

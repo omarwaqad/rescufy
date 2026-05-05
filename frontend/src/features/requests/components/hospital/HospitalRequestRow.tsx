@@ -3,6 +3,18 @@ import { StatusBadge } from "../../../../shared/ui/StatusBadge";
 import { useHospitalRequestRow } from "../../hooks/useHospitalRequestRow";
 import type { HospitalRequestRowProps } from "../../types/request-ui.types";
 
+function formatTimestamp(value?: string) {
+  if (!value) return "-";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleString([], {
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 export function HospitalRequestRow({
   id,
   userName,
@@ -40,10 +52,10 @@ export function HospitalRequestRow({
         >
           <div className={`${isRTL ? "text-right" : ""}`}>
             <p className={`font-semibold text-heading dark:text-heading ${compact ? "text-xs" : "text-xs"}`}>
-              {id}
+              #{id}
             </p>
             <p className={`text-muted ${compact ? "text-xs" : "text-xs"}`}>
-              {timestamp}
+              {formatTimestamp(timestamp)}
             </p>
           </div>
           <StatusBadge priority={priority} />
@@ -52,27 +64,27 @@ export function HospitalRequestRow({
         {/* Desktop Request ID */}
         <div className={`hidden md:block ${compact ? "w-28 shrink-0" : "w-36 shrink-0"} ${isRTL ? "text-right" : "text-left"}`}>
           <p className={`font-semibold text-heading dark:text-heading ${compact ? "text-xs" : "text-sm"}`}>
-            {id}
+            #{id}
           </p>
           <p className={`text-muted ${compact ? "text-xs" : "text-xs"}`}>
-            {timestamp}
+            {formatTimestamp(timestamp)}
           </p>
         </div>
 
-        {/* User Info - Desktop */}
+        {/* Patient Info - Desktop */}
         <div className={`hidden md:block ${compact ? "w-32 shrink-0" : "w-48 shrink-0"} ${isRTL ? "text-right" : "text-left"}`}>
           <p className={`font-medium text-heading ${compact ? "text-xs" : "text-sm"}`}>
             {userName}
           </p>
-          <p className="text-xs text-muted">{userPhone}</p>
+          <p className="text-xs text-muted truncate">{userPhone || "-"}</p>
         </div>
 
-        {/* Mobile User Info */}
+        {/* Mobile Patient Info */}
         <div className="md:hidden">
           <p className={`font-medium text-heading ${compact ? "text-xs" : "text-sm"}`}>
             {userName}
           </p>
-          <p className="text-xs text-muted">{userPhone}</p>
+          <p className="text-xs text-muted truncate">{userPhone || "-"}</p>
         </div>
 
         {/* Location */}
