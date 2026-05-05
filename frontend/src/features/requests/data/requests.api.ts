@@ -1,32 +1,10 @@
 import axios from "axios";
 import { API_CONFIG, getApiUrl } from "@/config/api.config";
-import type { ApiRequest } from "../types/request.types";
-
-export type AdminStreamTimeline = {
-  requestedAt?: string | null;
-  searchingAt?: string | null;
-  assignedAt?: string | null;
-  arrivedAt?: string | null;
-};
-
-export type AdminStreamItem = {
-  id: number;
-  patientName?: string | null;
-  description?: string | null;
-  priority?: string | null;
-  location?: string | null;
-  createdAt?: string | null;
-  status?: string | null;
-  ambulanceId?: string | number | null;
-  eta?: number | null;
-  timeline?: AdminStreamTimeline | null;
-  isSearching?: boolean;
-  isAssigned?: boolean;
-};
-
-type AnyRecord = Record<string, unknown>;
+import type { Request } from "../types/request.types";
 
 const PAYLOAD_KEYS = ["data", "result", "items", "requests", "value"];
+
+type AnyRecord = Record<string, unknown>;
 
 function extractMessageFromPayload(payload: unknown): string {
   if (typeof payload === "string") {
@@ -103,15 +81,15 @@ function buildHeaders(token: string) {
   };
 }
 
-export async function fetchRequestsApi(token: string): Promise<ApiRequest[]> {
+export async function fetchRequestsApi(token: string): Promise<Request[]> {
   const response = await axios.get(getApiUrl(API_CONFIG.ENDPOINTS.REQUESTS.GET_ALL), {
     headers: buildHeaders(token),
   });
 
-  return extractArrayFromPayload<ApiRequest>(response.data);
+  return extractArrayFromPayload<Request>(response.data);
 }
 
-export async function fetchAdminStreamApi(token: string): Promise<AdminStreamItem[]> {
+export async function fetchAdminStreamApi(token: string): Promise<Request[]> {
   const response = await axios.get(
     getApiUrl(API_CONFIG.ENDPOINTS.REQUESTS.GET_ADMIN_STREAM),
     {
@@ -119,7 +97,7 @@ export async function fetchAdminStreamApi(token: string): Promise<AdminStreamIte
     },
   );
 
-  return extractArrayFromPayload<AdminStreamItem>(response.data);
+  return extractArrayFromPayload<Request>(response.data);
 }
 
 export async function cancelRequestApi(

@@ -4,15 +4,15 @@ import { useTranslation } from "react-i18next";
 import { getAuthToken } from "@/features/auth/utils/auth.utils";
 import { useLanguage } from "@/i18n/useLanguage";
 import { onNewRequest, onRequestUpdated, startConnection } from "@/services/signalrService";
-import type { HospitalRequestItem } from "../types/request-ui.types";
-import { fetchHospitalRequestsApi, mapHospitalRequestItem } from "../data/hospitalRequests.api";
+import type { Request } from "../types/request.types";
+import { fetchHospitalRequestsApi } from "../data/hospitalRequests.api";
 
 type LoadOptions = {
   silent?: boolean;
 };
 
 export function useHospitalRequests() {
-  const [requests, setRequests] = useState<HospitalRequestItem[]>([]);
+  const [requests, setRequests] = useState<Request[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null);
@@ -37,9 +37,8 @@ export function useHospitalRequests() {
       }
 
       const items = await fetchHospitalRequestsApi(token);
-      const mapped = items.map(mapHospitalRequestItem);
 
-      setRequests(mapped);
+      setRequests(items);
       setLastSyncedAt(new Date().toISOString());
     } catch (error: any) {
       console.error("Fetch hospital requests error:", error);

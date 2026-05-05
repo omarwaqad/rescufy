@@ -29,6 +29,7 @@ export function RequestDetailsPanel({
 
   const {
     severityBorder,
+    severityBadgeTheme,
     dispatchTheme,
     description,
     etaLabel,
@@ -69,7 +70,9 @@ export function RequestDetailsPanel({
           <p className="mt-2 text-sm font-semibold text-heading">
             {waitingLabel}
           </p>
-          <p className="mt-1 text-xs text-muted">{priorityLabel}</p>
+          <span className={`mt-2 inline-flex rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] ${severityBadgeTheme}`}>
+            {priorityLabel}
+          </span>
         </div>
 
         <div className="rounded-xl border border-border/80 bg-surface-muted/70 px-3 py-2.5 dark:border-border/60 dark:bg-surface-muted/35">
@@ -122,7 +125,7 @@ export function RequestDetailsPanel({
 
           <button
             type="button"
-            onClick={() => onCancelAssignment(request.id)}
+            onClick={ () => onCancelAssignment(request.id) }
             className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-red-300 bg-red-100 px-4 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-200 dark:border-red-500/35 dark:bg-red-500/12 dark:text-red-300 dark:hover:bg-red-500/18"
           >
             <Ban className="h-4 w-4" />

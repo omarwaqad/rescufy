@@ -116,8 +116,8 @@ i18n
       useSuspense: false, // Disable suspense for SSR compatibility
     },
 
-    // Debug mode (disable in production)
-    debug: import.meta.env.DEV,
+    // Keep console clean in local dev too.
+    debug: false,
   });
 
 export default i18n;

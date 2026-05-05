@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { HospitalRequestItem } from "@/features/requests/types/request-ui.types";
+import type { Request } from "@/features/requests/types/request.types";
 import type { HospitalFeedbackItem } from "../../data/adminHospitalFeedback.api";
 import { HospitalRequestRow } from "@/features/requests/components/hospital/HospitalRequestRow";
 import { FeedbackCard } from "./FeedbackCard";
@@ -10,8 +10,8 @@ const panelClass = "rounded-2xl border border-border/80 bg-bg-card p-5 md:p-6 sh
 type Tab = "active" | "weekly" | "all" | "feedback";
 
 type Props = {
-  activeRequests: HospitalRequestItem[];
-  allRequests: HospitalRequestItem[];
+  activeRequests: Request[];
+  allRequests: Request[];
   feedbacks: HospitalFeedbackItem[];
   weeklyStats: Record<string, unknown> | null;
   isRequestsLoading: boolean;
@@ -104,13 +104,13 @@ export function HospitalRequestsStats({
               {activeRequests.map((r) => (
                 <HospitalRequestRow
                   key={r.id}
-                  id={r.id}
-                  userName={r.userName}
-                  userPhone={r.userPhone}
-                  location={r.location}
-                  priority={r.priority}
-                  status={r.status}
-                  timestamp={r.timestamp}
+                  id={String(r.id)}
+                  userName={r.patientName || "-"}
+                  userPhone={String(r.id)}
+                  location={r.location || "-"}
+                  priority={r.priority || "-"}
+                  status={r.status || "Pending"}
+                  timestamp={r.createdAt || "-"}
                   basePath="/admin/requests"
                   compact
                 />
@@ -154,13 +154,13 @@ export function HospitalRequestsStats({
               {allRequests.map((r) => (
                 <HospitalRequestRow
                   key={r.id}
-                  id={r.id}
-                  userName={r.userName}
-                  userPhone={r.userPhone}
-                  location={r.location}
-                  priority={r.priority}
-                  status={r.status}
-                  timestamp={r.timestamp}
+                  id={String(r.id)}
+                  userName={r.patientName || "-"}
+                  userPhone={String(r.id)}
+                  location={r.location || "-"}
+                  priority={r.priority || "-"}
+                  status={r.status || "Pending"}
+                  timestamp={r.createdAt || "-"}
                   basePath="/admin/requests"
                   compact
                 />

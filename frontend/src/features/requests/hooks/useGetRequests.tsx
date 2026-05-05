@@ -13,7 +13,6 @@ import {
   fetchAdminStreamApi,
   fetchRequestsApi,
 } from "../data/requests.api";
-import { mapAdminStreamItem, mapApiRequest } from "../utils/request.mappers";
 
 function isRequestPayload(payload: unknown): payload is Request {
   return Boolean(payload && typeof payload === "object" && "id" in payload);
@@ -53,10 +52,9 @@ export function useGetRequests() {
       }
 
       const apiRequests = await fetchRequestsApi(token);
-      const mapped = apiRequests.map(mapApiRequest);
 
-      setRequests(mapped);
-      return mapped;
+      setRequests(apiRequests);
+      return apiRequests;
     } catch (error: any) {
       console.error("Fetch requests error:", error);
       showFetchError(error);
@@ -78,12 +76,9 @@ export function useGetRequests() {
       }
 
       const streamItems = await fetchAdminStreamApi(token);
-      const mapped = streamItems
-        .map(mapAdminStreamItem)
-        .filter((request) => request.id > 0);
-
-      setRequests(mapped);
-      return mapped;
+      
+      setRequests(streamItems);
+      return streamItems;
     } catch (error: any) {
       console.error("Fetch admin stream requests error:", error);
       showFetchError(error);

@@ -4,20 +4,20 @@ import {
   Loader2,
   Radar,
 } from "lucide-react";
-import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import type { DispatchState, RequestPriority } from "../types/request.types";
 import type { QueueRequestItem } from "../types/request-ui.types";
 
-const STATE_ORDER: DispatchState[] = [
+const STATE_ORDER = [
   "RECEIVED",
   "SEARCHING",
   "ASSIGNED",
   "ARRIVING",
 ];
 
-function getSeverityTheme(severity: RequestPriority) {
-  if (severity === "critical") {
+function getSeverityTheme(severity?: string | null) {
+  const norm = severity?.toLowerCase();
+
+  if (norm === "critical") {
     return {
       accent: "bg-red-500",
       badge:
@@ -27,7 +27,7 @@ function getSeverityTheme(severity: RequestPriority) {
     };
   }
 
-  if (severity === "high") {
+  if (norm === "high") {
     return {
       accent: "bg-orange-500",
       badge:
@@ -37,7 +37,7 @@ function getSeverityTheme(severity: RequestPriority) {
     };
   }
 
-  if (severity === "medium") {
+  if (norm === "medium") {
     return {
       accent: "bg-amber-500",
       badge:
@@ -47,17 +47,39 @@ function getSeverityTheme(severity: RequestPriority) {
     };
   }
 
+  if (norm === "low") {
+    return {
+      accent: "bg-blue-500",
+      badge:
+        "border-blue-300 bg-blue-100 text-blue-700 dark:border-blue-500/35 dark:bg-blue-500/16 dark:text-blue-300",
+      waiting: "text-blue-700 dark:text-blue-300",
+      row: "hover:bg-blue-100/80 dark:hover:bg-blue-500/8",
+    };
+  }
+
+  if (norm === "normal") {
+    return {
+      accent: "bg-emerald-500",
+      badge:
+        "border-emerald-300 bg-emerald-100 text-emerald-700 dark:border-emerald-500/35 dark:bg-emerald-500/16 dark:text-emerald-300",
+      waiting: "text-emerald-700 dark:text-emerald-300",
+      row: "hover:bg-emerald-100/80 dark:hover:bg-emerald-500/8",
+    };
+  }
+
   return {
-    accent: "bg-cyan-500",
+    accent: "bg-slate-500",
     badge:
-      "border-cyan-300 bg-cyan-100 text-cyan-700 dark:border-cyan-500/35 dark:bg-cyan-500/16 dark:text-cyan-300",
-    waiting: "text-cyan-700 dark:text-cyan-300",
-    row: "hover:bg-cyan-100/80 dark:hover:bg-cyan-500/8",
+      "border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-500/35 dark:bg-slate-500/16 dark:text-slate-300",
+    waiting: "text-slate-700 dark:text-slate-300",
+    row: "hover:bg-slate-100/80 dark:hover:bg-slate-500/8",
   };
 }
 
-function getDispatchTheme(dispatchState: DispatchState) {
-  if (dispatchState === "SEARCHING") {
+function getDispatchTheme(dispatchState?: string | null) {
+  const norm = dispatchState?.toUpperCase();
+
+  if (norm === "SEARCHING") {
     return {
       badge:
         "border-amber-300 bg-amber-100 text-amber-700 dark:border-amber-500/35 dark:bg-amber-500/12 dark:text-amber-300",
@@ -66,7 +88,7 @@ function getDispatchTheme(dispatchState: DispatchState) {
     };
   }
 
-  if (dispatchState === "ASSIGNED") {
+  if (norm === "ASSIGNED") {
     return {
       badge:
         "border-emerald-300 bg-emerald-100 text-emerald-700 dark:border-emerald-500/35 dark:bg-emerald-500/12 dark:text-emerald-300",
@@ -75,7 +97,7 @@ function getDispatchTheme(dispatchState: DispatchState) {
     };
   }
 
-  if (dispatchState === "ARRIVING") {
+  if (norm === "ARRIVING") {
     return {
       badge:
         "border-cyan-300 bg-cyan-100 text-cyan-700 dark:border-cyan-500/35 dark:bg-cyan-500/12 dark:text-cyan-300",
@@ -84,7 +106,7 @@ function getDispatchTheme(dispatchState: DispatchState) {
     };
   }
 
-  if (dispatchState === "COMPLETED") {
+  if (norm === "COMPLETED") {
     return {
       badge:
         "border-emerald-300 bg-emerald-100 text-emerald-700 dark:border-emerald-500/35 dark:bg-emerald-500/12 dark:text-emerald-300",
@@ -93,7 +115,7 @@ function getDispatchTheme(dispatchState: DispatchState) {
     };
   }
 
-  if (dispatchState === "FAILED") {
+  if (norm === "FAILED") {
     return {
       badge:
         "border-red-300 bg-red-100 text-red-700 dark:border-red-500/35 dark:bg-red-500/12 dark:text-red-300",
@@ -125,14 +147,16 @@ function formatTimelineTime(timestamp: string) {
 
 export function useRequestItemView(request: QueueRequestItem) {
   const { t } = useTranslation("requests");
+  const statusKey = request.status?.toUpperCase() ?? "RECEIVED";
+  const priorityKey = request.priority?.toLowerCase() ?? "normal";
 
-  const theme = getSeverityTheme(request.severity);
-  const dispatchTheme = getDispatchTheme(request.dispatchState);
+  const theme = getSeverityTheme(request.priority);
+  const dispatchTheme = getDispatchTheme(request.status);
 
   const previewDescription =
     request.description?.trim() || t("board.item.descriptionFallback");
 
-  const statusLabel = t(`board.dispatchStateLabels.${request.dispatchState}`);
+  const statusLabel = t(`board.dispatchStateLabels.${statusKey}`);
 
   const etaLabel =
     request.eta !== null
@@ -140,36 +164,34 @@ export function useRequestItemView(request: QueueRequestItem) {
       : t("board.item.etaUnknown");
 
   const assignedAmbulanceLabel =
-    request.assignedAmbulance?.name || t("board.item.searchingUnits");
+    request.ambulanceId ? `AMB-${request.ambulanceId}` : t("board.item.searchingUnits");
+  const priorityLabel = t(`priority.${priorityKey}`, request.priority ?? "Normal");
 
-  const timelineMap = useMemo(() => {
-    return request.logs.reduce<Record<DispatchState, string>>(
-      (accumulator, log) => {
-        accumulator[log.state] = log.timestamp;
-        return accumulator;
-      },
-      {} as Record<DispatchState, string>,
-    );
-  }, [request.logs]);
+  const timelineMap = {
+    RECEIVED: request.timeline?.requestedAt ?? "",
+    SEARCHING: request.timeline?.searchingAt ?? "",
+    ASSIGNED: request.timeline?.assignedAt ?? "",
+    ARRIVING: request.timeline?.arrivedAt ?? "",
+  };
 
   const timelineEntries = STATE_ORDER.map((state) => {
-    const logTimestamp = timelineMap[state];
+    const logTimestamp = timelineMap[state as keyof typeof timelineMap];
 
     return {
       key: state,
       label: t(`board.timeline.${state}`),
       time: logTimestamp ? formatTimelineTime(logTimestamp) : "--:--",
       reached: Boolean(logTimestamp),
-      active: request.dispatchState === state,
+      active: statusKey === state,
     };
   });
 
   const statusIcon =
-    request.dispatchState === "SEARCHING" ? (
+    request.isSearching ? (
       <Loader2 className="h-3.5 w-3.5 animate-spin" />
-    ) : request.dispatchState === "FAILED" ? (
+    ) : request.status?.toLowerCase() === "failed" ? (
       <AlertTriangle className="h-3.5 w-3.5" />
-    ) : request.dispatchState === "COMPLETED" ? (
+    ) : request.status?.toLowerCase() === "completed" ? (
       <CheckCircle2 className="h-3.5 w-3.5" />
     ) : (
       <Radar className="h-3.5 w-3.5" />
@@ -183,8 +205,9 @@ export function useRequestItemView(request: QueueRequestItem) {
     statusLabel,
     etaLabel,
     assignedAmbulanceLabel,
+    priorityLabel,
     timelineEntries,
     statusIcon,
-    isFailed: request.dispatchState === "FAILED",
+    isFailed: request.status?.toLowerCase() === "failed",
   };
 }

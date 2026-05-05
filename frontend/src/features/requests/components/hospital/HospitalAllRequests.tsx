@@ -1,10 +1,10 @@
           import { RefreshCcw, ShieldAlert } from "lucide-react";
           import { useTranslation } from "react-i18next";
           import { HospitalRequestRow } from "./HospitalRequestRow";
-          import type { HospitalRequestItem } from "../../types/request-ui.types";
+          import type { Request } from "../../types/request.types";
 
           type HospitalAllRequestsProps = {
-            requests: HospitalRequestItem[];
+            requests: Request[];
             isLoading: boolean;
             isRefreshing: boolean;
             lastSyncedAt: string | null;
@@ -70,13 +70,13 @@
                       {requests.map((request) => (
                         <HospitalRequestRow
                           key={request.id}
-                          id={request.id}
-                          userName={request.userName}
-                          userPhone={request.userPhone}
-                          location={request.location}
-                          priority={request.priority}
-                          status={request.status}
-                          timestamp={request.timestamp}
+                          id={String(request.id)}
+                          userName={request.patientName || "-"}
+                          userPhone={String(request.id)}
+                          location={request.location || "-"}
+                          priority={request.priority || "-"}
+                          status={request.status || "Pending"}
+                          timestamp={request.createdAt || "-"}
                         />
                       ))}
                     </div>

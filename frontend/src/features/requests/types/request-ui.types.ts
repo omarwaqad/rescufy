@@ -1,15 +1,9 @@
 import type { Dispatch, SetStateAction } from "react";
-import type {
-  MockDispatchRequest,
-  Request,
-  RequestPriority,
-  RequestStatus,
-} from "./request.types";
+import type { Request } from "./request.types";
 
-export type QueueRequestItem = MockDispatchRequest & {
+export type QueueRequestItem = Request & {
   waitingMinutes: number;
   waitingLabel: string;
-  interventionReason: string | null;
 };
 
 export type RequestItemProps = {
@@ -37,8 +31,8 @@ export type HospitalRequestRowProps = {
   userName?: string;
   userPhone?: number | string;
   location?: string;
-  priority?: RequestPriority;
-  status?: RequestStatus;
+  priority?: string;
+  status?: string;
   timestamp?: string;
   compact?: boolean;
   basePath?: string;
@@ -49,8 +43,8 @@ export type RequestRowProps = {
   userName?: string;
   userPhone?: string;
   address?: string;
-  priority?: RequestPriority;
-  status?: RequestStatus;
+  priority?: string;
+  status?: string;
   timestamp?: string;
   compact?: boolean;
 };
@@ -60,8 +54,8 @@ export type HospitalRequestItem = {
   userName: string;
   userPhone: string;
   location: string;
-  priority: RequestPriority;
-  status: RequestStatus;
+  priority: string;
+  status: string;
   timestamp: string;
 };
 

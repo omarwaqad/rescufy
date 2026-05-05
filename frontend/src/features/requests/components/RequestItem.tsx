@@ -15,6 +15,7 @@ export function RequestItem({
     statusLabel,
     etaLabel,
     assignedAmbulanceLabel,
+    priorityLabel,
     timelineEntries,
     statusIcon,
     isFailed,
@@ -39,7 +40,7 @@ export function RequestItem({
         <span
           className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.08em] ${theme.badge}`}
         >
-          {t(`priority.${request.severity}`)}
+          {priorityLabel}
         </span>
         <p className={`mt-2 text-sm font-semibold ${theme.waiting}`}>
           {request.waitingLabel}
@@ -49,7 +50,7 @@ export function RequestItem({
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-3">
           <p className="truncate text-sm font-semibold text-heading">
-            {request.userName || "-"}
+            {request.patientName || "-"}
           </p>
           <span
             className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.08em] ${dispatchTheme.badge}`}
@@ -70,7 +71,7 @@ export function RequestItem({
         <div className="mt-2 flex flex-wrap items-center gap-2">
           <p className="flex items-center gap-1.5 text-xs text-muted">
             <MapPin className="h-3.5 w-3.5 shrink-0" />
-            <span className="truncate">{request.address}</span>
+            <span className="truncate">{request.location}</span>
           </p>
           <span className="rounded-full border border-border/80 bg-surface-muted/80 px-2 py-0.5 text-[11px] text-body dark:border-border dark:bg-surface-muted/50">
             {t("board.item.assignedAmbulance")}: {assignedAmbulanceLabel}

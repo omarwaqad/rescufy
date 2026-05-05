@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import type { HospitalRequestItem } from "@/features/requests/types/request-ui.types";
+import type { Request } from "@/features/requests/types/request.types";
 import type { HospitalFeedbackItem } from "../data/adminHospitalFeedback.api";
 import { getAuthToken } from "@/features/auth/utils/auth.utils";
 import {
   fetchHospitalActiveRequestsApi,
   fetchHospitalRequestsApi,
   fetchHospitalWeeklyStatsApi,
-  mapHospitalRequestItem,
 } from "../data/adminHospitalRequests.api";
 import {
   fetchHospitalFeedbackApi,
@@ -14,8 +13,8 @@ import {
 } from "../data/adminHospitalFeedback.api";
 
 export function useAdminHospitalProfileData(hospitalId: string | undefined) {
-  const [activeRequests, setActiveRequests] = useState<HospitalRequestItem[]>([]);
-  const [allRequests, setAllRequests] = useState<HospitalRequestItem[]>([]);
+  const [activeRequests, setActiveRequests] = useState<Request[]>([]);
+  const [allRequests, setAllRequests] = useState<Request[]>([]);
   const [feedbacks, setFeedbacks] = useState<HospitalFeedbackItem[]>([]);
   const [weeklyStats, setWeeklyStats] = useState<Record<string, unknown> | null>(null);
   const [isRequestsLoading, setIsRequestsLoading] = useState(false);
@@ -46,8 +45,8 @@ export function useAdminHospitalProfileData(hospitalId: string | undefined) {
           fetchHospitalFeedbackApi(token, hospitalId),
         ]);
 
-        setActiveRequests(activeItems.map(mapHospitalRequestItem));
-        setAllRequests(allItems.map(mapHospitalRequestItem));
+        setActiveRequests(activeItems);
+        setAllRequests(allItems);
         setWeeklyStats(stats);
         setFeedbacks(feedbackItems.map(mapHospitalFeedbackItem));
       } catch (error) {

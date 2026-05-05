@@ -7,16 +7,15 @@ import { getAuthToken } from "@/features/auth/utils/auth.utils";
 import { onNewRequest, onRequestUpdated, startConnection } from "@/services/signalrService";
 import CriticalRequests from "./CriticalRequests";
 import { HospitalRequestRow } from "@/features/requests/components/hospital/HospitalRequestRow";
-import type { HospitalRequestItem } from "@/features/requests/types/request-ui.types";
+import type { Request } from "@/features/requests/types/request.types";
 import {
   fetchHospitalActiveRequestsApi,
-  mapHospitalActiveRequestItem,
 } from "../../data/hospitalRecentRequests.api";
 
 export default function HospitalRecentRequests() {
   const { t } = useTranslation("dashboard");
   const { user } = useAuth();
-  const [requests, setRequests] = useState<HospitalRequestItem[]>([]);
+  const [requests, setRequests] = useState<Request[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null);
@@ -56,7 +55,7 @@ export default function HospitalRecentRequests() {
           return;
         }
 
-        setRequests(items.map(mapHospitalActiveRequestItem).slice(0, 4));
+        setRequests(items.slice(0, 4));
         setLastSyncedAt(new Date().toISOString());
       } catch (error) {
         console.error("Fetch hospital recent requests error:", error);
@@ -140,7 +139,7 @@ export default function HospitalRecentRequests() {
 
                   try {
                     const items = await fetchHospitalActiveRequestsApi(token, hospitalId);
-                    setRequests(items.map(mapHospitalActiveRequestItem).slice(0, 4));
+                    setRequests(items.slice(0, 4));
                     setLastSyncedAt(new Date().toISOString());
                   } finally {
                     setIsRefreshing(false);
@@ -221,13 +220,13 @@ export default function HospitalRecentRequests() {
             {visibleRequests.map((request) => (
               <HospitalRequestRow
                 key={request.id}
-                id={request.id}
-                userName={request.userName}
-                userPhone={request.userPhone}
-                location={request.location}
-                priority={request.priority}
-                status={request.status}
-                timestamp={request.timestamp}
+                id={String(request.id)}
+                userName={request.patientName || "-"}
+                userPhone={String(request.id)}
+                location={request.location || "-"}
+                priority={request.priority || "-"}
+                status={request.status || "Pending"}
+                timestamp={request.createdAt || "-"}
                 compact
               />
             ))}

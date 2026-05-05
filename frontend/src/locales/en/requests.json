@@ -50,6 +50,7 @@
     },
     "priority": {
         "all": "All Priorities",
+        "normal": "Normal",
         "low": "Low",
         "medium": "Medium",
         "high": "High",
@@ -143,7 +144,7 @@
                 "selfCase": "Self Case",
                 "comment": "Comment",
                 "summary": "Summary",
-                "urgency": "Urgency",
+                "urgency": "Severity",
                 "condition": "Condition",
                 "address": "Address",
                 "latitude": "Latitude",
@@ -159,7 +160,7 @@
                     "subtitle": "Description and operator notes"
                 },
                 "ai": {
-                    "subtitle": "Summary, urgency, condition, and confidence"
+                    "subtitle": "Summary, severity, condition, and confidence"
                 },
                 "tripReport": {
                     "title": "Trip Report",
