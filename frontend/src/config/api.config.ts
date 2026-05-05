@@ -18,7 +18,8 @@ export const API_CONFIG = {
       UPDATE: (id: string) => `/api/Users/${id}`,
       DELETE: (id: string) => `/api/Users/${id}`,
       GET_BY_ID: (id: string) => `/api/Users/${id}`,
-     
+      CREATE_HOSPITAL_ADMIN: "/api/Admin/create-hospital-admin",
+      CREATE_AMBULANCE_DRIVER: "/api/Admin/create-ambulance-driver",
     },
     HOSPITALS: {
       GET_ALL: "/api/Hospital",
@@ -32,9 +33,11 @@ export const API_CONFIG = {
       GET_STATS: (id: string) => `/api/Hospital/${id}/stats`,
       GET_REQUESTS: (id: string) => `/api/Hospital/${id}/requests`,
       WEEKLY_STATS: (id: string) => `/api/Hospital/${id}/weekly-stats`,
+      UPDATE_STATUS: (id: string) => `/api/Hospital/${id}/status`,
     },
     FEEDBACK: {
-      GET_HOSPITAL: (hospitalId: string) => `/api/Feedback/hospital/${hospitalId}`,
+      GET_HOSPITAL: (hospitalId: string) =>
+        `/api/Feedback/hospital/${hospitalId}`,
     },
     AMBULANCES: {
       GET_ALL: "/api/Ambulance",
@@ -49,6 +52,9 @@ export const API_CONFIG = {
       GET_ADMIN_REQUESTS: "/api/request/admin-stream",
       GET_BY_ID: (id: string) => `/api/Request/${id}`,
       CANCEL_REQUEST: (id: string) => `/api/Request/${id}/cancel`,
+      REASSIGN_REQUEST: (id: string) => `/api/Request/${id}/reassign`,
+      CREATE_TRIP_REPORT: "/api/TripReport",
+      UPDATE_TRIP_REPORT: (id: number) => `/api/TripReport/${id}`,
     },
     NOTIFICATIONS: {
       GET_ALL: "/api/Notification",
@@ -59,9 +65,8 @@ export const API_CONFIG = {
     },
     DASHBOARD: {
       GET_STATS: "/api/Dashboard/stats",
-      GET_CRITICAL:"/api/Dashboard/critical",
+      GET_CRITICAL: "/api/Dashboard/critical",
     },
-
   },
 } as const;
 

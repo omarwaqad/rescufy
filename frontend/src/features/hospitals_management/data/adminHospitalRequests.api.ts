@@ -74,54 +74,48 @@ function toStringValue(value: unknown): string {
 
 function normalizeStatus(value: unknown): RequestStatus {
   if (typeof value === "number") {
-    switch (value) {
-      case 1:
-        return "assigned";
-      case 2:
-        return "enRoute";
-      case 3:
-        return "completed";
-      case 4:
-        return "cancelled";
-      default:
-        return "pending";
-    }
+    const map: Record<number, RequestStatus> = {
+      0: "Pending",
+      1: "Assigned",
+      2: "Accepted",
+      3: "OnTheWay",
+      4: "Arrived",
+      5: "PickedUp",
+      6: "Delivered",
+      7: "Finished",
+      8: "Canceled",
+    };
+    return map[value] ?? "Pending";
   }
 
-  const normalized = toStringValue(value).toLowerCase().replace(/[-\s]/g, "");
+  const s = toStringValue(value);
+  const valid: RequestStatus[] = [
+    "Pending", "Assigned", "Accepted", "OnTheWay",
+    "Arrived", "PickedUp", "Delivered", "Finished", "Canceled",
+  ];
 
-  if (normalized === "assigned") {
-    return "assigned";
-  }
+  // exact match (case-sensitive, as API sends PascalCase)
+  if (valid.includes(s as RequestStatus)) return s as RequestStatus;
 
-  if (normalized === "enroute") {
-    return "enRoute";
-  }
+  // case-insensitive fallback
+  const lower = s.toLowerCase().replace(/[^a-z]/g, "");
+  if (lower === "ontheway") return "OnTheWay";
+  if (lower === "pickedup") return "PickedUp";
+  if (lower === "finished") return "Finished";
+  if (lower === "delivered") return "Delivered";
+  if (lower === "arrived") return "Arrived";
+  if (lower === "accepted") return "Accepted";
+  if (lower === "assigned") return "Assigned";
+  if (lower === "canceled" || lower === "cancelled") return "Canceled";
 
-  if (normalized === "completed") {
-    return "completed";
-  }
-
-  if (normalized === "cancelled" || normalized === "canceled") {
-    return "cancelled";
-  }
-
-  return "pending";
+  return "Pending";
 }
 
 function normalizePriority(status: RequestStatus): RequestPriority {
-  if (status === "cancelled") {
-    return "critical";
-  }
-
-  if (status === "assigned" || status === "enRoute") {
-    return "high";
-  }
-
-  if (status === "completed") {
-    return "low";
-  }
-
+  if (status === "Canceled") return "critical";
+  if (status === "OnTheWay" || status === "Arrived" || status === "PickedUp") return "high";
+  if (status === "Finished" || status === "Delivered") return "low";
+  if (status === "Assigned" || status === "Accepted") return "medium";
   return "medium";
 }
 
@@ -180,7 +174,29 @@ export async function fetchHospitalWeeklyStatsApi(
   const payload = response.data;
 
   if (payload && typeof payload === "object") {
-    return payload as Record<string, unknown>;
+    // If the response is an array, take the first object
+    if (Array.isArray(payload)) {
+      return (payload[0] as Record<string, unknown>) || null;
+    }
+
+    const p = payload as Record<string, unknown>;
+
+    // If there's a nested array under common keys, take its first element
+    for (const key of ["data", "result", "items", "value"]) {
+      if (Array.isArray(p[key])) {
+        return (p[key] as Record<string, unknown>[])[0] || null;
+      }
+    }
+
+    // If there's a nested object under common keys, use it
+    for (const key of ["data", "result", "value"]) {
+      if (p[key] && typeof p[key] === "object" && !Array.isArray(p[key])) {
+        return p[key] as Record<string, unknown>;
+      }
+    }
+
+    // Otherwise, return the payload as-is
+    return p;
   }
 
   return null;
@@ -190,7 +206,7 @@ export function mapHospitalRequestItem(raw: HospitalRequestApiItem): HospitalReq
   const status = normalizeStatus(raw.requestStatus);
 
   return {
-    id: raw.id == null ? "-" : `#${String(raw.id)}`,
+    id: raw.id == null ? "-" : String(raw.id),
     userName: toStringValue(raw.patientName) || "-",
     userPhone: toStringValue(raw.assignedAmbulancePlate) || "-",
     location: toStringValue(raw.address) || "-",

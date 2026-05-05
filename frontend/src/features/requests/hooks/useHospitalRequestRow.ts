@@ -12,15 +12,16 @@ const PRIORITY_COLOR_MAP: Record<string, string> = {
 export function useHospitalRequestRow({
   id,
   priority,
-}: Pick<HospitalRequestRowProps, "id" | "priority">) {
+  basePath = "/hospital_user/requests",
+}: Pick<HospitalRequestRowProps, "id" | "priority" | "basePath">) {
   const navigate = useNavigate();
   const { isRTL } = useLanguage();
 
   const priorityColor = PRIORITY_COLOR_MAP[priority || "low"] || "#3b82f6";
 
   const openRequestDetails = () => {
-    navigate(`/hospital_user/requests/${id}`);
-    console.log(`Navigating to request details for ID: ${id}`);
+    if (!id || id === "-") return;
+    navigate(`${basePath}/${id}`);
   };
 
   return {

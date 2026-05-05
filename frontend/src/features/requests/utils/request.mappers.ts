@@ -43,65 +43,34 @@ function toPriority(priority: string): RequestPriority {
 }
 
 function toAdminDispatchState(item: AdminStreamItem): DispatchState {
-  const status = asString(item.status).toLowerCase();
+  const status = asString(item.status).toLowerCase().replace(/[^a-z]/g, "");
 
-  if (item.isSearching || status.includes("search")) {
-    return "SEARCHING";
-  }
+  // Real PascalCase API statuses mapped to internal DispatchState
+  if (status === "pending" || status === "") return "SEARCHING";
+  if (status === "assigned" || status === "accepted") return "ASSIGNED";
+  if (status === "ontheway" || status === "arrived" || status === "pickedup") return "ARRIVING";
+  if (status === "delivered" || status === "finished") return "COMPLETED";
+  if (status === "canceled" || status === "cancelled") return "FAILED";
 
-  if (item.isAssigned || status.includes("assign")) {
-    return "ASSIGNED";
-  }
-
-  if (
-    status.includes("notdelivered") ||
-    status.includes("failed") ||
-    status.includes("cancel")
-  ) {
-    return "FAILED";
-  }
-
-  if (status.includes("arriv")) {
-    return "ARRIVING";
-  }
-
-  if (status.includes("complete") || status === "delivered") {
-    return "COMPLETED";
-  }
+  // Legacy flags / keyword fallbacks
+  if (item.isSearching) return "SEARCHING";
+  if (item.isAssigned) return "ASSIGNED";
 
   return "RECEIVED";
 }
 
 function toDispatchStatus(state: DispatchState): Request["dispatchStatus"] {
-  if (state === "FAILED") {
-    return "failed";
-  }
-
-  if (state === "ASSIGNED" || state === "ARRIVING" || state === "COMPLETED") {
-    return "assigned";
-  }
-
+  if (state === "FAILED") return "failed";
+  if (state === "ASSIGNED" || state === "ARRIVING" || state === "COMPLETED") return "assigned";
   return "searching";
 }
 
 function toRequestStatus(state: DispatchState): RequestStatus {
-  if (state === "ASSIGNED") {
-    return "assigned";
-  }
-
-  if (state === "ARRIVING") {
-    return "enRoute";
-  }
-
-  if (state === "COMPLETED") {
-    return "completed";
-  }
-
-  if (state === "FAILED") {
-    return "cancelled";
-  }
-
-  return "pending";
+  if (state === "ASSIGNED")  return "Assigned";
+  if (state === "ARRIVING")  return "OnTheWay";
+  if (state === "COMPLETED") return "Finished";
+  if (state === "FAILED")    return "Canceled";
+  return "Pending";
 }
 
 function locationLatitude(location: string): number {
@@ -140,7 +109,7 @@ export function mapApiRequest(raw: ApiRequest): Request {
     userName: raw.applicationUser?.name ?? "",
     userPhone: raw.applicationUser?.phoneNumber ?? "",
     address: raw.address ?? "",
-    status: REQUEST_STATUS_MAP[statusCode] ?? "pending",
+    status: REQUEST_STATUS_MAP[statusCode] ?? "Pending",
     timestamp: raw.createdAt,
     description: raw.description ?? "",
     latitude: raw.latitude,
@@ -148,7 +117,7 @@ export function mapApiRequest(raw: ApiRequest): Request {
     numberOfPeopleAffected: raw.numberOfPeopleAffected,
     isSelfCase: raw.isSelfCase,
     dispatchStatus:
-      statusCode === 4
+      statusCode === 8
         ? "failed"
         : assignedAmbulanceName
           ? "assigned"

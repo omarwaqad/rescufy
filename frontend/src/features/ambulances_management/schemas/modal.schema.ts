@@ -1,5 +1,9 @@
 import z from "zod";
 
+const STATUS_VALUES = ["Available", "Transiting", "Busy", "Maintenance"] as const;
+
+
+
 export const ambulanceSchema = z
   .object({
     id: z.string(),
@@ -12,13 +16,5 @@ export const ambulanceSchema = z
     paramedicId: z.string().optional(),
     ambulancePointId: z.string().optional(),
     startingPrice: z.number().min(0, "Starting price must be 0 or more"),
-    status: z.enum(["AVAILABLE", "IN_TRANSIT", "BUSY", "MAINTENANCE"]),
-    latitude: z
-      .number()
-      .min(-90, "Latitude must be between -90 and 90")
-      .max(90, "Latitude must be between -90 and 90"),
-    longitude: z
-      .number()
-      .min(-180, "Longitude must be between -180 and 180")
-      .max(180, "Longitude must be between -180 and 180"),
+    status: z.enum(STATUS_VALUES, "Invalid status value"),
   });

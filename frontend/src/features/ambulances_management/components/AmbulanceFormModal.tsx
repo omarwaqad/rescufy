@@ -20,13 +20,13 @@ export function AmbulanceFormModal({
   ambulance,
   mode,
 }: AmbulanceFormModalProps) {
-  const { register, submitHandler, errors, watch, setValue } = useModal({
+  const { register, submitHandler, errors, setValue } = useModal({
     onSubmit,
     ambulance,
     mode,
   });
 
-  const selectedStatus = watch("status") || "AVAILABLE";
+  const selectedStatus =  (ambulance ? ambulance.status : "Available");
 
   if (!isOpen) return null;
 
@@ -263,82 +263,32 @@ export function AmbulanceFormModal({
                     })
                   }
                   options={[
-                    { value: "AVAILABLE", label: "Available" },
-                    { value: "IN_TRANSIT", label: "In Transit" },
-                    { value: "BUSY", label: "Busy" },
-                    { value: "MAINTENANCE", label: "Maintenance" },
+                    { value: "Available", label: "Available" },
+                    { value: "Transiting", label: "Transiting" },
+                    { value: "Busy", label: "Busy" },
+                    { value: "Maintenance", label: "Maintenance" },
                   ]}
                   triggerClassName="h-auto rounded-xl px-3.5 py-2.5 text-sm"
                   error={errors.status?.message}
                 />
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label
-                  htmlFor="latitude"
-                  className="block text-sm font-medium text-body mb-1.5"
-                >
-                  Latitude <span className="text-danger">*</span>
-                </label>
-                <input
-                  type="number"
-                  id="latitude"
-                  step="0.0001"
-                  {...register("latitude", { valueAsNumber: true })}
-                  className={`w-full px-3.5 py-2.5 text-sm border rounded-xl focus:outline-none focus:ring-2 transition-all bg-background text-heading placeholder:text-muted ${
-                    errors.latitude
-                      ? "border-danger focus:ring-danger/20"
-                      : "border-border focus:ring-primary/30 focus:border-primary"
-                  }`}
-                  placeholder="30.0500"
-                />
-                {errors.latitude && (
-                  <p className="mt-1.5 text-xs text-danger">
-                    {errors.latitude.message}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <label
-                  htmlFor="longitude"
-                  className="block text-sm font-medium text-body mb-1.5"
-                >
-                  Longitude <span className="text-danger">*</span>
-                </label>
-                <input
-                  type="number"
-                  id="longitude"
-                  step="0.0001"
-                  {...register("longitude", { valueAsNumber: true })}
-                  className={`w-full px-3.5 py-2.5 text-sm border rounded-xl focus:outline-none focus:ring-2 transition-all bg-background text-heading placeholder:text-muted ${
-                    errors.longitude
-                      ? "border-danger focus:ring-danger/20"
-                      : "border-border focus:ring-primary/30 focus:border-primary"
-                  }`}
-                  placeholder="31.0298"
-                />
-                {errors.longitude && (
-                  <p className="mt-1.5 text-xs text-danger">
-                    {errors.longitude.message}
-                  </p>
-                )}
-              </div>
+            
+            <div className="flex justify-end gap-3 pt-6 border-t border-border mt-6">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-4 py-2.5 text-sm font-medium text-body border border-border rounded-xl hover:bg-surface-muted transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2.5 text-sm font-medium text-white bg-primary rounded-xl hover:bg-primary/90 transition-colors"
+              >
+                {mode === "add" ? "Add Ambulance" : "Save Changes"}
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2.5 text-sm font-medium text-body border border-border rounded-xl hover:bg-surface-muted transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2.5 text-sm font-medium text-white bg-primary rounded-xl hover:bg-primary/90 transition-colors"
-            >
-              {mode === "add" ? "Add Ambulance" : "Save Changes"}
-            </button>
           </div>
         </form>
       </div>

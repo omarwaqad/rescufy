@@ -21,25 +21,25 @@ type StatusTheme = {
 };
 
 const STATUS_THEME: Record<AmbulanceStatus, StatusTheme> = {
-  AVAILABLE: {
+  Available: {
     badgeClass: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30",
     borderClass: "border-emerald-500/35",
     glowClass: "shadow-[0_0_22px_rgba(16,185,129,0.18)]",
     icon: CheckCircle2,
   },
-  IN_TRANSIT: {
+  Transiting: {
     badgeClass: "bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 border-cyan-500/30",
     borderClass: "border-cyan-500/35",
     glowClass: "shadow-[0_0_22px_rgba(6,182,212,0.16)]",
     icon: Siren,
   },
-  BUSY: {
+  Busy: {
     badgeClass: "bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/35",
     borderClass: "border-amber-500/60",
     glowClass: "shadow-[0_0_26px_rgba(245,158,11,0.2)]",
     icon: AlertTriangle,
   },
-  MAINTENANCE: {
+  Maintenance: {
     badgeClass: "bg-red-500/15 text-red-700 dark:text-red-300 border-red-500/40",
     borderClass: "border-red-500/80",
     glowClass: "shadow-[0_0_30px_rgba(239,68,68,0.28)]",
@@ -77,17 +77,17 @@ export function AmbulanceCard({
   const { t } = useTranslation("ambulances");
 
   const statusLabel: Record<AmbulanceStatus, string> = {
-    AVAILABLE: t("status.available"),
-    IN_TRANSIT: t("status.inTransit"),
-    BUSY: t("status.busy"),
-    MAINTENANCE: t("status.maintenance"),
+    Available: t("status.available"),
+    Transiting: t("status.inTransit"),
+    Busy: t("status.busy"),
+    Maintenance: t("status.maintenance"),
   };
 
   const statusOptions: AmbulanceStatus[] = [
-    "AVAILABLE",
-    "IN_TRANSIT",
-    "BUSY",
-    "MAINTENANCE",
+    "Available",
+    "Transiting",
+    "Busy",
+    "Maintenance",
   ];
 
   const statusSelectOptions = statusOptions.map((option) => ({
@@ -187,7 +187,7 @@ export function AmbulanceCard({
         <button
           type="button"
           onClick={onAssign}
-          disabled={status === "MAINTENANCE"}
+          disabled={status === "Maintenance"}
           className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-emerald-500/35 bg-emerald-500/10 px-2 py-2 text-xs font-semibold text-emerald-700 dark:text-emerald-300 transition hover:bg-emerald-500/20 disabled:cursor-not-allowed disabled:opacity-40"
         >
           <Siren className="h-3.5 w-3.5" />

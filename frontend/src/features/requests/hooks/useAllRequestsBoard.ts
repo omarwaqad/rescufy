@@ -18,6 +18,9 @@ import {
   getInterventionReason,
   getWaitingMinutes,
 } from "../utils/dispatch.helpers";
+import { getAuthToken } from "@/features/auth/utils/auth.utils";
+import { API_CONFIG, getApiUrl } from "@/config/api.config";
+import axios from "axios";
 
 export function useAllRequestsBoard({
   requests,
@@ -210,7 +213,26 @@ export function useAllRequestsBoard({
         ? "searching"
         : "stable";
 
-  const reassignRequest = (requestId: number) => {
+  const reassignRequest = async (requestId: number) => {
+    const token = getAuthToken();
+    if (!token) return;
+
+    try {
+      await axios.post(
+        getApiUrl(API_CONFIG.ENDPOINTS.REQUESTS.REASSIGN_REQUEST(String(requestId))),
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Reassign request error:", error);
+      return;
+    }
+
     setRequests((previous) =>
       previous.map((request) => {
         if (request.id !== requestId) {
@@ -237,7 +259,27 @@ export function useAllRequestsBoard({
     );
   };
 
-  const failRequest = (requestId: number) => {
+  const failRequest = async (requestId: number) => {
+    const token = getAuthToken();
+    if (!token) return;
+
+    try {
+      const response = await axios.post(
+        getApiUrl(API_CONFIG.ENDPOINTS.REQUESTS.CANCEL_REQUEST(String(requestId))),
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("Cancel request response:", response.data);
+    } catch (error) {
+      console.error("Cancel request error:", error);
+      return;
+    }
+
     setRequests((previous) =>
       previous.map((request) => {
         if (request.id !== requestId) {

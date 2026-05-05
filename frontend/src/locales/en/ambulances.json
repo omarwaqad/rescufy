@@ -33,7 +33,7 @@
     "status": {
         "all": "All States",
         "available": "Available",
-        "inTransit": "In Transit",
+        "inTransit": "Transiting",
         "busy": "Busy",
         "onRoute": "On Route",
         "maintenance": "Maintenance",

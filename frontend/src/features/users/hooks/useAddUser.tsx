@@ -29,33 +29,53 @@ export function useAddUser() {
         return null;
       }
 
-      const userPayload = {
+      const basePayload = {
+        fullName: userdata.name,
         email: userdata.email,
         nationalId: userdata.nationalId,
         gender: userdata.gender,
         age: userdata.age,
         password: userdata.password,
-        name: userdata.name,
         phoneNumber: userdata.phoneNumber,
         role: userdata.role,
-        hospitalId:
-          userdata.role === "HospitalAdmin" ? userdata.hospitalId : "1",
-        ambulanceId:
-          userdata.role === "AmbulanceDriver"
-            ? userdata.ambulanceId
-            : "",
       };
 
-      const response = await axios.post(
-        getApiUrl(API_CONFIG.ENDPOINTS.USERS.CREATE),
-        userPayload,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+      let response;
+
+      if (userdata.role === "HospitalAdmin") {
+        response = await axios.post(
+          getApiUrl(API_CONFIG.ENDPOINTS.USERS.CREATE_HOSPITAL_ADMIN),
+          { ...basePayload, hospitalId: userdata.hospitalId },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
           },
-        },
-      );
+        );
+      } else if (userdata.role === "AmbulanceDriver") {
+        response = await axios.post(
+          getApiUrl(API_CONFIG.ENDPOINTS.USERS.CREATE_AMBULANCE_DRIVER),
+          { ...basePayload, assignedAmbulanceId: userdata.ambulanceId },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+      } else {
+        response = await axios.post(
+          getApiUrl(API_CONFIG.ENDPOINTS.USERS.CREATE),
+          basePayload,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+      }
 
       console.log("User created successfully:", response);
 

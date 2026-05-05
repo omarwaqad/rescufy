@@ -15,7 +15,7 @@ import { useGetMyHospital } from "../hooks/useGetMyHospital";
 
 export default function HospitalProfile() {
   const { t } = useTranslation(["hospitals", "common"]);
-  const { hospital, isLoading, fetchMyHospital } = useGetMyHospital();
+  const { hospital, isLoading, fetchMyHospital, updateHospitalStatus } = useGetMyHospital();
 
   const [form, setForm] = useState({
     name: "",
@@ -108,9 +108,16 @@ export default function HospitalProfile() {
               </h3>
               <p className="text-muted text-sm truncate">{form.address}</p>
               <div className="mt-2">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-success/10 text-success rounded-md text-xs font-semibold">
-                  {t("hospitals:status.normal")}
-                </span>
+                <select
+                  value={hospital.apiStatus ?? 0}
+                  onChange={(e) => updateHospitalStatus?.(Number(e.target.value))}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 bg-surface bg-opacity-50 text-heading rounded-md text-xs font-semibold border border-border cursor-pointer hover:bg-surface-muted transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50"
+                >
+                  <option value={0}>{t("hospitals:status.normal")}</option>
+                  <option value={1}>{t("hospitals:status.busy")}</option>
+                  <option value={2}>{t("hospitals:status.critical")}</option>
+                  <option value={3}>{t("hospitals:status.full")}</option>
+                </select>
               </div>
             </div>
           </div>

@@ -12,10 +12,12 @@ export function HospitalRequestRow({
   status,
   timestamp,
   compact = false,
+  basePath,
 }: HospitalRequestRowProps) {
   const { isRTL, priorityColor, openRequestDetails } = useHospitalRequestRow({
     id,
     priority,
+    basePath,
   });
 
   return (

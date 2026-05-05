@@ -2,151 +2,79 @@ import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import axios from "axios";
 import { toast } from "sonner";
-import { getApiUrl } from "@/config/api.config";
+import { getApiUrl, API_CONFIG } from "@/config/api.config";
 import { getAuthToken } from "@/features/auth/utils/auth.utils";
+import type { TripReport } from "../types/requestDetails.types";
 
-const REPORT_STATUS_OPTIONS = [
-  "Stable",
-  "Critical",
-  "Under Observation",
-  "Transferred",
-] as const;
-
-export type HospitalReportStatus = (typeof REPORT_STATUS_OPTIONS)[number];
-
-export const hospitalReportStatusOptions = REPORT_STATUS_OPTIONS.map((option) => ({
-  label: option,
-  value: option,
-}));
-
-type HospitalReportFormErrors = {
-  dischargedAt?: string;
-  status?: string;
-  treatment?: string;
+type FormErrors = {
+  admissionTime?: string;
+  dischargeTime?: string;
+  medicalProcedures?: string;
   submit?: string;
 };
 
 type UseHospitalReportModalParams = {
   isOpen: boolean;
-  requestId: string;
-  initialArrivalTime?: string;
+  requestId: number;
+  hospitalId: number | null;
+  existingReport: TripReport | null;
   onSuccess: () => void;
 };
 
-function toDateTimeLocal(value?: string) {
-  if (!value) {
-    return "";
-  }
-
-  const parsedDate = new Date(value);
-
-  if (Number.isNaN(parsedDate.getTime())) {
-    return "";
-  }
-
-  const timezoneOffset = parsedDate.getTimezoneOffset() * 60000;
-  return new Date(parsedDate.getTime() - timezoneOffset).toISOString().slice(0, 16);
+function toDateTimeLocal(iso?: string | null): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  const offset = d.getTimezoneOffset() * 60000;
+  return new Date(d.getTime() - offset).toISOString().slice(0, 16);
 }
 
-function toErrorMessage(error: unknown) {
-  if (!axios.isAxiosError(error)) {
-    return "Failed to submit report. Please try again.";
-  }
-
-  if (typeof error.response?.data === "string") {
-    return error.response.data;
-  }
-
-  const data = error.response?.data as { message?: string } | undefined;
-  return data?.message || "Failed to submit report. Please try again.";
+function toErrorMessage(error: unknown): string {
+  if (!axios.isAxiosError(error)) return "Failed to submit report. Please try again.";
+  const data = error.response?.data as { message?: string; title?: string } | string | undefined;
+  if (typeof data === "string") return data;
+  return data?.message || data?.title || "Failed to submit report. Please try again.";
 }
 
 export function useHospitalReportModal({
   isOpen,
   requestId,
-  initialArrivalTime,
+  hospitalId,
+  existingReport,
   onSuccess,
 }: UseHospitalReportModalParams) {
-  const [arrivedAt, setArrivedAt] = useState("");
-  const [dischargedAt, setDischargedAt] = useState("");
-  const [status, setStatus] = useState<"" | HospitalReportStatus>("");
-  const [treatment, setTreatment] = useState("");
-  const [errors, setErrors] = useState<HospitalReportFormErrors>({});
+  const isEdit = existingReport !== null;
+
+  const [admissionTime, setAdmissionTime] = useState("");
+  const [dischargeTime, setDischargeTime] = useState("");
+  const [medicalProcedures, setMedicalProcedures] = useState("");
+  const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Populate fields when modal opens
   useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
-
-    setArrivedAt(toDateTimeLocal(initialArrivalTime));
-    setDischargedAt("");
-    setStatus("");
-    setTreatment("");
+    if (!isOpen) return;
+    setAdmissionTime(toDateTimeLocal(existingReport?.admissionTime));
+    setDischargeTime(toDateTimeLocal(existingReport?.dischargeTime));
+    setMedicalProcedures(existingReport?.medicalProcedures ?? "");
     setErrors({});
     setIsSubmitting(false);
-  }, [isOpen, initialArrivalTime]);
+  }, [isOpen, existingReport]);
 
-  const validate = () => {
-    const nextErrors: HospitalReportFormErrors = {};
+  function validate(): boolean {
+    const next: FormErrors = {};
+    if (!admissionTime) next.admissionTime = "Admission time is required.";
+    if (!dischargeTime) next.dischargeTime = "Discharge time is required.";
+    if (!medicalProcedures.trim()) next.medicalProcedures = "Medical procedures are required.";
+    setErrors(next);
+    return Object.keys(next).length === 0;
+  }
 
-    if (!dischargedAt) {
-      nextErrors.dischargedAt = "Discharge time is required.";
-    }
-
-    if (!status) {
-      nextErrors.status = "Status is required.";
-    }
-
-    if (!treatment.trim()) {
-      nextErrors.treatment = "Treatment is required.";
-    }
-
-    setErrors(nextErrors);
-    return Object.keys(nextErrors).length === 0;
-  };
-
-  const updateArrivedAt = (value: string) => {
-    setArrivedAt(value);
-    setErrors((previous) => ({ ...previous, submit: undefined }));
-  };
-
-  const updateDischargedAt = (value: string) => {
-    setDischargedAt(value);
-    setErrors((previous) => ({
-      ...previous,
-      dischargedAt: undefined,
-      submit: undefined,
-    }));
-  };
-
-  const updateStatus = (value: string) => {
-    setStatus(value as HospitalReportStatus);
-    setErrors((previous) => ({
-      ...previous,
-      status: undefined,
-      submit: undefined,
-    }));
-  };
-
-  const updateTreatment = (value: string) => {
-    setTreatment(value);
-    setErrors((previous) => ({
-      ...previous,
-      treatment: undefined,
-      submit: undefined,
-    }));
-  };
-
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    if (!validate()) {
-      return;
-    }
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!validate()) return;
 
     const token = getAuthToken();
-
     if (!token) {
       setErrors({ submit: "Authentication token not found. Please sign in again." });
       return;
@@ -155,25 +83,36 @@ export function useHospitalReportModal({
     setIsSubmitting(true);
     setErrors({});
 
-    try {
-      await axios.post(
-        getApiUrl("/api/requests/" + requestId + "/report"),
-        {
-          arrivedAt: arrivedAt ? new Date(arrivedAt).toISOString() : null,
-          dischargedAt: new Date(dischargedAt).toISOString(),
-          status,
-          treatment: treatment.trim(),
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + token,
-          },
-        },
-      );
+    const body = {
+      requestId,
+      hospitalId: hospitalId ?? 0,
+      medicalProcedures: medicalProcedures.trim(),
+      admissionTime: new Date(admissionTime).toISOString(),
+      dischargeTime: new Date(dischargeTime).toISOString(),
+    };
 
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    };
+
+    try {
+      if (isEdit && existingReport) {
+        await axios.put(
+          getApiUrl(API_CONFIG.ENDPOINTS.REQUESTS.UPDATE_TRIP_REPORT(existingReport.id)),
+          body,
+          { headers },
+        );
+        toast.success("Trip report updated successfully.");
+      } else {
+        await axios.post(
+          getApiUrl(API_CONFIG.ENDPOINTS.REQUESTS.CREATE_TRIP_REPORT),
+          body,
+          { headers },
+        );
+        toast.success("Trip report submitted successfully.");
+      }
       onSuccess();
-      toast.success("Hospital report submitted successfully.");
     } catch (error) {
       setErrors({ submit: toErrorMessage(error) });
     } finally {
@@ -182,17 +121,15 @@ export function useHospitalReportModal({
   };
 
   return {
-    arrivedAt,
-    dischargedAt,
-    status,
-    treatment,
+    isEdit,
+    admissionTime,
+    dischargeTime,
+    medicalProcedures,
     errors,
     isSubmitting,
-    statusOptions: hospitalReportStatusOptions,
-    updateArrivedAt,
-    updateDischargedAt,
-    updateStatus,
-    updateTreatment,
+    setAdmissionTime: (v: string) => { setAdmissionTime(v); setErrors((p) => ({ ...p, admissionTime: undefined, submit: undefined })); },
+    setDischargeTime: (v: string) => { setDischargeTime(v); setErrors((p) => ({ ...p, dischargeTime: undefined, submit: undefined })); },
+    setMedicalProcedures: (v: string) => { setMedicalProcedures(v); setErrors((p) => ({ ...p, medicalProcedures: undefined, submit: undefined })); },
     handleSubmit,
   };
 }

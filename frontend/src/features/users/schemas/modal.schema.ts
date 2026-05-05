@@ -39,20 +39,37 @@ const addUserRoles = [
 
 const editUserRoles = [...addUserRoles, "SuperAdmin"] as const;
 
-export const userSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.email("Invalid email format").min(1, "Email is required"),
-  nationalId: nationalIdValidation,
-  gender: genderValidation,
-  age: ageValidation,
-  password: passwordValidation,
-  phoneNumber: z.string().min(1, "Phone number is required"),
-  role: z.enum(addUserRoles, {
-    message: "Role selection is required",
-  }),
-  hospitalId: z.string().optional(),
-  ambulanceId: z.string().optional(),
-});
+export const userSchema = z
+  .object({
+    name: z.string().min(2, "Name must be at least 2 characters"),
+    email: z.email("Invalid email format").min(1, "Email is required"),
+    nationalId: nationalIdValidation,
+    gender: genderValidation,
+    age: ageValidation,
+    password: passwordValidation,
+    phoneNumber: z.string().min(1, "Phone number is required"),
+    role: z.enum(addUserRoles, {
+      message: "Role selection is required",
+    }),
+    hospitalId: z.string().optional(),
+    ambulanceId: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.role === "HospitalAdmin" && !data.hospitalId) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Hospital selection is required for Hospital Admin",
+        path: ["hospitalId"],
+      });
+    }
+    if (data.role === "AmbulanceDriver" && !data.ambulanceId) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Ambulance selection is required for Ambulance Driver",
+        path: ["ambulanceId"],
+      });
+    }
+  });
 
 export const userEditSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -69,16 +86,4 @@ export const userEditSchema = z.object({
   ambulanceId: z.string().optional(),
 });
 
-// Legacy schema for backward compatibility
-export const userLegacySchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.email("Invalid email format").min(1, "Email is required"),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-    .regex(/[0-9]/, "Password must contain at least one number")
-    .regex(/[@$!%*?&]/, "Password must contain at least one special character"),
-  role: z.string().min(1, "Role selection is required"),
-});
+

@@ -45,6 +45,7 @@ export function useGetAmbulanceById() {
           },
         },
       );
+      console.log("Fetch ambulance profile response:", response);
 
       const normalizedProfile = normalizeAmbulanceProfile(response.data);
 

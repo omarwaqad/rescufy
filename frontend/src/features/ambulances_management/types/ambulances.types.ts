@@ -1,8 +1,9 @@
 export type AmbulanceStatus =
-  | "AVAILABLE"
-  | "IN_TRANSIT"
-  | "BUSY"
-  | "MAINTENANCE";
+  | "Available"
+  | "Transiting"
+  | "Busy"
+  | "Maintenance" ;
+  
 
 export type Ambulance = {
   id: string;
@@ -39,14 +40,19 @@ export type AmbulanceProfile = {
   driverId: string | null;
   driverName: string | null;
   paramedicId?: string | null;
+  paramedicName?: string | null;
   startingPrice: number;
   ambulanceNumber: string;
   ambulancePointId: number | null;
+  isActive: boolean;
   createdAt?: string;
   updatedAt?: string;
 };
 
-export const AMBULANCE_STATUS_TRANSLATION_KEY: Record<AmbulanceApiStatus, string> = {
+export const AMBULANCE_STATUS_TRANSLATION_KEY: Record<
+  AmbulanceApiStatus,
+  string
+> = {
   0: "available",
   1: "inTransit",
   2: "busy",

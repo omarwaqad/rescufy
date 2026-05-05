@@ -41,6 +41,7 @@ export type HospitalRequestRowProps = {
   status?: RequestStatus;
   timestamp?: string;
   compact?: boolean;
+  basePath?: string;
 };
 
 export type RequestRowProps = {

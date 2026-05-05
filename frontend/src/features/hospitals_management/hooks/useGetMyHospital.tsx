@@ -93,9 +93,49 @@ export function useGetMyHospital() {
     }
   }, [isRTL, t]);
 
+  const updateHospitalStatus = useCallback(
+    async (newStatus: number) => {
+      if (!hospital?.id) return false;
+      const token = getAuthToken();
+      if (!token) return false;
+
+      const toastPosition = isRTL ? "top-left" : "top-right";
+      const toastId = "update-status";
+
+      try {
+        await axios.put(
+          getApiUrl(API_CONFIG.ENDPOINTS.HOSPITALS.UPDATE_STATUS(hospital.id)),
+          newStatus, // Sending as primitive
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        setHospital((prev) => (prev ? { ...prev, apiStatus: newStatus } : null));
+        toast.success(t("hospitals:hospitalProfile.statusUpdated", "Status updated successfully"), {
+          position: toastPosition,
+          id: toastId,
+        });
+        return true;
+      } catch (error: any) {
+        console.error("Update status error:", error);
+        toast.error(getApiErrorMessage(error) ?? t("hospitals:api.updateError", "Failed to update status"), {
+          position: toastPosition,
+          id: toastId,
+        });
+        return false;
+      }
+    },
+    [hospital?.id, isRTL, t]
+  );
+
   return {
     hospital,
     isLoading,
     fetchMyHospital,
+    updateHospitalStatus,
   };
 }

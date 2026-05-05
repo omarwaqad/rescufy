@@ -8,6 +8,9 @@ import {
   faMapLocationDot,
   faPhone,
   faUser,
+  faUserNurse, // ADDED
+  faCheckCircle, // ADDED
+  faTimesCircle, // ADDED
 } from "@fortawesome/free-solid-svg-icons";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import type { AmbulanceProfile } from "../types/ambulances.types";
@@ -99,6 +102,17 @@ export function AmbulanceProfileDetails({
             <span className="inline-flex items-center rounded-full border border-border bg-surface-muted/50 px-3 py-1 text-xs font-semibold text-muted">
               #{profile.id}
             </span>
+            <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+              profile.isActive
+                ? "bg-green-500/15 text-green-600 dark:text-green-400"
+                : "bg-stone-500/15 text-stone-600 dark:text-stone-400"
+            }`}>
+              <FontAwesomeIcon
+                icon={profile.isActive ? faCheckCircle : faTimesCircle}
+                className="mr-1.5 align-middle"
+              />
+              {profile.isActive ? t("profile.active", "Active") : t("profile.inactive", "Inactive")}
+            </span>
             <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${resolvedStatusClass}`}>
               {t(`status.${statusKey}`)}
             </span>
@@ -120,6 +134,11 @@ export function AmbulanceProfileDetails({
             label={t("profile.driverName")}
             value={profile.driverName?.trim() || "-"}
             icon={faUser}
+          />
+          <ProfileFieldCard
+            label={t("profile.paramedicName", "Paramedic")}
+            value={profile.paramedicName?.trim() || "-"}
+            icon={faUserNurse}
           />
           <ProfileFieldCard
             label={t("profile.driverId")}

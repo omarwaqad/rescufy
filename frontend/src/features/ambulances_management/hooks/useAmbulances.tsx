@@ -76,6 +76,7 @@ export function useAmbulances() {
         getApiUrl(API_CONFIG.ENDPOINTS.AMBULANCES.GET_ALL),
         { headers },
       );
+      console.log("Raw ambulance data:", response.data);
 
       const normalized = extractAmbulanceCollection(response.data)
         .map(normalizeAmbulance)
@@ -98,9 +99,9 @@ export function useAmbulances() {
 
   const kpis = {
     total: ambulances.length,
-    available: ambulances.filter((item) => item.status === "AVAILABLE").length,
-    busy: ambulances.filter((item) => item.status === "BUSY").length,
-    maintenance: ambulances.filter((item) => item.status === "MAINTENANCE").length,
+    available: ambulances.filter((item) => item.status === "Available").length,
+    busy: ambulances.filter((item) => item.status === "Busy").length,
+    maintenance: ambulances.filter((item) => item.status === "Maintenance").length,
   };
 
   async function submitAmbulance(ambulance: Ambulance, mode: SubmitMode) {
@@ -116,13 +117,13 @@ export function useAmbulances() {
       if (mode === "add") {
         await axios.post(
           getApiUrl(API_CONFIG.ENDPOINTS.AMBULANCES.CREATE),
-          buildAmbulancePayload(ambulance, { includeId: false }),
+          buildAmbulancePayload(ambulance, { mode: "add" }),
           { headers },
         );
       } else {
         await axios.put(
           getApiUrl(API_CONFIG.ENDPOINTS.AMBULANCES.UPDATE(ambulance.id)),
-          buildAmbulancePayload(ambulance),
+          buildAmbulancePayload(ambulance, { mode: "edit" }),
           { headers },
         );
       }
@@ -193,7 +194,7 @@ export function useAmbulances() {
     try {
       await axios.put(
         getApiUrl(API_CONFIG.ENDPOINTS.AMBULANCES.UPDATE(ambulanceId)),
-        buildAmbulancePayload({ ...target, status: resolvedStatus }),
+        buildAmbulancePayload({ ...target, status: resolvedStatus }, { mode: "edit" }),
         { headers },
       );
 
@@ -210,7 +211,7 @@ export function useAmbulances() {
   }
 
   function assignAmbulance(ambulanceId: string) {
-    void changeAmbulanceStatus(ambulanceId, "IN_TRANSIT");
+    void changeAmbulanceStatus(ambulanceId, "Transiting");
   }
 
   function trackAmbulance(ambulanceId: string) {

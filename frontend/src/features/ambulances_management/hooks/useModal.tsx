@@ -26,7 +26,7 @@ export default function useModal({
     setValue,
     formState: { errors },
   } = useForm<AmbulanceFormData>({
-    resolver: zodResolver(ambulanceSchema),
+    resolver: zodResolver(ambulanceSchema) as any,
     defaultValues: {
       id: "",
       name: "",
@@ -38,15 +38,18 @@ export default function useModal({
       paramedicId: "",
       ambulancePointId: "",
       startingPrice: 0,
-      status: "AVAILABLE",
-      latitude: 0,
-      longitude: 0,
+      status: "Available",
+      
     },
   });
 
   useEffect(() => {
+    console.log("Ambulance in useModal changed:", ambulance);
+
     if (ambulance && mode === "edit") {
-      reset({
+          console.log("Ambulance in useModal changed:", ambulance.status);
+
+       reset({
         id: ambulance.id,
         name: ambulance.name,
         ambulanceNumber: ambulance.ambulanceNumber,
@@ -58,10 +61,10 @@ export default function useModal({
         ambulancePointId:
           ambulance.ambulancePointId === null ? "" : String(ambulance.ambulancePointId),
         startingPrice: ambulance.startingPrice,
-        status: ambulance.status,
-        latitude: ambulance.latitude,
-        longitude: ambulance.longitude,
+        status: ambulance?.status,
       });
+
+      
     } else {
       reset({
         id: String(Date.now()),
@@ -74,9 +77,7 @@ export default function useModal({
         paramedicId: "",
         ambulancePointId: "",
         startingPrice: 0,
-        status: "AVAILABLE",
-        latitude: 0,
-        longitude: 0,
+        status: "Available",
       });
     }
   }, [ambulance, mode, reset]);
@@ -103,8 +104,8 @@ export default function useModal({
       licensePlate: normalizedNumber,
       hospitalId: ambulancePointId === null ? "0" : String(ambulancePointId),
       status: data.status,
-      latitude: data.latitude,
-      longitude: data.longitude,
+      latitude: mode === "edit" && ambulance ? ambulance.latitude : 0,
+      longitude: mode === "edit" && ambulance ? ambulance.longitude : 0,
     });
   });
 

@@ -1,6 +1,15 @@
 // requests/types.ts
 
-export type RequestStatus = "pending" | "assigned" | "enRoute" | "completed" | "cancelled";
+export type RequestStatus =
+  | "Pending"
+  | "Assigned"
+  | "Accepted"
+  | "OnTheWay"
+  | "Arrived"
+  | "PickedUp"
+  | "Delivered"
+  | "Finished"
+  | "Canceled";
 
 export type RequestPriority = "low" | "medium" | "high" | "critical";
 
@@ -36,11 +45,15 @@ export type DispatchAlternative = {
 
 /** Maps API integer → readable status key */
 export const REQUEST_STATUS_MAP: Record<number, RequestStatus> = {
-  0: "pending",
-  1: "assigned",
-  2: "enRoute",
-  3: "completed",
-  4: "cancelled",
+  0: "Pending",
+  1: "Assigned",
+  2: "Accepted",
+  3: "OnTheWay",
+  4: "Arrived",
+  5: "PickedUp",
+  6: "Delivered",
+  7: "Finished",
+  8: "Canceled",
 };
 
 // ── Raw API shapes ──

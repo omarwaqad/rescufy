@@ -1,162 +1,152 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import PatientCard from "../components/PatientCard";
-import AmbulanceCard from "../components/AmbulanceCard";
-import DescriptionCard from "../components/DescriptionCard";
-import HospitalCard from "../components/HospitalCard";
-import TimelineCard from "../components/TimelineCard";
-import AIAnalysisCard from "../components/AIAnalysisCard";
+import { Phone } from "lucide-react";
+import { useLanguage } from "@/i18n/useLanguage";
+import Loading from "@/shared/common/Loading";
+import { useGetRequestById } from "../hooks/useGetRequestById";
 import HospitalReportModal from "../components/HospitalReportModal";
 
+// ─── Section Components ──────────────────────────────────────────────────────
+import RequestHeaderCard from "../components/RequestHeaderCard";
+import PatientInfoCard from "../components/PatientInfoCard";
+import CaseDescriptionCard from "../components/CaseDescriptionCard";
+import AIAnalysisSectionCard from "../components/AIAnalysisSectionCard";
+import TripReportSectionCard from "../components/TripReportSectionCard";
+import LocationSectionCard from "../components/LocationSectionCard";
+import AssignmentsSectionCard from "../components/AssignmentsSectionCard";
+import TimelineSectionCard from "../components/TimelineSectionCard";
+
+// ─── Helper ──────────────────────────────────────────────────────────────────
+function formatDateTime(iso: string, locale: string): string {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "-";
+  return date.toLocaleString(locale, {
+    day: "2-digit",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+// ─── Page ────────────────────────────────────────────────────────────────────
 export default function HospitalRequestDetails() {
-  const { t } = useTranslation("requests");
+  const { t, i18n } = useTranslation("requests");
+  const { isRTL } = useLanguage();
   const { id } = useParams<{ id: string }>();
+  const { request, isLoading, fetchRequest } = useGetRequestById();
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
 
-  // Sample data - in a real application, this would come from an API
-  const requestData = {
-    id: id || "REQ-2025-001",
-    patientName: "Ahmed Al-Rashid",
-    age: 45,
-    gender: "Male",
-    bloodType: "O+",
-    conditions: ["Chest Pain", "Shortness of Breath"],
-    medicalHistory:
-      "Hypertension, Type 2 Diabetes. Currently on Lisinopril and Metformin",
-    description:
-      "Patient reported sudden onset of chest pain and shortness of breath while at work. Pain is 8/10 intensity. No trauma. Patient is conscious and responsive.",
-    additionalNotes:
-      "Patient appears anxious. Has history of panic attacks. Wife is accompanying the patient.",
-    ambulanceVehicle: "AMB-101",
-    ambulanceType: "Advanced Life Support",
-    eta: "3 mins",
-    ambulanceLocation: "Heading to King Fahd Road junction",
-    ambulanceCrew: ["Driver: Mohammed", "Paramedic: Fatima"],
-    hospitalName: "King Fahd Medical City",
-    hospitalAddress: "Riyadh, Saudi Arabia",
-    department: "Cardiology",
-    availableBeds: 3,
-    distance: "2.5 km",
-    diagnosis: "Likely acute coronary syndrome with anxiety component",
-    confidence: 85,
-    timeline: [
-      {
-        title: t("details.timelineEvents.requestReceived.title"),
-        time: "14:05",
-        description: t("details.timelineEvents.requestReceived.desc"),
-      },
-      {
-        title: t("details.timelineEvents.ambulanceDispatched.title"),
-        time: "14:07",
-        description: t("details.timelineEvents.ambulanceDispatched.desc"),
-      },
-      {
-        title: t("details.timelineEvents.hospitalNotified.title"),
-        time: "14:08",
-        description: t("details.timelineEvents.hospitalNotified.desc"),
-      },
-      {
-        title: t("details.timelineEvents.enRoute.title"),
-        time: "14:12",
-        description: t("details.timelineEvents.enRoute.desc"),
-      },
-    ],
-  };
+  useEffect(() => {
+    if (id) {
+      void fetchRequest(id);
+    }
+  }, [id, fetchRequest]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (!request) {
+    return (
+      <div className="min-h-screen p-6">
+        <p className="text-sm text-muted">{t("empty.title")}</p>
+      </div>
+    );
+  }
+
+  // Build timeline events from the request data
+  const timelineEvents = [
+    {
+      title: t("details.adminLayout.timeline.requestCreated"),
+      time: formatDateTime(request.createdAt, i18n.language),
+      description: request.description || t("details.adminLayout.noDescription"),
+    },
+    ...(request.assignments ?? []).map((assignment) => ({
+      title: t("details.adminLayout.timeline.assignmentCreated", { id: assignment.id }),
+      time: formatDateTime(assignment.assignedAt, i18n.language),
+      description: `${assignment.ambulancePlate} → ${assignment.hospitalName ?? t("details.adminLayout.noHospital")}`,
+    })),
+    {
+      title: t("details.adminLayout.timeline.requestUpdated"),
+      time: formatDateTime(request.updatedAt, i18n.language),
+      description: request.comment || t("details.adminLayout.noComment"),
+    },
+  ];
+
+  // Grab the latest assignment's arrival time for the modal pre-fill
+  const latestAssignment = request.assignments.at(-1);
 
   return (
-    <div
-      style={{ backgroundColor: "var(--background)" }}
-      className="min-h-screen p-4 md:p-6"
-    >
-      {/* Header */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <h1
-            style={{ color: "var(--text-heading)" }}
-            className="text-3xl font-bold"
-          >
-            {t("details.title")}
-          </h1>
-          <span
-            style={{
-              backgroundColor: "rgba(230, 57, 70, 0.1)",
-              color: "var(--danger)",
-            }}
-            className="text-sm font-semibold px-4 py-2 rounded-full"
-          >
-            {t("details.critical")}
-          </span>
+    <div className="min-h-screen bg-background p-4 md:p-6" dir={isRTL ? "rtl" : "ltr"}>
+      <div className="mx-auto max-w-7xl space-y-6">
+
+        {/* ── Hero / Header ──────────────────────────────────────── */}
+        <RequestHeaderCard request={request} isRTL={isRTL} />
+
+        {/* ── Main Two-Column Grid ───────────────────────────────── */}
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+
+          {/* Left column */}
+          <div className="space-y-6">
+            <PatientInfoCard
+              patientName={request.patientName}
+              patientPhone={request.patientPhone}
+              userId={request.userId}
+              isSelfCase={request.isSelfCase}
+              patient={request.patient}
+            />
+
+            <CaseDescriptionCard
+              description={request.description}
+              comment={request.comment}
+            />
+
+            <AIAnalysisSectionCard aiAnalysis={request.aiAnalysis} />
+
+            <TripReportSectionCard tripReport={request.tripReport} />
+          </div>
+
+          {/* Right column */}
+          <div className="space-y-6">
+            <LocationSectionCard
+              address={request.address}
+              latitude={request.latitude}
+              longitude={request.longitude}
+            />
+
+            <AssignmentsSectionCard assignments={request.assignments} />
+
+            <TimelineSectionCard events={timelineEvents} />
+          </div>
         </div>
-        <p style={{ color: "var(--text-muted)" }}>
-          {t("details.requestIdLabel")}: {requestData.id}
-        </p>
+
+        {/* ── Hospital Report Submission ───────────────────────── */}
+        <section className="rounded-2xl border border-border/80 bg-bg-card p-5 shadow-card">
+          <div className="mb-3 flex items-center gap-2 text-heading">
+            <Phone className="h-4 w-4 text-primary" />
+            <h3 className="text-base font-semibold">{t("details.actions")}</h3>
+          </div>
+          <p className="mb-4 text-sm text-muted">
+            {t("details.hospitalReportHint", "Submit final report after patient handoff")}
+          </p>
+          <button
+            type="button"
+            onClick={() => setIsReportModalOpen(true)}
+            className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-primary/90"
+          >
+            {t("details.submitHospitalReport", "Submit Hospital Report")}
+          </button>
+        </section>
+
       </div>
 
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-        <PatientCard
-          name={requestData.patientName}
-          age={requestData.age}
-          gender={requestData.gender}
-          blood={requestData.bloodType}
-          conditions={requestData.conditions}
-          history={requestData.medicalHistory}
-        />
-
-        <AmbulanceCard
-          vehicle={requestData.ambulanceVehicle}
-          type={requestData.ambulanceType}
-          eta={requestData.eta}
-          location={requestData.ambulanceLocation}
-          crew={requestData.ambulanceCrew}
-        />
-
-        <HospitalCard
-          name={requestData.hospitalName}
-          address={requestData.hospitalAddress}
-          department={requestData.department}
-          beds={requestData.availableBeds}
-          distance={requestData.distance}
-        />
-      </div>
-
-      {/* Extended Information */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <DescriptionCard
-          description={requestData.description}
-          additionalNotes={requestData.additionalNotes}
-        />
-
-        <AIAnalysisCard
-          diagnosis={requestData.diagnosis}
-          confidence={requestData.confidence}
-        />
-      </div>
-
-      {/* Timeline */}
-      <div className="mb-6">
-        <TimelineCard events={requestData.timeline} />
-      </div>
-
-      {/* Hospital Admin Actions */}
-      <div className="mb-6 rounded-xl border border-border bg-bg-card p-4 shadow-card">
-        <p className="mb-3 text-sm text-muted">
-          {t("details.hospitalReportHint", "Submit final report after patient handoff")}
-        </p>
-        <button
-          type="button"
-          onClick={() => setIsReportModalOpen(true)}
-          className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary/90"
-        >
-          {t("details.submitHospitalReport", "Submit Hospital Report")}
-        </button>
-      </div>
-
+      {/* ── Modal ─────────────────────────────────────────────────── */}
       <HospitalReportModal
         isOpen={isReportModalOpen}
         onClose={() => setIsReportModalOpen(false)}
-        requestId={String(id || requestData.id)}
+        requestId={String(id ?? request.id)}
+        initialArrivalTime={latestAssignment?.assignedAt}
       />
     </div>
   );
