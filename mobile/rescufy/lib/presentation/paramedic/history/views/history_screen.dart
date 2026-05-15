@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:rescufy/core/theme/colors.dart';
+import 'package:rescufy/core/theme/app_theme_tokens.dart';
 
 class HistoryScreen extends StatelessWidget {
   const HistoryScreen({super.key});
@@ -38,31 +38,18 @@ class HistoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final tokens = context.appThemeTokens;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Case History')),
       body: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              theme.colorScheme.primary.withValues(alpha: 0.06),
-              theme.scaffoldBackgroundColor,
-            ],
-          ),
-        ),
+        decoration: BoxDecoration(gradient: tokens.heroGradient),
         child: ListView.separated(
           padding: EdgeInsets.all(20.w),
-          itemCount: _cases.length + 1,
+          itemCount: _cases.length,
           separatorBuilder: (_, _) => SizedBox(height: 14.h),
           itemBuilder: (context, index) {
-            if (index == 0) {
-              return _HistoryHeader(theme: theme);
-            }
-
-            final item = _cases[index - 1];
+            final item = _cases[index];
             return _HistoryCard(
               severity: item.severity,
               title: item.title,
@@ -72,37 +59,6 @@ class HistoryScreen extends StatelessWidget {
             );
           },
         ),
-      ),
-    );
-  }
-}
-
-class _HistoryHeader extends StatelessWidget {
-  const _HistoryHeader({required this.theme});
-
-  final ThemeData theme;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 4.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Recent Cases',
-            style: theme.textTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          SizedBox(height: 6.h),
-          Text(
-            'Review recent emergency responses, severity level, and response time using the same app theme.',
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.textTheme.bodySmall?.color,
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -126,10 +82,11 @@ class _HistoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final tokens = context.appThemeTokens;
     final severityColor = switch (severity) {
       'CRITICAL' => theme.colorScheme.error,
-      'HIGH' => AppColors.warning,
-      _ => AppColors.info,
+      'HIGH' => tokens.warning,
+      _ => tokens.info,
     };
 
     return Card(

@@ -19,12 +19,10 @@ import 'package:rescufy/presentation/paramedic/dashboard/views/dashboard_screen.
 import 'package:rescufy/presentation/paramedic/incoming_request/cubit/incoming_request_cubit.dart';
 import 'package:rescufy/presentation/paramedic/incoming_request/views/incoming_request_screen.dart';
 
-// User Screens
-import 'package:rescufy/presentation/user/home/views/home_screen.dart';
 import 'package:rescufy/presentation/user/request/cubit/emergency_request_cubit.dart';
 import 'package:rescufy/presentation/user/request/views/emergency_form_builder.dart';
-import 'package:rescufy/presentation/user/history/views/request_history_screen.dart';
-import 'package:rescufy/presentation/user/profile/views/profile_screen.dart';
+import 'package:rescufy/presentation/user/profile/views/edit_profile_screen.dart';
+import 'package:rescufy/presentation/user/shell/user_navigation_screen.dart';
 import 'package:rescufy/presentation/settings/language/language_screen.dart';
 
 // Paramedic Screens
@@ -79,8 +77,8 @@ class AppRouter {
         );
 
       case AppRoutes.verifyResetOtp:
-        final args = settings.arguments as Map<String, dynamic>?;
-        final email = args?['email'] as String? ?? '';
+        final args = settings.arguments;
+        final email = args is Map ? args['email']?.toString() ?? '' : '';
 
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
@@ -101,7 +99,7 @@ class AppRouter {
       // USER MODULE
       // =============================
       case AppRoutes.userHome:
-        return MaterialPageRoute(builder: (_) => const HomeScreen());
+        return MaterialPageRoute(builder: (_) => const UserNavigationScreen());
 
       case AppRoutes.emergencyForm:
         final isSelfCase = settings.arguments as bool? ?? true;
@@ -113,13 +111,21 @@ class AppRouter {
         );
 
       case AppRoutes.userHistory:
-        return MaterialPageRoute(builder: (_) => const RequestHistoryScreen());
+        return MaterialPageRoute(
+          builder: (_) => const UserNavigationScreen(initialIndex: 1),
+        );
 
       case AppRoutes.userProfile:
         return MaterialPageRoute(
-          builder: (_) => BlocProvider(
-            create: (_) => di.sl<ProfileCubit>(),
-            child: const ProfileScreen(),
+          builder: (_) => const UserNavigationScreen(initialIndex: 2),
+        );
+
+      case AppRoutes.editProfile:
+        final profileCubit = settings.arguments as ProfileCubit;
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider.value(
+            value: profileCubit,
+            child: const EditProfileScreen(),
           ),
         );
 

@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rescufy/core/navigation/app_routes.dart';
-import 'package:rescufy/core/theme/colors.dart';
+import 'package:rescufy/core/theme/app_spacing.dart';
+import 'package:rescufy/core/theme/app_theme_tokens.dart';
 import 'package:rescufy/domain/entities/incoming_request.dart';
 import 'package:rescufy/presentation/paramedic/incoming_request/cubit/incoming_request_cubit.dart';
 import 'package:rescufy/presentation/paramedic/incoming_request/cubit/incoming_request_state.dart';
@@ -15,6 +16,7 @@ class IncomingRequestScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final tokens = context.appThemeTokens;
     final request = context.select(
       (IncomingRequestCubit cubit) => cubit.state.request,
     );
@@ -60,19 +62,15 @@ class IncomingRequestScreen extends StatelessWidget {
             title: const Text('Incoming Request'),
           ),
           body: DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  theme.colorScheme.primary.withValues(alpha: 0.1),
-                  theme.scaffoldBackgroundColor,
-                ],
-              ),
-            ),
+            decoration: BoxDecoration(gradient: tokens.heroGradient),
             child: SafeArea(
               child: SingleChildScrollView(
-                padding: EdgeInsets.fromLTRB(18.w, 18.h, 18.w, 24.h),
+                padding: EdgeInsets.fromLTRB(
+                  18.w,
+                  AppSpacing.lg.h,
+                  18.w,
+                  AppSpacing.xl.h,
+                ),
                 child: Center(
                   child: ConstrainedBox(
                     constraints: BoxConstraints(maxWidth: 560.w),
@@ -120,7 +118,7 @@ class IncomingRequestScreen extends StatelessWidget {
                                 _SectionCard(
                                   title: 'Location',
                                   icon: Icons.location_on_outlined,
-                                  accentColor: AppColors.info,
+                                  accentColor: tokens.info,
                                   child: Column(
                                     children: [
                                       _InfoRow(
@@ -146,7 +144,7 @@ class IncomingRequestScreen extends StatelessWidget {
                                   _SectionCard(
                                     title: 'Clinical Snapshot',
                                     icon: Icons.monitor_heart_outlined,
-                                    accentColor: AppColors.warning,
+                                    accentColor: tokens.warning,
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -162,13 +160,13 @@ class IncomingRequestScreen extends StatelessWidget {
                                           _ChipWrap(
                                             label: 'Allergies',
                                             items: request.allergies,
-                                            color: AppColors.error,
+                                            color: theme.colorScheme.error,
                                           ),
                                         if (request.chronicDiseases.isNotEmpty)
                                           _ChipWrap(
                                             label: 'Chronic diseases',
                                             items: request.chronicDiseases,
-                                            color: AppColors.warning,
+                                            color: tokens.warning,
                                           ),
                                         if (request
                                             .currentMedications
@@ -176,7 +174,7 @@ class IncomingRequestScreen extends StatelessWidget {
                                           _ChipWrap(
                                             label: 'Current medications',
                                             items: request.currentMedications,
-                                            color: AppColors.info,
+                                            color: tokens.info,
                                           ),
                                       ],
                                     ),
@@ -276,9 +274,10 @@ class _HeaderSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final tokens = context.appThemeTokens;
     final severityColor = request.isCritical
         ? theme.colorScheme.error
-        : AppColors.warning;
+        : tokens.warning;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -333,25 +332,26 @@ class _CountdownBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final tokens = context.appThemeTokens;
     final elapsed = DateTime.now().difference(createdAt).inMinutes;
 
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(14.w),
       decoration: BoxDecoration(
-        color: AppColors.info.withValues(alpha: 0.08),
+        color: tokens.info.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: AppColors.info.withValues(alpha: 0.14)),
+        border: Border.all(color: tokens.info.withValues(alpha: 0.14)),
       ),
       child: Row(
         children: [
-          Icon(Icons.schedule, color: AppColors.info, size: 18.sp),
+          Icon(Icons.schedule, color: tokens.info, size: 18.sp),
           SizedBox(width: 10.w),
           Expanded(
             child: Text(
               'Reported ${max(elapsed, 0)} minute${elapsed == 1 ? '' : 's'} ago',
               style: theme.textTheme.labelLarge?.copyWith(
-                color: AppColors.info,
+                color: tokens.info,
                 fontWeight: FontWeight.w700,
               ),
             ),

@@ -12,8 +12,6 @@ import 'package:rescufy/rescufy_app.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Initialize dependency injection
   await di.init();
 
   runApp(

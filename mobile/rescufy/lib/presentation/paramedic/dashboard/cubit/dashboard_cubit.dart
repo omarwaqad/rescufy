@@ -1,16 +1,18 @@
 // lib/presentation/paramedic/dashboard/cubit/dashboard_cubit.dart
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rescufy/core/services/signalr/signalr_service.dart';
+import 'package:rescufy/core/services/signalr/notification_signalr_service.dart';
+import 'package:rescufy/core/services/signalr/signalr_models.dart';
 import 'package:rescufy/domain/entities/incoming_request.dart';
 import 'dashboard_state.dart';
 
 class DashboardCubit extends Cubit<DashboardState> {
-  DashboardCubit({required SignalRService signalRService})
-    : _signalR = signalRService,
-      super(DashboardState.initial());
+  DashboardCubit({
+    required NotificationSignalRService notificationSignalRService,
+  }) : _notificationSignalR = notificationSignalRService,
+       super(DashboardState.initial());
 
-  final SignalRService _signalR;
+  final NotificationSignalRService _notificationSignalR;
   StreamSubscription<SignalRConnectionState>? _connSub;
   StreamSubscription<Map<String, dynamic>>? _incomingRequestSub;
   StreamSubscription<String>? _requestCancelledSub;
@@ -38,21 +40,23 @@ class DashboardCubit extends Cubit<DashboardState> {
 
   Future<void> _connect() async {
     try {
-      await _signalR.connect();
+      await _notificationSignalR.connect();
     } catch (e) {
       if (!isClosed) emit(state.copyWith(error: 'Connection failed: $e'));
     }
   }
 
   void _listenConnectionState() {
-    _connSub = _signalR.stateStream.listen((s) {
+    _connSub = _notificationSignalR.stateStream.listen((s) {
       if (isClosed) return;
       emit(state.copyWith(signalRStatus: _mapState(s)));
     });
   }
 
   void _listenIncomingRequests() {
-    _incomingRequestSub = _signalR.onIncomingRequest().listen((payload) {
+    _incomingRequestSub = _notificationSignalR.emergencyRequests.listen((
+      payload,
+    ) {
       if (isClosed) return;
       try {
         final request = IncomingRequest.fromJson(payload);
@@ -64,7 +68,7 @@ class DashboardCubit extends Cubit<DashboardState> {
   }
 
   void _listenRequestCancelled() {
-    _requestCancelledSub = _signalR.onRequestCancelled().listen((_) {
+    _requestCancelledSub = _notificationSignalR.requestCancelled.listen((_) {
       if (isClosed) return;
       emit(state.copyWith(clearRequest: true));
     });

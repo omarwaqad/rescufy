@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -85,6 +87,84 @@ class SignupScreen extends StatelessWidget {
                               style: textTheme.headlineMedium,
                             ),
                             SizedBox(height: 28.h),
+                            Center(
+                              child: Column(
+                                children: [
+                                  GestureDetector(
+                                    onTap: cubit.pickProfileImage,
+                                    child: Stack(
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 44.r,
+                                          backgroundColor: colorScheme.primary
+                                              .withOpacity(0.12),
+                                          backgroundImage:
+                                              registerState.hasProfileImage
+                                              ? FileImage(
+                                                  File(
+                                                    registerState
+                                                        .profileImagePath!,
+                                                  ),
+                                                )
+                                              : null,
+                                          child: !registerState.hasProfileImage
+                                              ? Icon(
+                                                  Icons.person_outline_rounded,
+                                                  size: 42.sp,
+                                                  color: colorScheme.primary,
+                                                )
+                                              : null,
+                                        ),
+                                        Positioned(
+                                          right: 0,
+                                          bottom: 0,
+                                          child: Container(
+                                            width: 30.w,
+                                            height: 30.h,
+                                            decoration: BoxDecoration(
+                                              color: colorScheme.primary,
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                color: theme
+                                                    .scaffoldBackgroundColor,
+                                                width: 2,
+                                              ),
+                                            ),
+                                            child: Icon(
+                                              Icons.camera_alt_rounded,
+                                              size: 16.sp,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(height: 12.h),
+                                  TextButton.icon(
+                                    onPressed: cubit.pickProfileImage,
+                                    icon: const Icon(Icons.image_outlined),
+                                    label: Text(
+                                      registerState.hasProfileImage
+                                          ? 'Change profile image'
+                                          : 'Add profile image',
+                                    ),
+                                  ),
+                                  if (registerState.hasProfileImage)
+                                    TextButton(
+                                      onPressed: cubit.removeProfileImage,
+                                      child: Text(
+                                        'Remove image',
+                                        style: textTheme.bodyMedium?.copyWith(
+                                          color: colorScheme.error,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 20.h),
                             _buildTextField(
                               label: 'Name',
                               hint: 'Enter your full name',
@@ -173,11 +253,11 @@ class SignupScreen extends StatelessWidget {
                               ),
                               items: const [
                                 DropdownMenuItem(
-                                  value: 'male',
+                                  value: 'Male',
                                   child: Text('Male'),
                                 ),
                                 DropdownMenuItem(
-                                  value: 'female',
+                                  value: 'Female',
                                   child: Text('Female'),
                                 ),
                               ],
@@ -214,6 +294,8 @@ class SignupScreen extends StatelessWidget {
                                                   .trim(),
                                               age: registerState.parsedAge!,
                                               gender: registerState.gender,
+                                              profileImagePath: registerState
+                                                  .profileImagePath,
                                             );
                                           },
                                     child: isLoading

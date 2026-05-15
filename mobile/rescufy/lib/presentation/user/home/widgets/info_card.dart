@@ -1,14 +1,11 @@
-// lib/presentation/features/home/widgets/info_card.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class InfoCard extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final IconData icon;
-  final Color iconColor;
-  final VoidCallback onTap;
+import 'package:rescufy/core/theme/app_spacing.dart';
+import 'package:rescufy/core/theme/app_theme_tokens.dart';
+import 'package:rescufy/shared/widgets/common/app_tonal_icon.dart';
 
+class InfoCard extends StatelessWidget {
   const InfoCard({
     super.key,
     required this.title,
@@ -18,41 +15,33 @@ class InfoCard extends StatelessWidget {
     required this.onTap,
   });
 
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final Color iconColor;
+  final VoidCallback onTap;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final tokens = context.appThemeTokens;
 
     return Card(
-      elevation: isDark ? 3 : 1,
       child: InkWell(
         borderRadius: BorderRadius.circular(16.r),
         onTap: onTap,
         child: Container(
+          padding: EdgeInsets.all(AppSpacing.md.w),
           decoration: BoxDecoration(
+            color: tokens.surfaceRaised,
             borderRadius: BorderRadius.circular(16.r),
-            border: Border.all(
-              color: iconColor.withOpacity(isDark ? 0.3 : 0.15),
-            ),
+            border: Border.all(color: iconColor.withValues(alpha: 0.14)),
           ),
-          padding: EdgeInsets.all(16.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Icon Container
-              Container(
-                width: 48.w,
-                height: 48.h,
-                decoration: BoxDecoration(
-                  color: iconColor.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: Icon(icon, size: 24.sp, color: iconColor),
-              ),
-
-              SizedBox(height: 12.h),
-
-              // Title
+              AppTonalIcon(icon: icon, color: iconColor),
+              SizedBox(height: AppSpacing.sm.h),
               Text(
                 title,
                 style: theme.textTheme.titleMedium?.copyWith(
@@ -61,10 +50,7 @@ class InfoCard extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-
               SizedBox(height: 4.h),
-
-              // Subtitle
               Text(
                 subtitle,
                 style: theme.textTheme.bodySmall?.copyWith(fontSize: 12.sp),

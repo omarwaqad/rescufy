@@ -1,8 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'register_state.dart';
 
 class RegisterCubit extends Cubit<RegisterState> {
-  RegisterCubit() : super(const RegisterState());
+  RegisterCubit(this._imagePicker) : super(const RegisterState());
+
+  final ImagePicker _imagePicker;
 
   void onNameChanged(String value) {
     emit(
@@ -70,11 +73,30 @@ class RegisterCubit extends Cubit<RegisterState> {
     emit(state.copyWith(obscurePassword: !state.obscurePassword));
   }
 
+  Future<void> pickProfileImage() async {
+    final image = await _imagePicker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 80,
+    );
+
+    if (image == null) {
+      return;
+    }
+
+    emit(state.copyWith(profileImagePath: image.path));
+  }
+
+  void removeProfileImage() {
+    emit(state.copyWith(clearProfileImagePath: true));
+  }
+
   void setGender(String gender) {
+    final formatted =
+        gender[0].toUpperCase() + gender.substring(1).toLowerCase();
     emit(
       state.copyWith(
-        gender: gender,
-        genderError: state.showValidation ? _validateGender(gender) : null,
+        gender: formatted,
+        genderError: state.showValidation ? _validateGender(formatted) : null,
         clearGenderError: !state.showValidation,
       ),
     );

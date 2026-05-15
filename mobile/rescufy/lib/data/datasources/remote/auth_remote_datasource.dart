@@ -1,8 +1,7 @@
 // lib/data/datasources/auth_remote_datasource.dart
 import 'package:dio/dio.dart';
-import '../../../core/network/api_endpoints.dart';
+import '../../../core/network/endpoints/api_endpoints.dart';
 import '../../../core/network/dio_client.dart';
-import '../../models/register_request_model.dart';
 import '../../models/user_model.dart';
 
 abstract class AuthRemoteDataSource {
@@ -75,20 +74,30 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     String? profileImagePath,
   }) async {
     try {
-      final request = RegisterRequestModel(
-        name: name,
-        email: email,
-        userName: userName,
-        password: password,
-        nationalId: nationalId,
-        age: age,
-        gender: gender,
-        profileImagePath: profileImagePath,
-      );
+      final formDataMap = <String, dynamic>{
+        'Name': name,
+        'Email': email,
+        'UserName': userName,
+        'Password': password,
+        'NationalId': nationalId,
+        'Gender': gender,
+        'Age': age,
+      };
+
+      if (profileImagePath != null && profileImagePath.trim().isNotEmpty) {
+        final fileName = profileImagePath.split(RegExp(r'[\\/]')).last;
+        formDataMap['ProfileImage'] = await MultipartFile.fromFile(
+          profileImagePath,
+          filename: fileName,
+        );
+      }
+
+      final formData = FormData.fromMap(formDataMap);
 
       final response = await dioClient.post(
         ApiEndpoints.register,
-        data: request.toJson(),
+        data: formData,
+        options: Options(headers: {Headers.contentTypeHeader: null}),
       );
 
       if (response.data is Map<String, dynamic>) {
@@ -98,7 +107,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       }
 
       throw Exception('Invalid response format');
-    } on DioException {
+    } on DioException catch (e) {
+      print(
+        'Register API error [${e.response?.statusCode}]: ${e.response?.data}',
+      );
       rethrow;
     }
   }

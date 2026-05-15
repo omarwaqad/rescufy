@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MedicalInfoCard extends StatelessWidget {
-  final String pregnancyStatus;
+  final bool pregnancyStatus;
   final String medicalNotes;
   final VoidCallback onEditPressed;
 
@@ -53,9 +53,13 @@ class MedicalInfoCard extends StatelessWidget {
             _InfoRow(
               theme: theme,
               label: 'Pregnancy Status',
-              value: pregnancyStatus,
+              value: pregnancyStatus ? 'Pregnant' : 'Not Pregnant',
             ),
-            _InfoRow(theme: theme, label: 'Medical Notes', value: medicalNotes),
+            _InfoRow(
+              theme: theme,
+              label: 'Medical Notes',
+              value: medicalNotes.trim().isEmpty ? '-' : medicalNotes,
+            ),
           ],
         ),
       ),

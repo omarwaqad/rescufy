@@ -5,89 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rescufy/core/theme/colors.dart';
 
 // ──────────────────────────────────────────────────────────
-// MEDICAL INFO SHEET
-// ──────────────────────────────────────────────────────────
-class EditMedicalInfoSheet extends StatefulWidget {
-  final String pregnancyStatus;
-  final String medicalNotes;
-  final void Function(String pregnancyStatus, String medicalNotes) onSave;
-
-  const EditMedicalInfoSheet({
-    super.key,
-    required this.pregnancyStatus,
-    required this.medicalNotes,
-    required this.onSave,
-  });
-
-  @override
-  State<EditMedicalInfoSheet> createState() => _EditMedicalInfoSheetState();
-}
-
-class _EditMedicalInfoSheetState extends State<EditMedicalInfoSheet> {
-  late final TextEditingController _notesCtrl;
-  late String _selectedStatus;
-  final _formKey = GlobalKey<FormState>();
-
-  static const _statuses = ['Not Pregnant', 'Pregnant', 'Unknown', 'N/A'];
-
-  @override
-  void initState() {
-    super.initState();
-    _notesCtrl = TextEditingController(text: widget.medicalNotes);
-    _selectedStatus = _statuses.contains(widget.pregnancyStatus)
-        ? widget.pregnancyStatus
-        : _statuses.first;
-  }
-
-  @override
-  void dispose() {
-    _notesCtrl.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _SheetScaffold(
-      title: 'Edit Medical Information',
-      icon: Icons.medical_information,
-      iconColor: AppColors.primary,
-      onSave: () {
-        if (_formKey.currentState!.validate()) {
-          widget.onSave(_selectedStatus, _notesCtrl.text.trim());
-          Navigator.pop(context);
-        }
-      },
-      child: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _FieldLabel('Pregnancy Status'),
-            SizedBox(height: 8.h),
-            DropdownButtonFormField<String>(
-              value: _selectedStatus,
-              decoration: _inputDecoration('Select status'),
-              items: _statuses
-                  .map((s) => DropdownMenuItem(value: s, child: Text(s)))
-                  .toList(),
-              onChanged: (v) => setState(() => _selectedStatus = v!),
-            ),
-            SizedBox(height: 20.h),
-            _FieldLabel('Medical Notes'),
-            SizedBox(height: 8.h),
-            TextFormField(
-              controller: _notesCtrl,
-              maxLines: 3,
-              decoration: _inputDecoration('e.g. Regular checkups needed'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ──────────────────────────────────────────────────────────
 // MEDICATION SHEET
 // ──────────────────────────────────────────────────────────
 class EditMedicationSheet extends StatefulWidget {
@@ -210,12 +127,6 @@ class _EditAllergySheetState extends State<EditAllergySheet> {
     _notesCtrl.dispose();
     super.dispose();
   }
-
-  Color get _severityColor => _selectedSeverity == 'Severe'
-      ? Colors.red
-      : _selectedSeverity == 'Moderate'
-      ? Colors.orange
-      : Colors.yellow.shade700;
 
   @override
   Widget build(BuildContext context) {

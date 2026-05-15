@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:rescufy/domain/core/failures.dart';
 import 'package:rescufy/domain/repositories/emergency_repository.dart';
 import 'package:rescufy/data/datasources/remote/emergency_remote_datasource.dart';
-import 'package:rescufy/data/models/emergency_request_model.dart';
+import 'package:rescufy/data/models/medical_profile/emergency_request_model.dart';
 
 class EmergencyRepositoryImpl implements EmergencyRepository {
   final EmergencyRemoteDataSource _remoteDataSource;

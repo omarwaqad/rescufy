@@ -1,19 +1,24 @@
 // lib/core/theme/button_styles.dart
 import 'package:flutter/material.dart';
+
+import 'app_spacing.dart';
 import 'colors.dart';
 import 'app_text_styles.dart';
 
 class AppButtonStyles {
-  // Primary Button (Emergency Red)
-  static ButtonStyle get primary =>
-      ElevatedButton.styleFrom(
+  static ButtonStyle get primary => ElevatedButton.styleFrom(
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         disabledBackgroundColor: AppColors.textDisabled,
         disabledForegroundColor: Colors.white,
         minimumSize: const Size(double.infinity, 56),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.xl,
+          vertical: AppSpacing.md,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadii.sm),
+        ),
         elevation: 0,
         shadowColor: Colors.transparent,
         textStyle: AppTextStyles.buttonLarge,
@@ -26,23 +31,28 @@ class AppButtonStyles {
         }),
       );
 
-  // Secondary Button (Outlined)
   static ButtonStyle get secondary => OutlinedButton.styleFrom(
     foregroundColor: AppColors.primary,
     side: const BorderSide(color: AppColors.primary, width: 2),
     minimumSize: const Size(double.infinity, 56),
-    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    padding: const EdgeInsets.symmetric(
+      horizontal: AppSpacing.xl,
+      vertical: AppSpacing.md,
+    ),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(AppRadii.sm),
+    ),
     textStyle: AppTextStyles.buttonLarge,
   );
 
-  // Emergency Button (Prominent)
   static ButtonStyle get emergency => ElevatedButton.styleFrom(
     backgroundColor: AppColors.primary,
     foregroundColor: Colors.white,
     minimumSize: const Size(double.infinity, 60),
     padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 18),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(AppRadii.md),
+    ),
     elevation: 4,
     shadowColor: AppColors.primary.withOpacity(0.3),
     textStyle: AppTextStyles.buttonLarge.copyWith(
@@ -52,17 +62,20 @@ class AppButtonStyles {
     ),
   );
 
-  // Text Button
   static ButtonStyle get text => TextButton.styleFrom(
     foregroundColor: AppColors.primary,
-    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+    padding: const EdgeInsets.symmetric(
+      horizontal: AppSpacing.sm,
+      vertical: AppSpacing.xs,
+    ),
     textStyle: AppTextStyles.buttonMedium,
   );
 
-  // Icon Button
   static ButtonStyle get icon => IconButton.styleFrom(
     backgroundColor: AppColors.primary.withOpacity(0.1),
     foregroundColor: AppColors.primary,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(AppRadii.sm),
+    ),
   );
 }
