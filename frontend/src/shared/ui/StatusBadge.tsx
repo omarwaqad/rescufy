@@ -1,63 +1,71 @@
-import { useTranslation } from "react-i18next";
-
-type RequestStatus = "pending" | "assigned" | "enRoute" | "completed" | "cancelled";
-type RequestPriority = "critical" | "high" | "medium" | "low";
-
 interface StatusBadgeProps {
-  status?: RequestStatus;
-  priority?: RequestPriority;
+  status?: string;
+  priority?: string;
 }
 
-const statusStyles: Record<RequestStatus, string> = {
-  pending: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-  assigned: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  enRoute: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
-  completed: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-  cancelled: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
+// ─── Status → visual style ────────────────────────────────────────────────────
+const statusStyles: Record<string, string> = {
+  Pending:   "bg-yellow-100  text-yellow-800  dark:bg-yellow-900/40  dark:text-yellow-300",
+  Assigned:  "bg-blue-100    text-blue-800    dark:bg-blue-900/40    dark:text-blue-300",
+  Accepted:  "bg-sky-100     text-sky-800     dark:bg-sky-900/40     dark:text-sky-300",
+  OnTheWay:  "bg-purple-100  text-purple-800  dark:bg-purple-900/40  dark:text-purple-300",
+  Arrived:   "bg-indigo-100  text-indigo-800  dark:bg-indigo-900/40  dark:text-indigo-300",
+  PickedUp:  "bg-orange-100  text-orange-800  dark:bg-orange-900/40  dark:text-orange-300",
+  Delivered: "bg-teal-100    text-teal-800    dark:bg-teal-900/40    dark:text-teal-300",
+  Finished:  "bg-green-100   text-green-800   dark:bg-green-900/40   dark:text-green-300",
+  Canceled:  "bg-red-100     text-red-800     dark:bg-red-900/40     dark:text-red-300",
 };
 
-const priorityStyles: Record<RequestPriority, string> = {
-  critical: "critical-gradient text-white critical-gradient shadow-alert",
-  high: "bg-orange-500 text-white dark:bg-orange-600 shadow-alert",
-  medium: "bg-amber-500 text-white dark:bg-amber-600 shadow-alert",
-  low: "bg-blue-500 text-white dark:bg-blue-600 shadow-alert",
+// ─── Status → human label ─────────────────────────────────────────────────────
+const statusLabels: Record<string, string> = {
+  Pending:   "Pending",
+  Assigned:  "Assigned",
+  Accepted:  "Accepted",
+  OnTheWay:  "On The Way",
+  Arrived:   "Arrived",
+  PickedUp:  "Picked Up",
+  Delivered: "Delivered",
+  Finished:  "Finished",
+  Canceled:  "Canceled",
 };
 
-export function StatusBadge({ status = "pending", priority }: StatusBadgeProps) {
-  const { t } = useTranslation('requests');
+// ─── Priority styles ──────────────────────────────────────────────────────────
+const priorityStyles: Record<string, string> = {
+  critical: "bg-red-600    text-white shadow-sm",
+  high:     "bg-orange-500 text-white shadow-sm",
+  medium:   "bg-amber-500  text-white shadow-sm",
+  low:      "bg-blue-500   text-white shadow-sm",
+};
 
-  // Fallback: humanize camelCase keys (e.g., enRoute -> En Route) when translation is missing
-  const humanize = (key: string) =>
-    key
-      .replace(/([A-Z])/g, ' $1')
-      .replace(/_/g, ' ')
-      .replace(/^./, (s) => s.toUpperCase())
-      .trim();
+const priorityLabels: Record<string, string> = {
+  critical: "Critical",
+  high:     "High",
+  medium:   "Medium",
+  low:      "Low",
+};
 
-  const getSafeLabel = (nsKey: string, fallbackKey: string) => {
-    const translated = t(nsKey);
-    // i18next returns the key when missing; if so, return humanized fallback
-    if (!translated || translated === nsKey) return humanize(fallbackKey);
-    return translated;
-  };
-
-  const baseClasses = 'py-1 rounded-full text-xs font-semibold inline-block align-middle';
-  // allow wrapping on small screens, truncate on md and above; increase md width for longer labels
-  const desktopWidth = 'md:w-36 md:truncate text-center';
+// ─── Component ────────────────────────────────────────────────────────────────
+export function StatusBadge({ status, priority }: StatusBadgeProps) {
+  const base = "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold whitespace-nowrap";
 
   if (priority) {
-    const label = getSafeLabel(`priority.${priority}`, priority);
+    const p = priority.toLowerCase();
+    const style = priorityStyles[p] || priorityStyles.medium;
+    const label = priorityLabels[p] || priority;
     return (
-      <span className={`${baseClasses} px-4 md:px-3 ${desktopWidth} whitespace-normal md:whitespace-nowrap ${priorityStyles[priority]}`}>
+      <span className={`${base} ${style}`}>
         {label}
       </span>
     );
   }
 
-  const statusLabel = getSafeLabel(`status.${status}`, status);
+  const s = status ?? "Pending";
+  const style = statusStyles[s] || statusStyles.Pending;
+  const label = statusLabels[s] || s;
+  
   return (
-    <span className={`${baseClasses} px-2 md:px-3 ${desktopWidth} whitespace-normal md:whitespace-nowrap ${statusStyles[status]}`}>
-      {statusLabel}
+    <span className={`${base} ${style}`}>
+      {label}
     </span>
   );
 }

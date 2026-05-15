@@ -7,7 +7,12 @@
         "users": "Users",
         "audit": "Audit",
         "settings": "Settings",
-        "analytics": "Analytics"
+        "analytics": "Analytics",
+        "operations": "Operations",
+        "monitoring": "Monitoring",
+        "management": "Management",
+            "hospitalProfile": "My Hospital"
+
 
     },
     "navbar": {

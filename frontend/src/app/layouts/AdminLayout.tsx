@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import SideBar from "../../shared/common/SideBar";
+import SideBar from "../../components/SideBar";
 import { Outlet, useLocation } from "react-router-dom";
-import AdminNavbar from "../../shared/common/AdminNavBar";
+import AdminNavbar from "../../components/AdminNavBar";
 import { useMediaQuery } from "../../shared/hooks/useMediaQuery";
+import Footer from "@/components/Footer";
 
 export default function AdminLayout() {
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const [sidebarOpen, setSidebarOpen] = useState(isDesktop);
+  const [isExpanded,setIsExpanded]=useState(false);
 
   const location = useLocation();
 
@@ -34,21 +36,21 @@ export default function AdminLayout() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm"
+            transition={{ duration: 0.01 }}
+            className="fixed inset-0 bg-black/10 z-40 backdrop-blur-xs"
             onClick={closeSidebar}
           />
         )}
       </AnimatePresence>
 
       {/* Sidebar */}
-      <SideBar isOpen={sidebarOpen} onClose={closeSidebar} />
+      <SideBar isOpen={sidebarOpen} onClose={closeSidebar} isExpanded={isExpanded} setIsExpanded={setIsExpanded} />
 
       {/* Content */}
-      <div className="flex-1 flex flex-col min-w-0 md:ltr:ml-22 md:rtl:mr-22">
-        <AdminNavbar onMenuClick={toggleSidebar} />
+      <div className="flex-1 flex flex-col min-w-0 md:ltr:ml-10 md:rtl:mr-10">
+        <AdminNavbar onMenuClick={toggleSidebar} isExpanded={isExpanded} setIsExpanded={setIsExpanded} />
 
-        <main className="flex-1 pt-20 md:pt-24 pb-6 px-4 md:px-8 lg:px-12 overflow-y-auto">
+        <main className="flex-1 pt-20 md:pt-24 pb-6 md:px-10 lg:px-5  overflow-y-auto">
           
           <AnimatePresence mode="wait">
             <motion.div  
@@ -63,6 +65,7 @@ export default function AdminLayout() {
           </AnimatePresence>
 
         </main>
+        <Footer/>
       </div>
     </div>
   );

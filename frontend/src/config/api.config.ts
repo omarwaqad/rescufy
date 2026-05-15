@@ -4,7 +4,7 @@
  */
 
 export const API_CONFIG = {
-  BASE_URL: "https://rescuffy.runasp.net",
+  BASE_URL: "https://final1111.runasp.net",
   ENDPOINTS: {
     AUTH: {
       LOGIN: "/api/Auth/login",
@@ -18,18 +18,26 @@ export const API_CONFIG = {
       UPDATE: (id: string) => `/api/Users/${id}`,
       DELETE: (id: string) => `/api/Users/${id}`,
       GET_BY_ID: (id: string) => `/api/Users/${id}`,
-      ASSIGN_HOSPITAL: (userId: string, hospitalId: number) =>
-        `/api/Users/${userId}/assign-hospital/${hospitalId}`,
+      CREATE_HOSPITAL_ADMIN: "/api/Admin/create-hospital-admin",
+      CREATE_AMBULANCE_DRIVER: "/api/Admin/create-ambulance-driver",
     },
     HOSPITALS: {
       GET_ALL: "/api/Hospital",
       CREATE: "/api/Hospital",
-      MY_HOSPITAL: "/api/Hospital/my-hospital",
+      MY_HOSPITAL: "/api/Hospital/my",
+      MY_REQUESTS: "/api/Hospital/my-requests",
+      ACTIVE_REQUESTS: (id: number) => `/api/Hospital/${id}/active-requests`,
       GET_BY_ID: (id: string) => `/api/Hospital/${id}`,
       UPDATE: (id: string) => `/api/Hospital/${id}`,
       DELETE: (id: string) => `/api/Hospital/${id}`,
       GET_STATS: (id: string) => `/api/Hospital/${id}/stats`,
       GET_REQUESTS: (id: string) => `/api/Hospital/${id}/requests`,
+      WEEKLY_STATS: (id: string) => `/api/Hospital/${id}/weekly-stats`,
+      UPDATE_STATUS: (id: string) => `/api/Hospital/${id}/status`,
+    },
+    FEEDBACK: {
+      GET_HOSPITAL: (hospitalId: string) =>
+        `/api/Feedback/hospital/${hospitalId}`,
     },
     AMBULANCES: {
       GET_ALL: "/api/Ambulance",
@@ -40,7 +48,24 @@ export const API_CONFIG = {
     },
     REQUESTS: {
       GET_ALL: "/api/Request",
+      GET_ADMIN_STREAM: "/api/request/admin-stream",
+      GET_ADMIN_REQUESTS: "/api/request/admin-stream",
       GET_BY_ID: (id: string) => `/api/Request/${id}`,
+      CANCEL_REQUEST: (id: string) => `/api/Request/${id}/cancel`,
+      REASSIGN_REQUEST: (id: string) => `/api/Request/${id}/reassign`,
+      CREATE_TRIP_REPORT: "/api/TripReport",
+      UPDATE_TRIP_REPORT: (id: number) => `/api/TripReport/${id}`,
+    },
+    NOTIFICATIONS: {
+      GET_ALL: "/api/Notification",
+      UNREAD_COUNT: "/api/Notification/unread-count",
+      MARK_READ: (id: string) => `/api/Notification/${id}/read`,
+      MARK_ALL_READ: "/api/Notification/mark-all-read",
+      DELETE: (id: string) => `/api/Notification/${id}`,
+    },
+    DASHBOARD: {
+      GET_STATS: "/api/Dashboard/stats",
+      GET_CRITICAL: "/api/Dashboard/critical",
     },
   },
 } as const;
