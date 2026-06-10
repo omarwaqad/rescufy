@@ -30,6 +30,8 @@ namespace Persistence.Data
         public DbSet<HospitalFeedback> HospitalFeedbacks { get; set; }
         public DbSet<ParamedicFeedback> ParamedicFeedbacks { get; set; }
         public DbSet<DriverFeedback> DriverFeedbacks { get; set; }
+        public DbSet<RequestEvent> RequestEvents { get; set; }
+        public DbSet<DispatchAlert> DispatchAlerts { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AssemblyReference).Assembly);

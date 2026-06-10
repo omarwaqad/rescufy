@@ -28,13 +28,22 @@ namespace API.Controllers
         /// <response code="403">If the user is not an Admin or SuperAdmin</response>
         [HttpGet("admin-stream")]
         [Authorize(Roles = nameof(Roles.Admin) + "," + nameof(Roles.SuperAdmin))]
-        [ProducesResponseType(typeof(IEnumerable<Shared.DTOs.Request.RequestCardDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Shared.DTOs.PagedResponse<Shared.DTOs.Request.RequestCardDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> GetAdminStream()
+        public async Task<IActionResult> GetAdminStream([FromQuery] RequestFilterDto filter)
         {
-            var stream = await requestService.GetAdminRequestStreamAsync();
-            return Ok(stream);
+            var pagedStream = await requestService.GetAdminRequestsPagedAsync(filter);
+            return Ok(pagedStream);
+        }
+
+        [HttpGet("{id}/events")]
+        [Authorize(Roles = nameof(Roles.Admin) + "," + nameof(Roles.SuperAdmin))]
+        [ProducesResponseType(typeof(Shared.DTOs.PagedResponse<Shared.DTOs.Dispatch.EventDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetEvents([FromRoute] int id, [FromQuery] int page = 1, [FromQuery] int limit = 50)
+        {
+            var pagedEvents = await requestService.GetRequestEventsAsync(id, page, limit);
+            return Ok(pagedEvents);
         }
 
         /// <summary>

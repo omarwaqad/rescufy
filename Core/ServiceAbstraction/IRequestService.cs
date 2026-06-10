@@ -16,7 +16,8 @@ namespace ServiceAbstraction
         Task CancelRequestAsync(int requestId, string adminId);
         Task<IEnumerable<int>> GetActiveRequestIdsAsync(string userId);
         Task AcceptRequestAsync(int requestId, string driverId);
-        Task<IEnumerable<Shared.DTOs.Request.RequestCardDto>> GetAdminRequestStreamAsync();
+        Task<PagedResponse<Shared.DTOs.Request.RequestCardDto>> GetAdminRequestsPagedAsync(RequestFilterDto filter);
+        Task<PagedResponse<Shared.DTOs.Dispatch.EventDto>> GetRequestEventsAsync(int requestId, int page, int limit);
         Task<Shared.DTOs.Request.AIAnalysisDto?> GetAIAnalysisAsync(int requestId);
     }
 }

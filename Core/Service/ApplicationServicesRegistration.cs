@@ -25,6 +25,7 @@ namespace Service
 
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IRequestService, RequestService>();
+            services.AddScoped<IAlertService, AlertService>();
             services.AddScoped<ITripReportService, TripReportService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IFeedbackService, FeedbackService>();

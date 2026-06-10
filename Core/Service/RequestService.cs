@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Service
 {
-    public class RequestService(IUnitOfWork unitOfWork, IAIService aiService, IAmbulanceRealTimeSender ambulanceRealTimeSender, INotificationRealTimeSender notificationRealTimeSender, UserManager<ApplicationUser> userManager, Microsoft.Extensions.Logging.ILogger<RequestService> logger) : IRequestService
+    public class RequestService(IUnitOfWork unitOfWork, IAIService aiService, IAmbulanceRealTimeSender ambulanceRealTimeSender, INotificationRealTimeSender notificationRealTimeSender, IDispatchRealTimeSender dispatchRealTimeSender, UserManager<ApplicationUser> userManager, Microsoft.Extensions.Logging.ILogger<RequestService> logger) : IRequestService
     {
         public async Task<Request> CreateRequestAsync(string userId, string description, decimal latitude, decimal longitude, string address, bool isSelfCase, int numberOfPeopleAffected)
         {
@@ -68,6 +68,7 @@ namespace Service
                 );
 
             var nearestAmbulanceMatch = availableAmbulances
+                .Where(a => ambulanceRealTimeSender.IsDriverConnected(a.DriverId!))
                 .Select(a => new { Ambulance = a, Distance = Helpers.GeoHelper.CalculateDistance((double)latitude, (double)longitude, (double)a.SimLatitude, (double)a.SimLongitude) })
                 .OrderBy(x => x.Distance)
                 .FirstOrDefault();
@@ -496,6 +497,17 @@ namespace Service
 
             unitOfWork.GetRepository<Request, int>().Update(request);
 
+            if (newStatus == RequestStatus.Finished || newStatus == RequestStatus.Closed)
+            {
+                // Send notification to user to make feedback
+                await notificationRealTimeSender.SendToUserAsync(request.UserId, new
+                {
+                    Event = "FeedbackRequested",
+                    RequestId = requestId,
+                    Message = "Your request is completed. Please provide your feedback."
+                });
+            }
+
             if (newStatus == RequestStatus.Accepted)
             {
                 var assignment = (await unitOfWork.GetRepository<Assignment, int>()
@@ -649,15 +661,135 @@ namespace Service
             return requestIds;
         }
 
-        public async Task<IEnumerable<Shared.DTOs.Request.RequestCardDto>> GetAdminRequestStreamAsync()
+        public async Task<PagedResponse<Shared.DTOs.Request.RequestCardDto>> GetAdminRequestsPagedAsync(RequestFilterDto filter)
         {
-            var requests = await unitOfWork.GetRepository<Request, int>()
-                .GetAllAsync(
-                    predicate: r => r.RequestStatus != RequestStatus.Finished && r.RequestStatus != RequestStatus.Closed && r.RequestStatus != RequestStatus.Canceled,
-                    includes: [r => r.ApplicationUser, r => r.AIAnalysis, r => r.Assignments, r => r.AuditLogs]
-                );
+            var query = await unitOfWork.GetRepository<Request, int>().GetAllAdvanced(
+                predicate: r => true,
+                includes: [
+                    q => q.Include(x => x.ApplicationUser),
+                    q => q.Include(x => x.AIAnalysis),
+                    q => q.Include(x => x.Assignments),
+                    q => q.Include(x => x.AuditLogs)
+                ]
+            ).ToListAsync();
 
-            return requests.Select(MapToRequestCardDto).OrderByDescending(r => r.CreatedAt);
+            if (!string.IsNullOrEmpty(filter.Severity))
+            {
+                query = query.Where(r => r.AIAnalysis?.Severity?.ToLower() == filter.Severity.ToLower()).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(filter.Status))
+            {
+                // Simple mapping, can be improved based on exact requirements
+                query = query.Where(r => r.RequestStatus.ToString().ToLower() == filter.Status.ToLower() ||
+                                        (filter.Status.ToLower() == "searching" && r.RequestStatus == RequestStatus.Pending) ||
+                                        (filter.Status.ToLower() == "enroute" && r.RequestStatus == RequestStatus.OnTheWay) ||
+                                        (filter.Status.ToLower() == "completed" && (r.RequestStatus == RequestStatus.Finished || r.RequestStatus == RequestStatus.Closed))).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(filter.Last))
+            {
+                var now = DateTime.UtcNow;
+                if (filter.Last.EndsWith("m"))
+                {
+                    if (int.TryParse(filter.Last.TrimEnd('m'), out int minutes))
+                        query = query.Where(r => r.CreatedAt >= now.AddMinutes(-minutes)).ToList();
+                }
+                else if (filter.Last.EndsWith("h"))
+                {
+                    if (int.TryParse(filter.Last.TrimEnd('h'), out int hours))
+                        query = query.Where(r => r.CreatedAt >= now.AddHours(-hours)).ToList();
+                }
+            }
+            
+            if (filter.From.HasValue) query = query.Where(r => r.CreatedAt >= filter.From.Value).ToList();
+            if (filter.To.HasValue) query = query.Where(r => r.CreatedAt <= filter.To.Value).ToList();
+
+            if (filter.WaitingMoreThan.HasValue)
+            {
+                var now = DateTime.UtcNow;
+                query = query.Where(r => r.RequestStatus == RequestStatus.Pending && (now - r.CreatedAt).TotalMinutes > filter.WaitingMoreThan.Value).ToList();
+            }
+
+            if (filter.RequiresHumanReview.HasValue && filter.RequiresHumanReview.Value)
+            {
+                query = query.Where(r => r.AIAnalysis != null && r.AIAnalysis.Confidence < 0.7f).ToList(); // Example condition
+            }
+
+            if (!string.IsNullOrEmpty(filter.FailureReason))
+            {
+                query = query.Where(r => r.Assignments.Any(a => a.Status == AssignmentStatus.Failed && a.Notes != null && a.Notes.Contains(filter.FailureReason))).ToList();
+            }
+
+            var dtos = query.Select(MapToRequestCardDto);
+
+            if (!string.IsNullOrEmpty(filter.Sort))
+            {
+                var parts = filter.Sort.Split('_');
+                var field = parts[0].ToLower();
+                var direction = parts.Length > 1 ? parts[1].ToLower() : "asc";
+
+                bool isDesc = direction == "desc";
+
+                dtos = field switch
+                {
+                    "createdat" => isDesc ? dtos.OrderByDescending(x => x.CreatedAt) : dtos.OrderBy(x => x.CreatedAt),
+                    "severity" => isDesc ? dtos.OrderByDescending(x => x.Priority) : dtos.OrderBy(x => x.Priority),
+                    "waitingtime" => isDesc ? dtos.OrderByDescending(x => x.Timeline.AssignedAt ?? DateTime.UtcNow) : dtos.OrderBy(x => x.Timeline.AssignedAt ?? DateTime.UtcNow),
+                    "aiconfidence" => dtos, // Note: would need to map Confidence to Dto to sort properly, simplified here
+                    _ => dtos
+                };
+            }
+            else
+            {
+                dtos = dtos.OrderByDescending(r => r.CreatedAt);
+            }
+
+            var totalItems = dtos.Count();
+            var items = dtos.Skip((filter.Page - 1) * filter.Limit).Take(filter.Limit).ToList();
+
+            return new PagedResponse<Shared.DTOs.Request.RequestCardDto>
+            {
+                Data = items,
+                Meta = new PaginationMeta
+                {
+                    Page = filter.Page,
+                    Limit = filter.Limit,
+                    TotalItems = totalItems,
+                    TotalPages = (int)Math.Ceiling(totalItems / (double)filter.Limit)
+                }
+            };
+        }
+
+        public async Task<PagedResponse<Shared.DTOs.Dispatch.EventDto>> GetRequestEventsAsync(int requestId, int page, int limit)
+        {
+            var query = await unitOfWork.GetRepository<RequestEvent, int>().GetAllAsync(e => e.RequestId == requestId);
+            
+            var totalItems = query.Count();
+            var items = query.OrderByDescending(e => e.Timestamp)
+                             .Skip((page - 1) * limit)
+                             .Take(limit)
+                             .Select(e => new Shared.DTOs.Dispatch.EventDto
+                             {
+                                 RequestId = e.RequestId.ToString(),
+                                 EventType = e.EventType,
+                                 Title = e.Title,
+                                 Message = e.Message,
+                                 Timestamp = e.Timestamp,
+                                 AmbulanceId = e.AmbulanceId
+                             }).ToList();
+
+            return new PagedResponse<Shared.DTOs.Dispatch.EventDto>
+            {
+                Data = items,
+                Meta = new PaginationMeta
+                {
+                    Page = page,
+                    Limit = limit,
+                    TotalItems = totalItems,
+                    TotalPages = (int)Math.Ceiling(totalItems / (double)limit)
+                }
+            };
         }
 
         private Shared.DTOs.Request.RequestCardDto MapToRequestCardDto(Request r)

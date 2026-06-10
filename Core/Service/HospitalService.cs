@@ -222,7 +222,7 @@ namespace Service
 
         public async Task<IEnumerable<HospitalDto>> GetNearbyHospitalsAsync(decimal latitude, decimal longitude, double radiusKm = 10.0)
         {
-            var hospitals = await unitOfWork.GetRepository<Hospital, int>().GetAllAsync(h => !h.IsDeleted && h.Status == HospitalStatus.Available && h.IsAvailable);
+            var hospitals = await unitOfWork.GetRepository<Hospital, int>().GetAllAsync(h => !h.IsDeleted && h.Status == HospitalStatus.Available);
             
             return hospitals
                 .Select(h => new { Hospital = h, Distance = Helpers.GeoHelper.CalculateDistance((double)latitude, (double)longitude, (double)h.Latitude, (double)h.Longitude) })

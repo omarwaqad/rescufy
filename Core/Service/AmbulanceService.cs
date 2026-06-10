@@ -77,6 +77,41 @@ namespace Service
             return ambulances.Select(MapToDto);
         }
 
+        public async Task<Shared.DTOs.PagedResponse<AmbulanceDto>> GetAllPagedAsync(Shared.DTOs.Ambulance.AmbulanceFilterDto filter)
+        {
+            var query = await unitOfWork.GetRepository<Ambulance, int>().GetAllAsync(
+                predicate: a => !a.IsDeleted,
+                includes: [a => a.Driver, a => a.Paramedic]
+            );
+
+            if (!string.IsNullOrEmpty(filter.Status))
+            {
+                if (Enum.TryParse<AmbulanceStatus>(filter.Status, true, out var status))
+                {
+                    query = query.Where(a => a.AmbulanceStatus == status);
+                }
+            }
+
+            var totalItems = query.Count();
+            var items = query.OrderBy(a => a.Id)
+                             .Skip((filter.Page - 1) * filter.Limit)
+                             .Take(filter.Limit)
+                             .Select(MapToDto)
+                             .ToList();
+
+            return new Shared.DTOs.PagedResponse<AmbulanceDto>
+            {
+                Data = items,
+                Meta = new Shared.DTOs.PaginationMeta
+                {
+                    Page = filter.Page,
+                    Limit = filter.Limit,
+                    TotalItems = totalItems,
+                    TotalPages = (int)Math.Ceiling(totalItems / (double)filter.Limit)
+                }
+            };
+        }
+
         public async Task<AmbulanceDto> UpdateAsync(int id, UpdateAmbulanceDto dto)
         {
             var ambulance = await unitOfWork.GetRepository<Ambulance, int>().GetByIdAsync(id);

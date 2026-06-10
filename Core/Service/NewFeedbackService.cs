@@ -103,6 +103,48 @@ namespace Service
             };
         }
 
+        public async Task<IEnumerable<HospitalFeedbackDto>> GetAllHospitalFeedbacksAsync()
+        {
+            var feedbacks = await unitOfWork.GetRepository<HospitalFeedback, int>().GetAllAsync();
+            return feedbacks.Select(f => new HospitalFeedbackDto
+            {
+                Id = f.Id,
+                HospitalId = f.HospitalId,
+                RequestId = f.RequestId,
+                Rate = f.Rate,
+                Comment = f.Comment,
+                CreatedAt = f.CreatedAt
+            });
+        }
+
+        public async Task<IEnumerable<ParamedicFeedbackDto>> GetAllParamedicFeedbacksAsync()
+        {
+            var feedbacks = await unitOfWork.GetRepository<ParamedicFeedback, int>().GetAllAsync();
+            return feedbacks.Select(f => new ParamedicFeedbackDto
+            {
+                Id = f.Id,
+                ParamedicId = f.ParamedicId,
+                RequestId = f.RequestId,
+                Rate = f.Rate,
+                Comment = f.Comment,
+                CreatedAt = f.CreatedAt
+            });
+        }
+
+        public async Task<IEnumerable<DriverFeedbackDto>> GetAllDriverFeedbacksAsync()
+        {
+            var feedbacks = await unitOfWork.GetRepository<DriverFeedback, int>().GetAllAsync();
+            return feedbacks.Select(f => new DriverFeedbackDto
+            {
+                Id = f.Id,
+                DriverId = f.DriverId,
+                RequestId = f.RequestId,
+                Rate = f.Rate,
+                Comment = f.Comment,
+                CreatedAt = f.CreatedAt
+            });
+        }
+
         public async Task<FeedbackResult<DriverFeedbackDto>> CreateDriverFeedbackAsync(string userId, CreateDriverFeedbackDto dto)
         {
             var request = await unitOfWork.GetRepository<Request, int>().GetByIdAsync(dto.RequestId);

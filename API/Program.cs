@@ -137,6 +137,7 @@ namespace API
 				});
 			builder.Services.AddScoped<INotificationRealTimeSender, NotificationRealTimeSender>();
 			builder.Services.AddScoped<IAmbulanceRealTimeSender, API.Hubs.Ambulance.AmbulanceRealTimeSender>();
+			builder.Services.AddScoped<IDispatchRealTimeSender, API.Hubs.Dispatch.DispatchRealTimeSender>();
 
 			#region Hashing Decryption Configuration
 			//((IConfigurationBuilder)builder.Configuration).Add(new DecryptedConfigurationSource());
@@ -181,7 +182,9 @@ namespace API
 
 						var path = context.HttpContext.Request.Path;
 						if (!string.IsNullOrEmpty(accessToken) &&
-							(path.StartsWithSegments("/hubs/notifications") || path.StartsWithSegments("/hubs/ambulance")))
+							(path.StartsWithSegments("/hubs/notifications") || 
+							 path.StartsWithSegments("/hubs/ambulance") || 
+							 path.StartsWithSegments("/hubs/dispatch")))
 						{
 							context.Token = accessToken;
 						}
@@ -240,7 +243,6 @@ namespace API
 						"http://localhost:4200", "https://localhost:4200", 
 						"http://localhost:5173", "https://localhost:5173",
 						"http://127.0.0.1:3000", "http://127.0.0.1:4200", "http://127.0.0.1:5173",
-						"https://rescufy.vercel.app"
 					};
 
 					if (!string.IsNullOrEmpty(frontEndUrl) && !allowedOrigins.Contains(frontEndUrl))
@@ -253,7 +255,7 @@ namespace API
 						allowedOrigins.Add(baseUrl);
 					}
 
-					policy.WithOrigins(allowedOrigins.ToArray())
+					policy.SetIsOriginAllowed(_ => true)
 						  .AllowAnyHeader()
 						  .AllowAnyMethod()
 						  .AllowCredentials();
@@ -336,6 +338,7 @@ namespace API
 			app.MapControllers();
 			app.MapHub<API.Hubs.Ambulance.AmbulanceHub>("/hubs/ambulance");
 			app.MapHub<NotificationHub>("/hubs/notifications");
+			app.MapHub<API.Hubs.Dispatch.DispatchHub>("/hubs/dispatch");
 
 			app.Run();
 

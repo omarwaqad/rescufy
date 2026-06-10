@@ -14,6 +14,7 @@ namespace API.Hubs.Ambulance
             var userId = Context.UserIdentifier;
             if (!string.IsNullOrEmpty(userId))
             {
+                AmbulanceRealTimeSender.ConnectedDrivers.AddOrUpdate(userId, 1, (_, count) => count + 1);
                 var activeRequestIds = await requestService.GetActiveRequestIdsAsync(userId);
                 foreach (var requestId in activeRequestIds)
                 {
@@ -21,6 +22,16 @@ namespace API.Hubs.Ambulance
                 }
             }
             await base.OnConnectedAsync();
+        }
+
+        public override async Task OnDisconnectedAsync(Exception? exception)
+        {
+            var userId = Context.UserIdentifier;
+            if (!string.IsNullOrEmpty(userId))
+            {
+                AmbulanceRealTimeSender.ConnectedDrivers.AddOrUpdate(userId, 0, (_, count) => Math.Max(0, count - 1));
+            }
+            await base.OnDisconnectedAsync(exception);
         }
 
         // Manual join for new cases

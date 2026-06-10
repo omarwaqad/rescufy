@@ -84,10 +84,10 @@ namespace API.Controllers
         /// </summary>
         /// <response code="200">Returns a list of all ambulances</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<AmbulanceDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAll()
+        [ProducesResponseType(typeof(Shared.DTOs.PagedResponse<AmbulanceDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAll([FromQuery] Shared.DTOs.Ambulance.AmbulanceFilterDto filter)
         {
-            var result = await ambulanceService.GetAllAsync();
+            var result = await ambulanceService.GetAllPagedAsync(filter);
             return Ok(result);
         }
 

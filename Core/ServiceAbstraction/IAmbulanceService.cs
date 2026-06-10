@@ -7,6 +7,7 @@ namespace ServiceAbstraction
         Task<AmbulanceDto> CreateAsync(CreateAmbulanceDto dto);
         Task<AmbulanceDto> GetByIdAsync(int id);
         Task<IEnumerable<AmbulanceDto>> GetAllAsync();
+        Task<Shared.DTOs.PagedResponse<AmbulanceDto>> GetAllPagedAsync(Shared.DTOs.Ambulance.AmbulanceFilterDto filter);
         Task<AmbulanceDto> UpdateAsync(int id, UpdateAmbulanceDto dto);
         Task DeleteAsync(int id);
 

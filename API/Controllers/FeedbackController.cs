@@ -11,6 +11,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class FeedbackController(IFeedbackService feedbackService, IAIService aiService) : ControllerBase
     {
         /// <summary>
