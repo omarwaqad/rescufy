@@ -128,15 +128,9 @@ export default function SideBar({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.22 }}
+            transition={{ duration: 0.15 }}
             onClick={onClose}
-            className="fixed inset-0 z-40 md:hidden"
-            style={{
-              background:
-                "radial-gradient(ellipse at center, rgba(0,0,0,0.38) 0%, rgba(0,0,0,0.55) 100%)",
-              backdropFilter: "blur(3px)",
-              WebkitBackdropFilter: "blur(3px)",
-            }}
+            className="fixed inset-0 z-40 md:hidden bg-black/50"
           />
         )}
       </AnimatePresence>
@@ -149,7 +143,7 @@ export default function SideBar({
         /* Slide in/out on mobile */
         initial={{ x: isRTL ? "100%" : "-100%" }}
         animate={{ x: isOpen ? 0 : isRTL ? "100%" : "-100%" }}
-        transition={{ duration: DURATION, ease: SIDEBAR_EASE }}
+        transition={{ duration: 0.18, ease: "easeOut" }}
         /* Expand/collapse width on desktop */
         style={{
           /* CSS custom properties let children inherit the transition timing */
@@ -171,14 +165,14 @@ export default function SideBar({
 
           // ── Light mode surface ──
           "border-slate-200/80",
-          "bg-white/90",
+          "bg-white md:bg-white/90",
 
           // ── Dark mode surface ──
           "dark:border-white/[0.06]",
-          "dark:bg-[#0d0f16]/95",
+          "dark:bg-[#0d0f16] md:dark:bg-[#0d0f16]/95",
 
-          // Blur + overflow
-          "backdrop-blur-2xl",
+          // Blur + overflow (Desktop only blur for performance)
+          "md:backdrop-blur-2xl",
           "overflow-hidden",
 
           // Smooth width change
@@ -187,8 +181,8 @@ export default function SideBar({
           .filter(Boolean)
           .join(" ")}
       >
-        {/* ── Ambient glows (theme-aware) ── */}
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        {/* ── Ambient glows (theme-aware, hidden on mobile for performance) ── */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden hidden md:block">
           {/* Light mode: subtle warm tones */}
           <div className="absolute -left-8 -top-8 h-60 w-60 rounded-full bg-indigo-100/60 blur-3xl dark:bg-indigo-900/[0.15] dark:blur-3xl" />
           <div className="absolute -bottom-8 -right-8 h-52 w-52 rounded-full bg-violet-100/50 blur-3xl dark:bg-violet-900/[0.12] dark:blur-3xl" />
@@ -231,7 +225,7 @@ export default function SideBar({
                 Rescufy
               </h2>
               <p className="whitespace-nowrap text-[11px] text-slate-400 dark:text-slate-500">
-                Emergency Operations
+                {t("sidebar.emergencyOperations", "Emergency Operations")}
               </p>
             </motion.div>
 
@@ -241,7 +235,7 @@ export default function SideBar({
                 Rescufy
               </h2>
               <p className="whitespace-nowrap text-[11px] text-slate-400 dark:text-slate-500">
-                Emergency Operations
+                {t("sidebar.emergencyOperations", "Emergency Operations")}
               </p>
             </div>
           </div>
@@ -374,14 +368,14 @@ export default function SideBar({
                 // Dark
                 "dark:bg-emerald-500/[0.06] dark:border-emerald-500/[0.12]",
                 // Smooth size change
-                isExpanded ? "gap-2.5" : "justify-center",
+                isExpanded ? "gap-2.5 justify-start" : "gap-2.5 md:gap-0 justify-start md:justify-center",
                 "transition-all duration-[280ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)]",
               ].join(" ")}
             >
               {/* Pulsing dot — always visible */}
               <div className="relative flex shrink-0 h-2 w-2 items-center justify-center">
                 <span className="absolute h-3.5 w-3.5 rounded-full bg-emerald-400/30 animate-ping" />
-                <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.65)]" />
+                <span className="relative z-10 h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.65)]" />
               </div>
 
               {/* Status text */}
@@ -391,20 +385,20 @@ export default function SideBar({
                 className="overflow-hidden hidden md:block"
               >
                 <p className="whitespace-nowrap text-[12.5px] font-medium text-emerald-600 dark:text-emerald-400">
-                  System Operational
+                  {t("sidebar.systemOperational", "System Operational")}
                 </p>
                 <p className="whitespace-nowrap text-[10.5px] text-emerald-500/70 dark:text-emerald-600">
-                  All services running
+                  {t("sidebar.allServicesRunning", "All services running")}
                 </p>
               </motion.div>
 
               {/* Always visible on mobile */}
               <div className="md:hidden overflow-hidden">
                 <p className="whitespace-nowrap text-[12.5px] font-medium text-emerald-600 dark:text-emerald-400">
-                  System Operational
+                  {t("sidebar.systemOperational", "System Operational")}
                 </p>
                 <p className="whitespace-nowrap text-[10.5px] text-emerald-500/70 dark:text-emerald-600">
-                  All services running
+                  {t("sidebar.allServicesRunning", "All services running")}
                 </p>
               </div>
             </div>

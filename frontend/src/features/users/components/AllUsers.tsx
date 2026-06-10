@@ -200,7 +200,7 @@ export default function AllUsers() {
         </div>
 
         <section
-  className="
+          className="
     rounded-3xl
     border border-border/60
     bg-bg-card/95
@@ -210,35 +210,32 @@ export default function AllUsers() {
     shadow-card
     backdrop-blur-sm
   "
->
-  {/* Top Controls */}
-  <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
-    {/* Search */}
-    <div className="flex-1">
-      <SearchInput
-        value={search}
-        onSearchChange={setSearch}
-        placeholder={t("filters.searchPlaceholder")}
-      />
-    </div>
+        >
+          {/* Top Controls */}
+          <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
+            {/* Search */}
+            <div className="flex-1">
+              <SearchInput
+                value={search}
+                onSearchChange={setSearch}
+                placeholder={t("filters.searchPlaceholder")}
+              />
+            </div>
 
-    {/* Filters + Action */}
-    <div
-      className="
+            {/* Filters + Action */}
+            <div
+              className="
         flex flex-col gap-3
         sm:flex-row sm:items-center
       "
-    >
-      <div className="w-full sm:w-56">
-        <UsersRoles
-          value={role}
-          onChange={setRole}
-        />
-      </div>
+            >
+              <div className="w-full sm:w-56">
+                <UsersRoles value={role} onChange={setRole} />
+              </div>
 
-      <button
-        onClick={openAddModal}
-        className="
+              <button
+                onClick={openAddModal}
+                className="
           inline-flex h-11
           items-center justify-center gap-2
 
@@ -258,19 +255,17 @@ export default function AllUsers() {
 
           active:scale-[0.98]
         "
-      >
-        <span className="text-base leading-none">
-          +
-        </span>
+              >
+                <span className="text-base leading-none">+</span>
 
-        {t("actions.add")}
-      </button>
-    </div>
-  </div>
+                {t("actions.add")}
+              </button>
+            </div>
+          </div>
 
-  {/* Footer Info */}
-  <div
-    className="
+          {/* Footer Info */}
+          <div
+            className="
       mt-4
       flex flex-col gap-2
       border-t border-border/50
@@ -280,16 +275,16 @@ export default function AllUsers() {
       sm:items-center
       sm:justify-between
     "
-  >
-    <p className="text-xs text-muted">
-      {t("overview.usersFound", {
-        count: users.length,
-      })}
-    </p>
+          >
+            <p className="text-xs text-muted">
+              {t("overview.usersFound", {
+                count: users.length,
+              })}
+            </p>
 
-    {hasActiveFilters && (
-      <span
-        className="
+            {hasActiveFilters && (
+              <span
+                className="
           inline-flex w-fit items-center
 
           rounded-full
@@ -302,12 +297,12 @@ export default function AllUsers() {
           text-xs font-medium
           text-primary
         "
-      >
-        {t("overview.activeFilters")}
-      </span>
-    )}
-  </div>
-</section>
+              >
+                {t("overview.activeFilters")}
+              </span>
+            )}
+          </div>
+        </section>
       </div>
 
       <main className="mt-6 overflow-hidden rounded-2xl border border-border/70 bg-bg-card shadow-card">

@@ -46,7 +46,7 @@ export function AlertsPanel({ alerts }: AlertsPanelProps) {
   const { t } = useTranslation("dashboard");
 
   return (
-    <section className="rounded-2xl border border-border bg-bg-card p-4 md:p-5 shadow-card">
+    <section className="rounded-2xl border border-border bg-bg-card p-4 md:p-6 shadow-card">
       <div className="border-b border-border/70 pb-4">
         <div className="inline-flex items-center gap-2 text-sm font-semibold text-heading">
           <BellRing className="h-4 w-4 text-danger" />

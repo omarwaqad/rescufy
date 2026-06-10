@@ -3,6 +3,7 @@ import { HospitalCard } from "./HospitalCard";
 import { HospitalFormModal } from "./HospitalFormModal";
 import { HospitalsKPISection } from "./HospitalsKPISection";
 import { HospitalsInsightsPanel } from "./HospitalsInsightsPanel";
+import { HospitalsListSkeleton } from "./HospitalsListSkeleton";
 import { useHospitals } from "../hooks/useHospitals";
 import { useTranslation } from "react-i18next";
 import { motion, useReducedMotion } from "framer-motion";
@@ -217,21 +218,7 @@ export default function AllHospitals() {
       </header>
 
       {isLoading ? (
-        <div
-          className="
-            rounded-2xl
-            border border-dashed border-border
-            bg-surface-muted/20
-            px-4 py-8
-            text-center
-          "
-        >
-          <ShieldAlert className="mx-auto h-7 w-7 text-muted" />
-
-          <p className="mt-3 text-sm font-medium text-heading">
-            {t("operations.loading")}
-          </p>
-        </div>
+        <HospitalsListSkeleton />
       ) : operationalHospitals.length === 0 ? (
         <div
           className="

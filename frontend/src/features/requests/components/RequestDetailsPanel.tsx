@@ -5,14 +5,20 @@ import {
 } from "lucide-react";
 import { useRequestDetailsPanelView } from "../hooks/useRequestDetailsPanelView";
 import type { RequestDetailsPanelProps } from "../types/request-ui.types";
+import { RequestDetailsSkeleton } from "./RequestDetailsSkeleton";
 
 export function RequestDetailsPanel({
   request,
   onViewDetails,
   onReassignAmbulance,
   onCancelAssignment,
+  isLoading,
 }: RequestDetailsPanelProps) {
   const { t, view } = useRequestDetailsPanelView(request);
+
+  if (isLoading) {
+    return <RequestDetailsSkeleton />;
+  }
 
   if (!request || !view) {
     return (

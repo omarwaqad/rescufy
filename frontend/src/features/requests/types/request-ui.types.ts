@@ -24,6 +24,7 @@ export type RequestDetailsPanelProps = {
   onViewDetails: () => void;
   onReassignAmbulance: (requestId: number) => void;
   onCancelAssignment: (requestId: number) => void;
+  isLoading?: boolean;
 };
 
 export type HospitalRequestRowProps = {

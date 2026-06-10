@@ -1,6 +1,7 @@
 import { ShieldAlert } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { AmbulanceCard } from "./AmbulanceCard";
+import { AmbulanceFleetSkeleton } from "./AmbulanceFleetSkeleton";
 import type {
   AmbulanceControlItem,
   AmbulanceStatus,
@@ -45,10 +46,7 @@ export function AmbulanceFleetPanel({
       </header>
 
       {isLoading ? (
-        <div className="rounded-xl border border-dashed border-border bg-surface-muted/40 px-4 py-8 text-center">
-          <ShieldAlert className="mx-auto h-7 w-7 text-muted" />
-          <p className="mt-3 text-sm font-medium text-heading">{t("controlCenter.loading")}</p>
-        </div>
+        <AmbulanceFleetSkeleton />
       ) : ambulances.length === 0 ? (
         <div className="rounded-xl border border-dashed border-border bg-surface-muted/40 px-4 py-8 text-center">
           <ShieldAlert className="mx-auto h-7 w-7 text-muted" />

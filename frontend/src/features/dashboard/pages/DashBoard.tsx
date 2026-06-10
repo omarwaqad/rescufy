@@ -7,7 +7,7 @@ export default function DashBoard() {
   const name = useAuth().user?.FullName;
   return (
     <>
-      <main className="px-4 py-4 sm:px-6 md:px-8 md:py-5 lg:px-12">
+      <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 md:px-8 md:py-5 lg:px-12">
         <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
             <h1 className="text-3xl font-bold text-heading">{t("welcome", { name })}</h1>
@@ -21,7 +21,7 @@ export default function DashBoard() {
         </div>
 
         <DashBoardContent />
-      </main>
+      </div>
     </>
   );
 }

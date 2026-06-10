@@ -1,9 +1,14 @@
 import { ShieldAlert } from "lucide-react";
+import { useNavigate } from "react-router";
+import { useMediaQuery } from "@/shared/hooks/useMediaQuery";
 import { useAllRequestsPage } from "../hooks/useAllRequestsPage";
 import { RequestList } from "./RequestList";
 import { RequestDetailsPanel } from "./RequestDetailsPanel";
 
 export default function AllRequests() {
+  const navigate = useNavigate();
+  const isMobile = useMediaQuery("(max-width: 1279px)");
+
   const {
     t,
     requests,
@@ -23,6 +28,15 @@ export default function AllRequests() {
     handleSelectRequest,
     handleViewRequestDetails,
   } = useAllRequestsPage();
+
+  const handleSelect = (requestId: number) => {
+    if (isMobile) {
+      navigate(`/admin/requests/${requestId}`);
+      return;
+    }
+
+    handleSelectRequest(requestId);
+  };
 
   return (
     <div className="space-y-5">
@@ -64,16 +78,19 @@ export default function AllRequests() {
             requests={boardRequests}
             selectedId={selectedId}
             isLoading={isLoading}
-            onSelect={handleSelectRequest}
+            onSelect={handleSelect}
           />
         </section>
 
-        <RequestDetailsPanel
-          request={selectedRequest}
-          onViewDetails={handleViewRequestDetails}
-          onReassignAmbulance={handleReassignAmbulance}
-          onCancelAssignment={handleCancelAssignment}
-        />
+        <div className="hidden xl:block">
+          <RequestDetailsPanel
+            request={selectedRequest}
+            onViewDetails={handleViewRequestDetails}
+            onReassignAmbulance={handleReassignAmbulance}
+            onCancelAssignment={handleCancelAssignment}
+            isLoading={isLoading}
+          />
+        </div>
       </div>
 
       {!isLoading && requests.length === 0 ? (
