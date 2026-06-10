@@ -9,6 +9,7 @@ class RegisterState extends Equatable {
     this.nationalId = '',
     this.age = '',
     this.gender = '',
+    this.profileImagePath,
     this.nameError,
     this.emailError,
     this.userNameError,
@@ -27,6 +28,7 @@ class RegisterState extends Equatable {
   final String nationalId;
   final String age;
   final String gender;
+  final String? profileImagePath;
   final String? nameError;
   final String? emailError;
   final String? userNameError;
@@ -38,6 +40,8 @@ class RegisterState extends Equatable {
   final bool showValidation;
 
   int? get parsedAge => int.tryParse(age.trim());
+  bool get hasProfileImage =>
+      profileImagePath != null && profileImagePath!.trim().isNotEmpty;
   bool get isValid =>
       nameError == null &&
       emailError == null &&
@@ -55,6 +59,7 @@ class RegisterState extends Equatable {
     String? nationalId,
     String? age,
     String? gender,
+    String? profileImagePath,
     String? nameError,
     String? emailError,
     String? userNameError,
@@ -71,6 +76,7 @@ class RegisterState extends Equatable {
     bool clearNationalIdError = false,
     bool clearAgeError = false,
     bool clearGenderError = false,
+    bool clearProfileImagePath = false,
   }) {
     return RegisterState(
       name: name ?? this.name,
@@ -80,6 +86,9 @@ class RegisterState extends Equatable {
       nationalId: nationalId ?? this.nationalId,
       age: age ?? this.age,
       gender: gender ?? this.gender,
+      profileImagePath: clearProfileImagePath
+          ? null
+          : (profileImagePath ?? this.profileImagePath),
       nameError: clearNameError ? null : (nameError ?? this.nameError),
       emailError: clearEmailError ? null : (emailError ?? this.emailError),
       userNameError: clearUserNameError
@@ -107,6 +116,7 @@ class RegisterState extends Equatable {
     nationalId,
     age,
     gender,
+    profileImagePath,
     nameError,
     emailError,
     userNameError,

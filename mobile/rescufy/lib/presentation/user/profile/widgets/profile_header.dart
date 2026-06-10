@@ -8,6 +8,10 @@ class ProfileHeader extends StatelessWidget {
   final String phone;
   final String? profileImageUrl;
   final VoidCallback onEditPressed;
+  final VoidCallback onUploadImagePressed;
+  final VoidCallback onDeleteImagePressed;
+  final bool isUploadingImage;
+  final bool isDeletingImage;
 
   const ProfileHeader({
     super.key,
@@ -16,6 +20,10 @@ class ProfileHeader extends StatelessWidget {
     required this.phone,
     this.profileImageUrl,
     required this.onEditPressed,
+    required this.onUploadImagePressed,
+    required this.onDeleteImagePressed,
+    this.isUploadingImage = false,
+    this.isDeletingImage = false,
   });
 
   @override
@@ -29,6 +37,7 @@ class ProfileHeader extends StatelessWidget {
           children: [
             // Profile Picture
             Stack(
+              clipBehavior: Clip.none,
               children: [
                 Container(
                   width: 100.w,
@@ -41,7 +50,9 @@ class ProfileHeader extends StatelessWidget {
                       width: 2,
                     ),
                   ),
-                  child: profileImageUrl != null
+                  child:
+                      profileImageUrl != null &&
+                          profileImageUrl!.trim().isNotEmpty
                       ? ClipOval(
                           child: Image.network(
                             profileImageUrl!,
@@ -57,19 +68,77 @@ class ProfileHeader extends StatelessWidget {
                 Positioned(
                   bottom: 0,
                   right: 0,
-                  child: Container(
-                    padding: EdgeInsets.all(8.w),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.primary,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.camera_alt,
-                      size: 16.sp,
-                      color: Colors.white,
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: isUploadingImage || isDeletingImage
+                          ? null
+                          : onUploadImagePressed,
+                      borderRadius: BorderRadius.circular(24.r),
+                      child: Container(
+                        padding: EdgeInsets.all(8.w),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.primary,
+                          shape: BoxShape.circle,
+                        ),
+                        child: isUploadingImage
+                            ? SizedBox(
+                                width: 16.w,
+                                height: 16.w,
+                                child: const CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white,
+                                  ),
+                                ),
+                              )
+                            : Icon(
+                                Icons.add_a_photo,
+                                size: 16.sp,
+                                color: Colors.white,
+                              ),
+                      ),
                     ),
                   ),
                 ),
+                if (profileImageUrl != null &&
+                    profileImageUrl!.trim().isNotEmpty)
+                  Positioned(
+                    top: -4.h,
+                    right: -4.w,
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: isUploadingImage || isDeletingImage
+                            ? null
+                            : onDeleteImagePressed,
+                        borderRadius: BorderRadius.circular(24.r),
+                        child: Container(
+                          padding: EdgeInsets.all(6.w),
+                          decoration: const BoxDecoration(
+                            color: Colors.red,
+                            shape: BoxShape.circle,
+                          ),
+                          child: isDeletingImage
+                              ? SizedBox(
+                                  width: 14.w,
+                                  height: 14.w,
+                                  child: const CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white,
+                                    ),
+                                  ),
+                                )
+                              : Icon(
+                                  Icons.delete_outline,
+                                  size: 14.sp,
+                                  color: Colors.white,
+                                ),
+                        ),
+                      ),
+                    ),
+                  ),
               ],
             ),
 
@@ -87,9 +156,10 @@ class ProfileHeader extends StatelessWidget {
 
             Text(email, style: theme.textTheme.bodyMedium),
 
-            SizedBox(height: 2.h),
-
-            Text(phone, style: theme.textTheme.bodySmall),
+            if (phone.trim().isNotEmpty) ...[
+              SizedBox(height: 2.h),
+              Text(phone, style: theme.textTheme.bodySmall),
+            ],
 
             SizedBox(height: 16.h),
 

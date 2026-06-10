@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rescufy/core/services/location_service.dart';
-import 'package:rescufy/core/services/signalr/signalr_events.dart';
-import 'package:rescufy/core/services/signalr/signalr_service.dart';
+import 'package:rescufy/core/services/signalr/ambulance_signalr_service.dart';
+import 'package:rescufy/core/services/signalr/notification_signalr_service.dart';
+import 'package:rescufy/core/services/signalr/signalr_models.dart';
 import 'package:rescufy/domain/entities/case_status.dart';
 import 'package:rescufy/domain/entities/incoming_request.dart';
 import 'active_case_state.dart';
@@ -10,16 +11,20 @@ import 'active_case_state.dart';
 class ActiveCaseCubit extends Cubit<ActiveCaseState> {
   ActiveCaseCubit({
     required IncomingRequest request,
-    required SignalRService signalRService,
+    required NotificationSignalRService notificationSignalRService,
+    required AmbulanceSignalRService ambulanceSignalRService,
     required LocationService locationService,
-  }) : _signalR = signalRService,
+  }) : _notificationSignalR = notificationSignalRService,
+       _ambulanceSignalR = ambulanceSignalRService,
        _locationService = locationService,
        super(ActiveCaseState.initial(request));
 
-  final SignalRService _signalR;
+  final NotificationSignalRService _notificationSignalR;
+  final AmbulanceSignalRService _ambulanceSignalR;
   final LocationService _locationService;
   Timer? _locationTimer;
-  StreamSubscription<Map<String, dynamic>>? _caseUpdateSubscription;
+  StreamSubscription<RequestStatusUpdate>? _statusUpdateSubscription;
+  StreamSubscription<AmbulanceLocationUpdate>? _locationUpdateSubscription;
 
   static const _intervalSeconds = 3;
 
@@ -34,30 +39,31 @@ class ActiveCaseCubit extends Cubit<ActiveCaseState> {
   @override
   Future<void> close() async {
     _locationTimer?.cancel();
-    await _caseUpdateSubscription?.cancel();
+    await _statusUpdateSubscription?.cancel();
+    await _locationUpdateSubscription?.cancel();
+    if (state.loadStatus == ActiveCaseLoadStatus.ready) {
+      try {
+        await _ambulanceSignalR.leaveRequestGroup(state.request.requestId);
+      } catch (_) {}
+    }
     await super.close();
   }
 
-  Future<void> updateStatus(CaseStatus newStatus) async {
-    emit(state.copyWith(isUpdatingStatus: true, clearError: true));
-    try {
-      await _signalR.updateStatus(
-        state.request.requestId,
-        newStatus.serverValue,
-      );
-    } catch (e) {
-      emit(
-        state.copyWith(
-          isUpdatingStatus: false,
-          errorMessage: 'Status update failed: $e',
-        ),
-      );
-    }
+  Future<void> updateStatus(CaseStatus _) async {
+    emit(
+      state.copyWith(
+        isUpdatingStatus: false,
+        errorMessage:
+            'Status updates are read from the notification hub; the ambulance hub does not expose a mobile status update method.',
+      ),
+    );
   }
 
   Future<void> _joinCaseGroup() async {
     try {
-      await _signalR.joinCaseGroup(state.request.requestId);
+      await _notificationSignalR.connect();
+      await _ambulanceSignalR.connect();
+      await _ambulanceSignalR.joinRequestGroup(state.request.requestId);
       emit(
         state.copyWith(
           loadStatus: ActiveCaseLoadStatus.ready,
@@ -76,26 +82,35 @@ class ActiveCaseCubit extends Cubit<ActiveCaseState> {
   }
 
   void _listenToCaseUpdates() {
-    _caseUpdateSubscription ??= _signalR.onCaseUpdated().listen((payload) {
-      if (isClosed ||
-          payload[SignalRPayloadKeys.requestId] != state.request.requestId) {
+    _statusUpdateSubscription ??= _notificationSignalR.statusChanged.listen((
+      update,
+    ) {
+      if (isClosed || update.requestId != state.request.requestId) {
         return;
       }
 
-      final statusValue =
-          (payload[SignalRPayloadKeys.status] as String?) ?? 'Pending';
-      final updatedAtValue = payload[SignalRPayloadKeys.updatedAt] as String?;
+      emit(
+        state.copyWith(
+          caseStatus: update.status.toCaseStatus(),
+          isUpdatingStatus: false,
+          liveStatusMessage: update.message ?? state.liveStatusMessage,
+          lastUpdatedAt: update.updatedAt ?? DateTime.now(),
+        ),
+      );
+    });
+
+    _locationUpdateSubscription ??= _ambulanceSignalR.locationUpdates.listen((
+      update,
+    ) {
+      if (isClosed || update.requestId != state.request.requestId) {
+        return;
+      }
 
       emit(
         state.copyWith(
-          caseStatus: statusValue.toCaseStatus(),
-          isUpdatingStatus: false,
-          liveStatusMessage:
-              payload[SignalRPayloadKeys.message] as String? ??
-              state.liveStatusMessage,
-          lastUpdatedAt: updatedAtValue != null
-              ? DateTime.tryParse(updatedAtValue) ?? DateTime.now()
-              : DateTime.now(),
+          paramedicLat: update.latitude,
+          paramedicLng: update.longitude,
+          lastUpdatedAt: update.updatedAt ?? DateTime.now(),
         ),
       );
     });
@@ -116,10 +131,12 @@ class ActiveCaseCubit extends Cubit<ActiveCaseState> {
 
     try {
       // Only the paramedic's location — never the patient's.
-      await _signalR.sendLocation(
-        state.request.requestId,
-        position.latitude,
-        position.longitude,
+      await _ambulanceSignalR.updateLocation(
+        AmbulanceLocationDto(
+          requestId: state.request.requestId,
+          latitude: position.latitude,
+          longitude: position.longitude,
+        ),
       );
     } catch (_) {
       return;

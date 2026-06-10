@@ -5,6 +5,7 @@ import 'package:rescufy/presentation/paramedic/dashboard/cubit/dashboard_cubit.d
 import 'package:rescufy/presentation/paramedic/dashboard/views/dashboard_screen.dart';
 import 'package:rescufy/presentation/paramedic/history/views/history_screen.dart';
 import 'package:rescufy/presentation/paramedic/profile/views/paramedic_profile_screen.dart';
+import 'package:rescufy/shared/widgets/navigation/app_navigation_shell.dart';
 
 class ParamedicNavigationScreen extends StatefulWidget {
   const ParamedicNavigationScreen({super.key});
@@ -25,53 +26,33 @@ class _ParamedicNavigationScreenState extends State<ParamedicNavigationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return BlocProvider(
       create: (_) => di.sl<DashboardCubit>(),
-      child: Scaffold(
-        body: IndexedStack(index: _currentIndex, children: _screens),
-        bottomNavigationBar: NavigationBarTheme(
-          data: NavigationBarThemeData(
-            backgroundColor: theme.colorScheme.surface,
-            indicatorColor: theme.colorScheme.primary.withValues(alpha: 0.12),
-            labelTextStyle: WidgetStateProperty.resolveWith((states) {
-              final base = theme.textTheme.labelMedium;
-              if (states.contains(WidgetState.selected)) {
-                return base?.copyWith(
-                  color: theme.colorScheme.primary,
-                  fontWeight: FontWeight.w700,
-                );
-              }
-              return base;
-            }),
+      child: AppNavigationShell(
+        currentIndex: _currentIndex,
+        onDestinationSelected: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        screens: _screens,
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.dashboard_outlined),
+            selectedIcon: Icon(Icons.dashboard),
+            label: 'Dashboard',
           ),
-          child: NavigationBar(
-            selectedIndex: _currentIndex,
-            onDestinationSelected: (index) {
-              setState(() {
-                _currentIndex = index;
-              });
-            },
-            destinations: const [
-              NavigationDestination(
-                icon: Icon(Icons.dashboard_outlined),
-                selectedIcon: Icon(Icons.dashboard),
-                label: 'Dashboard',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.history_outlined),
-                selectedIcon: Icon(Icons.history),
-                label: 'History',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.person_outline),
-                selectedIcon: Icon(Icons.person),
-                label: 'Profile',
-              ),
-            ],
+          NavigationDestination(
+            icon: Icon(Icons.history_outlined),
+            selectedIcon: Icon(Icons.history),
+            label: 'History',
           ),
-        ),
+          NavigationDestination(
+            icon: Icon(Icons.person_outline),
+            selectedIcon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
       ),
     );
   }

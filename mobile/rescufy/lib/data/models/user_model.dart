@@ -10,6 +10,7 @@ class UserModel extends User {
     required super.id,
     required super.email,
     required super.name,
+    required super.username,
     required super.role,
     super.phone,
     super.profileImage,
@@ -52,6 +53,13 @@ class UserModel extends User {
         json['Role'] ??
         json['userRole'] ??
         json['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+    final username = _extractUsername(json);
+    final email =
+        json['email']?.toString() ??
+        json['Email']?.toString() ??
+        json['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name']
+            ?.toString() ??
+        '';
 
     return UserModel(
       id:
@@ -60,17 +68,14 @@ class UserModel extends User {
           json['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
               ?.toString() ??
           '',
-      email:
-          json['email']?.toString() ??
-          json['Email']?.toString() ??
-          json['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name']
-              ?.toString() ??
-          '',
+      email: email,
       name:
           json['name']?.toString() ??
           json['fullName']?.toString() ??
           json['FullName']?.toString() ??
+          username ??
           '',
+      username: username ?? _usernameFromEmail(email),
       role: UserRoleMapper.fromBackend(rawRole?.toString()),
       phone: json['phone']?.toString() ?? json['phoneNumber']?.toString(),
       profileImage:
@@ -87,6 +92,7 @@ class UserModel extends User {
       'id': id,
       'email': email,
       'name': name,
+      'username': username,
       'role': role.name,
       'phone': phone,
       'profileImage': profileImage,
@@ -100,6 +106,7 @@ class UserModel extends User {
     String? id,
     String? email,
     String? name,
+    String? username,
     UserRole? role,
     String? phone,
     String? profileImage,
@@ -110,11 +117,42 @@ class UserModel extends User {
       id: id ?? this.id,
       email: email ?? this.email,
       name: name ?? this.name,
+      username: username ?? this.username,
       role: role ?? this.role,
       phone: phone ?? this.phone,
       profileImage: profileImage ?? this.profileImage,
       createdAt: createdAt ?? this.createdAt,
       token: token ?? this.token,
     );
+  }
+
+  static String? _extractUsername(Map<String, dynamic> json) {
+    const usernameKeys = [
+      'username',
+      'userName',
+      'UserName',
+      'preferred_username',
+      'unique_name',
+      'nickname',
+      'sub',
+    ];
+
+    for (final key in usernameKeys) {
+      final value = json[key]?.toString().trim();
+      if (value != null && value.isNotEmpty) {
+        return value;
+      }
+    }
+
+    return null;
+  }
+
+  static String _usernameFromEmail(String email) {
+    final normalizedEmail = email.trim();
+    if (normalizedEmail.isEmpty || !normalizedEmail.contains('@')) {
+      return '';
+    }
+
+    return normalizedEmail.split('@').first;
   }
 }

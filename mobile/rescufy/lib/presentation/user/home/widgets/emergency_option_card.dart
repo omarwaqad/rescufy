@@ -1,14 +1,11 @@
-// lib/presentation/features/home/widgets/emergency_option_card.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class EmergencyOptionCard extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final IconData icon;
-  final Color color;
-  final VoidCallback onTap;
+import 'package:rescufy/core/theme/app_spacing.dart';
+import 'package:rescufy/core/theme/app_theme_tokens.dart';
+import 'package:rescufy/shared/widgets/common/app_tonal_icon.dart';
 
+class EmergencyOptionCard extends StatelessWidget {
   const EmergencyOptionCard({
     super.key,
     required this.title,
@@ -18,42 +15,35 @@ class EmergencyOptionCard extends StatelessWidget {
     required this.onTap,
   });
 
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final tokens = context.appThemeTokens;
 
     return Card(
-      elevation: isDark ? 4 : 2,
       child: InkWell(
         borderRadius: BorderRadius.circular(16.r),
         onTap: onTap,
         child: Container(
-          padding: EdgeInsets.all(20.w),
+          padding: EdgeInsets.all(AppSpacing.lg.w),
           decoration: BoxDecoration(
+            color: tokens.surfaceRaised,
             borderRadius: BorderRadius.circular(16.r),
-            // FIXED: Better visibility in both modes
             border: Border.all(
-              color: color.withOpacity(isDark ? 0.3 : 0.15),
-              width: 1.5,
+              color: color.withValues(alpha: 0.14),
+              width: 1.2,
             ),
           ),
           child: Row(
             children: [
-              // Icon Container
-              Container(
-                width: 60.w,
-                height: 60.h,
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(14.r),
-                ),
-                child: Icon(icon, size: 30.sp, color: color),
-              ),
-
-              SizedBox(width: 16.w),
-
-              // Text Content
+              AppTonalIcon(icon: icon, color: color, size: 56, iconSize: 28),
+              SizedBox(width: AppSpacing.md.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,11 +60,9 @@ class EmergencyOptionCard extends StatelessWidget {
                   ],
                 ),
               ),
-
-              // Chevron Icon
               Icon(
                 Icons.arrow_forward_ios_rounded,
-                color: color.withOpacity(0.5),
+                color: color.withValues(alpha: 0.5),
                 size: 20.sp,
               ),
             ],

@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
-import '../../../core/network/api_endpoints.dart';
+import '../../../core/network/endpoints/api_endpoints.dart';
 import '../../../domain/entities/emergency_request.dart';
-import '../../models/paramedic_emergency_request_model.dart';
+import '../../models/medical_profile/paramedic_emergency_request_model.dart';
 
 abstract class ParamedicEmergencyRemoteDataSource {
   Future<Stream<List<ParamedicEmergencyRequestModel>>> getIncomingRequests();
@@ -30,14 +30,8 @@ class EmergencyRemoteDataSourceImpl
         final response = await dio.get(ApiEndpoints.incomingRequests);
 
         if (response.statusCode == 200) {
-          final List<dynamic> data = response.data['data'] ?? [];
-          return data
-              .map(
-                (json) => ParamedicEmergencyRequestModel.fromJson(
-                  json as Map<String, dynamic>,
-                ),
-              )
-              .toList();
+          final data = _extractList(response.data);
+          return data.map(ParamedicEmergencyRequestModel.fromJson).toList();
         }
         return <ParamedicEmergencyRequestModel>[];
       } catch (e) {
@@ -51,7 +45,7 @@ class EmergencyRemoteDataSourceImpl
     final response = await dio.post(ApiEndpoints.acceptRequest(requestId));
 
     return ParamedicEmergencyRequestModel.fromJson(
-      response.data['data'] as Map<String, dynamic>,
+      _extractMap(response.data['data'] ?? response.data),
     );
   }
 
@@ -71,7 +65,7 @@ class EmergencyRemoteDataSourceImpl
     );
 
     return ParamedicEmergencyRequestModel.fromJson(
-      response.data['data'] as Map<String, dynamic>,
+      _extractMap(response.data['data'] ?? response.data),
     );
   }
 
@@ -79,14 +73,33 @@ class EmergencyRemoteDataSourceImpl
   Future<List<ParamedicEmergencyRequestModel>> getCaseHistory() async {
     final response = await dio.get(ApiEndpoints.caseHistory);
 
-    final List<dynamic> data = response.data['data'] ?? [];
-    return data
-        .map(
-          (json) => ParamedicEmergencyRequestModel.fromJson(
-            json as Map<String, dynamic>,
-          ),
-        )
-        .toList();
+    final data = _extractList(response.data);
+    return data.map(ParamedicEmergencyRequestModel.fromJson).toList();
+  }
+
+  List<Map<String, dynamic>> _extractList(dynamic data) {
+    if (data is List) {
+      return data.whereType<Map>().map(_castMap).toList();
+    }
+    if (data is Map<String, dynamic>) {
+      for (final key in const ['data', 'items', 'result', 'results']) {
+        final nested = data[key];
+        if (nested is List) {
+          return nested.whereType<Map>().map(_castMap).toList();
+        }
+      }
+    }
+    return const [];
+  }
+
+  Map<String, dynamic> _extractMap(dynamic data) {
+    if (data is Map<String, dynamic>) return data;
+    if (data is Map) return _castMap(data);
+    return const {};
+  }
+
+  Map<String, dynamic> _castMap(Map<dynamic, dynamic> map) {
+    return map.map((key, value) => MapEntry(key.toString(), value));
   }
 
   String _statusToString(EmergencyStatus status) {

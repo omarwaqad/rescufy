@@ -38,25 +38,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
-  // ──────────────────────────────────────────────────────────
-  // SHEET HELPERS — open sheets, then call cubit on save
-  // ──────────────────────────────────────────────────────────
-
-  void _openMedicalInfoEdit(BuildContext ctx, ProfileState state) {
-    final cubit = ctx.read<ProfileCubit>();
-    _showSheet(
-      ctx,
-      EditMedicalInfoSheet(
-        pregnancyStatus: state.pregnancyStatus,
-        medicalNotes: state.medicalNotes,
-        onSave: (status, notes) => cubit.updateMedicalInfo(
-          pregnancyStatus: status,
-          medicalNotes: notes,
-        ),
-      ),
-    );
-  }
-
   void _openAddMedication(BuildContext ctx) {
     _showSheet(
       ctx,
@@ -233,6 +214,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  void _confirmDeleteProfileImage(BuildContext ctx) {
+    _confirmDelete(ctx, 'profile image', () {
+      ctx.read<ProfileCubit>().deleteProfileImage();
+    });
+  }
+
   // ──────────────────────────────────────────────────────────
   // BUILD
   // ──────────────────────────────────────────────────────────
@@ -303,7 +290,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         },
         child: BlocConsumer<ProfileCubit, ProfileState>(
           listenWhen: (prev, curr) =>
-              curr.updateSuccess != null || curr.updateError != null,
+              prev.updateSuccess != curr.updateSuccess ||
+              prev.updateError != curr.updateError ||
+              prev.loadError != curr.loadError ||
+              prev.uploadImageError != curr.uploadImageError ||
+              prev.deleteImageError != curr.deleteImageError ||
+              prev.uploadImageSuccessUrl != curr.uploadImageSuccessUrl ||
+              prev.deleteImageSuccess != curr.deleteImageSuccess,
           listener: (context, state) {
             if (state.updateSuccess != null) {
               ScaffoldMessenger.of(context)
@@ -340,10 +333,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     behavior: SnackBarBehavior.floating,
                   ),
                 );
+            } else if (state.loadError != null) {
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  SnackBar(
+                    content: Text(state.loadError!),
+                    backgroundColor: Colors.red,
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
             }
           },
           builder: (context, state) {
             final cubit = context.read<ProfileCubit>();
+
+            if (state.isLoading && !state.hasProfileData) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
             return SingleChildScrollView(
               padding: EdgeInsets.all(20.w),
@@ -356,6 +363,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     phone: state.phone,
                     profileImageUrl: state.profileImageUrl,
                     onEditPressed: cubit.navigateToEditProfile,
+                    onUploadImagePressed: cubit.pickProfileImageFromGallery,
+                    onDeleteImagePressed: () =>
+                        _confirmDeleteProfileImage(context),
+                    isUploadingImage: state.isUploadingImage,
+                    isDeletingImage: state.isDeletingImage,
                   ),
                   SizedBox(height: 24.h),
 
@@ -371,7 +383,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   MedicalInfoCard(
                     pregnancyStatus: state.pregnancyStatus,
                     medicalNotes: state.medicalNotes,
-                    onEditPressed: () => _openMedicalInfoEdit(context, state),
+                    onEditPressed: cubit.navigateToEditProfile,
                   ),
                   SizedBox(height: 24.h),
 

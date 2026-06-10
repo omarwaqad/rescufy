@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rescufy/core/navigation/app_routes.dart';
-import 'package:rescufy/core/theme/colors.dart';
+import 'package:rescufy/core/theme/app_theme_tokens.dart';
 import 'package:rescufy/domain/entities/case_status.dart';
 import 'package:rescufy/presentation/paramedic/active_case/cubit/active_case_cubit.dart';
 import 'package:rescufy/presentation/paramedic/active_case/cubit/active_case_state.dart';
@@ -29,6 +29,7 @@ class _ActiveCaseScreenState extends State<ActiveCaseScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final tokens = context.appThemeTokens;
 
     return BlocConsumer<ActiveCaseCubit, ActiveCaseState>(
       listenWhen: (prev, curr) =>
@@ -67,16 +68,7 @@ class _ActiveCaseScreenState extends State<ActiveCaseScreen> {
             title: Text('Active Case ${state.request.caseId}'),
           ),
           body: DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  theme.colorScheme.primary.withValues(alpha: 0.08),
-                  theme.scaffoldBackgroundColor,
-                ],
-              ),
-            ),
+            decoration: BoxDecoration(gradient: tokens.heroGradient),
             child: SafeArea(
               child: Column(
                 children: [
@@ -167,7 +159,7 @@ class _StatusChip extends StatelessWidget {
     final theme = Theme.of(context);
     final color = isActive || isCompleted
         ? theme.colorScheme.primary
-        : theme.textTheme.bodySmall?.color ?? AppColors.textSecondary;
+        : theme.textTheme.bodySmall?.color ?? theme.colorScheme.outline;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 180),
@@ -237,6 +229,7 @@ class _LiveStatusCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final tokens = context.appThemeTokens;
     final lastUpdated = state.lastUpdatedAt;
 
     return Card(
@@ -247,7 +240,7 @@ class _LiveStatusCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(Icons.sync_outlined, color: AppColors.info, size: 20.sp),
+                Icon(Icons.sync_outlined, color: tokens.info, size: 20.sp),
                 SizedBox(width: 8.w),
                 Text(
                   'Live Status',
@@ -272,7 +265,7 @@ class _LiveStatusCard extends StatelessWidget {
               width: double.infinity,
               padding: EdgeInsets.all(14.w),
               decoration: BoxDecoration(
-                color: AppColors.info.withValues(alpha: 0.08),
+                color: tokens.info.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(14.r),
               ),
               child: Text(
@@ -375,7 +368,7 @@ class _BottomActions extends StatelessWidget {
         color: theme.colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: AppColors.shadow,
+            color: theme.shadowColor,
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),

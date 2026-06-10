@@ -1,22 +1,26 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rescufy/core/services/signalr/signalr_service.dart';
+import 'package:rescufy/core/services/signalr/ambulance_signalr_service.dart';
+import 'package:rescufy/core/services/signalr/notification_signalr_service.dart';
 import 'package:rescufy/domain/entities/incoming_request.dart';
 import 'incoming_request_state.dart';
 
 class IncomingRequestCubit extends Cubit<IncomingRequestState> {
   IncomingRequestCubit({
     required IncomingRequest request,
-    required SignalRService signalRService,
-  }) : _signalR = signalRService,
+    required AmbulanceSignalRService ambulanceSignalRService,
+    required NotificationSignalRService notificationSignalRService,
+  }) : _ambulanceSignalR = ambulanceSignalRService,
+       _notificationSignalR = notificationSignalRService,
        super(IncomingRequestState.initial(request));
 
-  final SignalRService _signalR;
+  final AmbulanceSignalRService _ambulanceSignalR;
+  final NotificationSignalRService _notificationSignalR;
   StreamSubscription<String>? _cancelledSubscription;
 
   void initialize() {
-    _cancelledSubscription ??= _signalR.onRequestCancelled().listen((
+    _cancelledSubscription ??= _notificationSignalR.requestCancelled.listen((
       requestId,
     ) {
       if (isClosed || requestId != state.request.requestId) return;
@@ -36,7 +40,8 @@ class IncomingRequestCubit extends Cubit<IncomingRequestState> {
     );
 
     try {
-      await _signalR.acceptRequest(state.request.requestId);
+      await _ambulanceSignalR.connect();
+      await _ambulanceSignalR.acceptRequest(state.request.requestId);
       emit(state.copyWith(status: IncomingRequestStatus.accepted));
     } catch (e) {
       emit(
@@ -57,17 +62,12 @@ class IncomingRequestCubit extends Cubit<IncomingRequestState> {
         clearError: true,
       ),
     );
-    try {
-      await _signalR.refuseRequest(state.request.requestId, reason);
-      emit(state.copyWith(status: IncomingRequestStatus.refused));
-    } catch (e) {
-      emit(
-        state.copyWith(
-          status: IncomingRequestStatus.error,
-          errorMessage: 'Failed to refuse: $e',
-        ),
-      );
-    }
+    emit(
+      state.copyWith(
+        status: IncomingRequestStatus.error,
+        errorMessage: 'Reject is not supported by the ambulance hub contract.',
+      ),
+    );
   }
 
   @override

@@ -47,7 +47,11 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
     if (userJson == null) return null;
 
     try {
-      final userMap = jsonDecode(userJson) as Map<String, dynamic>;
+      final decoded = jsonDecode(userJson);
+      if (decoded is! Map) return null;
+      final userMap = decoded.map(
+        (key, value) => MapEntry(key.toString(), value),
+      );
       return UserModel.fromJson(userMap);
     } catch (e) {
       return null;

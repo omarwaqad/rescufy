@@ -1,6 +1,6 @@
 import 'package:rescufy/core/network/dio_client.dart';
-import 'package:rescufy/core/network/api_endpoints.dart';
-import 'package:rescufy/data/models/emergency_request_model.dart';
+import 'package:rescufy/core/network/endpoints/api_endpoints.dart';
+import 'package:rescufy/data/models/medical_profile/emergency_request_model.dart';
 
 abstract class EmergencyRemoteDataSource {
   Future<Map<String, dynamic>> createEmergencyRequest(

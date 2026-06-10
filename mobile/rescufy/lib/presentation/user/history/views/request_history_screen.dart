@@ -5,7 +5,9 @@ import 'package:rescufy/core/theme/colors.dart';
 import 'package:rescufy/core/theme/app_text_styles.dart';
 
 class RequestHistoryScreen extends StatelessWidget {
-  const RequestHistoryScreen({super.key});
+  const RequestHistoryScreen({super.key, this.showBackButton = true});
+
+  final bool showBackButton;
 
   // Mock data
   final List<Map<String, dynamic>> _requests = const [
@@ -70,10 +72,13 @@ class RequestHistoryScreen extends StatelessWidget {
             floating: false,
             pinned: true,
             backgroundColor: AppColors.primary,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () => Navigator.pop(context),
-            ),
+            automaticallyImplyLeading: false,
+            leading: showBackButton
+                ? IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Colors.white),
+                    onPressed: () => Navigator.pop(context),
+                  )
+                : null,
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
                 'Request History',
@@ -241,7 +246,7 @@ class RequestHistoryScreen extends StatelessWidget {
             width: 200.w,
             height: 50.h,
             child: ElevatedButton(
-              onPressed: () => Navigator.pushNamed(context, '/home'),
+              onPressed: () => Navigator.pushNamed(context, '/user-home'),
               child: Text(
                 'Make Your First Request',
                 style: AppTextStyles.buttonLarge,

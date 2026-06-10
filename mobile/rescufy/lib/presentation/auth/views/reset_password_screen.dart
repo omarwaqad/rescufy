@@ -20,13 +20,12 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final args =
-          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      final args = ModalRoute.of(context)?.settings.arguments;
       context.read<ResetPasswordCubit>().initialize(
         context: context,
         formKey: _formKey,
-        email: args['email'],
-        otp: args['otp'],
+        email: args is Map ? args['email']?.toString() ?? '' : '',
+        otp: args is Map ? args['otp']?.toString() ?? '' : '',
       );
     });
   }

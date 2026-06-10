@@ -3,9 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rescufy/core/cubit/theme/theme_cubit.dart';
 import 'package:rescufy/core/cubit/theme/theme_state.dart';
-import 'package:rescufy/core/theme/colors.dart';
+import 'package:rescufy/core/theme/app_theme_tokens.dart';
 import 'package:rescufy/presentation/auth/cubit/auth/auth_cubit.dart';
 import 'package:rescufy/presentation/auth/cubit/auth/auth_state.dart';
+import 'package:rescufy/shared/widgets/common/app_screen_header.dart';
 
 class ParamedicProfileScreen extends StatelessWidget {
   const ParamedicProfileScreen({super.key});
@@ -13,6 +14,7 @@ class ParamedicProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final tokens = context.appThemeTokens;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Profile')),
@@ -36,28 +38,17 @@ class ParamedicProfileScreen extends StatelessWidget {
           }
         },
         child: DecoratedBox(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                theme.colorScheme.primary.withValues(alpha: 0.06),
-                theme.scaffoldBackgroundColor,
-              ],
-            ),
-          ),
+          decoration: BoxDecoration(gradient: tokens.heroGradient),
           child: SingleChildScrollView(
             padding: EdgeInsets.all(20.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _ProfileHeader(theme: theme),
-                SizedBox(height: 16.h),
                 const _ThemeCard(),
                 SizedBox(height: 16.h),
-                _ProfileDetailsCard(theme: theme),
+                const _ProfileDetailsCard(),
                 SizedBox(height: 16.h),
-                _MonthlyStatsCard(theme: theme),
+                const _MonthlyStatsCard(),
                 SizedBox(height: 24.h),
                 OutlinedButton.icon(
                   onPressed: () => _showLogoutDialog(context),
@@ -100,34 +91,6 @@ class ParamedicProfileScreen extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _ProfileHeader extends StatelessWidget {
-  const _ProfileHeader({required this.theme});
-
-  final ThemeData theme;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Paramedic Profile',
-          style: theme.textTheme.headlineMedium?.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        SizedBox(height: 6.h),
-        Text(
-          'View your role details, monthly performance, and theme preferences using the same shared app styling.',
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.textTheme.bodySmall?.color,
-          ),
-        ),
-      ],
     );
   }
 }
@@ -195,12 +158,13 @@ class _ThemeCard extends StatelessWidget {
 }
 
 class _ProfileDetailsCard extends StatelessWidget {
-  const _ProfileDetailsCard({required this.theme});
-
-  final ThemeData theme;
+  const _ProfileDetailsCard();
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final tokens = context.appThemeTokens;
+
     return Card(
       child: Padding(
         padding: EdgeInsets.all(20.w),
@@ -243,14 +207,14 @@ class _ProfileDetailsCard extends StatelessWidget {
               icon: Icons.access_time,
               label: 'Current Shift',
               value: 'Day Shift\n09:00 - 20:00',
-              accentColor: AppColors.success,
+              accentColor: tokens.success,
             ),
             SizedBox(height: 12.h),
             _InfoTile(
               icon: Icons.workspace_premium_outlined,
               label: 'Experience',
               value: '8 years',
-              accentColor: AppColors.info,
+              accentColor: tokens.info,
             ),
           ],
         ),
@@ -320,12 +284,13 @@ class _InfoTile extends StatelessWidget {
 }
 
 class _MonthlyStatsCard extends StatelessWidget {
-  const _MonthlyStatsCard({required this.theme});
-
-  final ThemeData theme;
+  const _MonthlyStatsCard();
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final tokens = context.appThemeTokens;
+
     return Card(
       child: Padding(
         padding: EdgeInsets.all(20.w),
@@ -340,28 +305,28 @@ class _MonthlyStatsCard extends StatelessWidget {
             ),
             SizedBox(height: 16.h),
             Row(
-              children: const [
+              children: [
                 Expanded(
                   child: _StatCard(
                     value: '47',
                     label: 'Cases',
-                    accentColor: AppColors.success,
+                    accentColor: tokens.success,
                   ),
                 ),
-                SizedBox(width: 12),
+                SizedBox(width: 12.w),
                 Expanded(
                   child: _StatCard(
                     value: '12.5m',
                     label: 'Avg Response',
-                    accentColor: AppColors.info,
+                    accentColor: tokens.info,
                   ),
                 ),
-                SizedBox(width: 12),
+                SizedBox(width: 12.w),
                 Expanded(
                   child: _StatCard(
                     value: '98%',
                     label: 'Success Rate',
-                    accentColor: AppColors.warning,
+                    accentColor: tokens.warning,
                   ),
                 ),
               ],

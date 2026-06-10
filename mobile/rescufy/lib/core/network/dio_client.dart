@@ -8,13 +8,10 @@ class DioClient {
   DioClient(this._dio, AuthInterceptor authInterceptor) {
     _dio
       ..options.baseUrl =
-          'http://umedical2.runasp.net' // TODO: Add your base URL
+          'https://final1111.runasp.net' // TODO: Add your base URL
       ..options.connectTimeout = const Duration(seconds: 30)
       ..options.receiveTimeout = const Duration(seconds: 30)
-      ..options.headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      }
+      ..options.headers = {'Accept': 'application/json'}
       ..interceptors.add(authInterceptor)
       ..interceptors.add(
         LogInterceptor(

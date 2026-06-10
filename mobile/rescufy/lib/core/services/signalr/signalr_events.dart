@@ -1,20 +1,45 @@
-/// Single source of truth for all SignalR method names.
-/// Never use raw strings anywhere else.
-class SignalREvents {
-  SignalREvents._();
+import 'package:rescufy/core/constants/signalr_constants.dart';
 
-  // ── Inbound (server → client) ──────────────────────────────────────────────
-  static const String receiveEmergencyRequest = 'ReceiveEmergencyRequest';
-  static const String requestCancelled = 'RequestCancelled';
-  static const String caseGroupJoined = 'CaseGroupJoined';
-  static const String caseUpdated = 'CaseUpdated';
+class NotificationHubEvents {
+  NotificationHubEvents._();
 
-  // ── Outbound (client → server) ─────────────────────────────────────────────
-  static const String acceptRequest = 'AcceptRequest'; // (requestId)
-  static const String refuseRequest = 'RefuseRequest'; // (requestId, reason)
-  static const String joinCaseGroup = 'JoinCaseGroup'; // (requestId)
-  static const String sendLocation = 'SendLocation'; // (requestId, lat, lng)
-  static const String updateStatus = 'UpdateStatus'; // (requestId, status)
+  static const String receiveNotification = SignalREvents.receiveNotification;
+  static const String requestCreated = SignalREvents.requestCreated;
+  static const String statusChanged = SignalREvents.statusChanged;
+  static const String ambulanceReassigned = SignalREvents.ambulanceReassigned;
+  static const String requestCancelled = SignalREvents.requestCancelled;
+  static const String reportAdded = SignalREvents.reportAdded;
+  static const String newRequest = SignalREvents.newRequest;
+  static const String requestUpdated = SignalREvents.requestUpdated;
+  static const String receiveEmergencyRequest =
+      SignalREvents.receiveEmergencyRequest;
+
+  static const List<String> all = [
+    receiveNotification,
+    requestCreated,
+    statusChanged,
+    ambulanceReassigned,
+    requestCancelled,
+    reportAdded,
+    newRequest,
+    requestUpdated,
+    receiveEmergencyRequest,
+  ];
+}
+
+class AmbulanceHubEvents {
+  AmbulanceHubEvents._();
+
+  static const String receiveLocationUpdate = SignalREvents.receiveLocationUpdate;
+}
+
+class AmbulanceHubMethods {
+  AmbulanceHubMethods._();
+
+  static const String joinRequestGroup = SignalRMethods.joinRequestGroup;
+  static const String leaveRequestGroup = SignalRMethods.leaveRequestGroup;
+  static const String updateLocation = SignalRMethods.updateLocation;
+  static const String acceptRequest = SignalRMethods.acceptRequest;
 }
 
 class SignalRPayloadKeys {
@@ -30,6 +55,8 @@ class SignalRPayloadKeys {
   static const String description = 'description';
   static const String latitude = 'latitude';
   static const String longitude = 'longitude';
+  static const String lat = 'lat';
+  static const String lng = 'lng';
   static const String address = 'address';
   static const String hospitalName = 'hospitalName';
   static const String createdAt = 'createdAt';
@@ -40,5 +67,7 @@ class SignalRPayloadKeys {
   static const String bloodType = 'bloodType';
   static const String status = 'status';
   static const String message = 'message';
+  static const String title = 'title';
+  static const String body = 'body';
   static const String updatedAt = 'updatedAt';
 }

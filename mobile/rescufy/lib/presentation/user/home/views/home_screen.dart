@@ -1,247 +1,121 @@
-// lib/presentation/user/home/views/home_screen.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rescufy/core/navigation/app_routes.dart';
+import 'package:rescufy/core/theme/app_spacing.dart';
+import 'package:rescufy/core/theme/app_theme_tokens.dart';
 import 'package:rescufy/l10n/app_localizations.dart';
+import 'package:rescufy/presentation/auth/cubit/auth/auth_cubit.dart';
+import 'package:rescufy/presentation/auth/cubit/auth/auth_state.dart';
+import 'package:rescufy/shared/widgets/common/app_screen_header.dart';
+
 import '../widgets/emergency_option_card.dart';
-import '../widgets/info_card.dart';
+import '../widgets/home_hotline_banner.dart';
+import '../widgets/home_quick_access_grid.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, this.showBottomNavigationBar = true});
+
+  final bool showBottomNavigationBar;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final textTheme = theme.textTheme;
-    final isDark = theme.brightness == Brightness.dark;
+    final tokens = context.appThemeTokens;
     final l10n = AppLocalizations.of(context)!;
+    final authState = context.watch<AuthCubit>().state;
+    final username = switch (authState) {
+      AuthAuthenticated(:final user) when user.username.trim().isNotEmpty =>
+        user.username.trim(),
+      AuthAuthenticated(:final user) when user.name.trim().isNotEmpty =>
+        user.name.trim(),
+      _ => 'User',
+    };
 
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.appName),
         actions: [
           IconButton(
-            icon: Badge(
-              //label: const Text(''),
-              child: const Icon(Icons.notifications_outlined),
-            ),
-            onPressed: () {
-              // TODO: Navigate to notifications
-            },
+            icon: const Icon(Icons.notifications_outlined),
+            onPressed: () {},
           ),
-          SizedBox(width: 8.w),
+          SizedBox(width: AppSpacing.xs.w),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(20.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // User Greeting
-            Text(
-              l10n.helloUser('Omar'),
-              style: textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.w700,
+      body: DecoratedBox(
+        decoration: BoxDecoration(gradient: tokens.heroGradient),
+        child: SingleChildScrollView(
+          padding: EdgeInsets.all(AppSpacing.lg.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _HomeHeroPanel(
+                title: l10n.helloUser(username),
+                subtitle: l10n.howCanWeHelp,
+                label: l10n.emergencyServices,
               ),
-            ),
-
-            SizedBox(height: 8.h),
-
-            // Subtitle
-            Text(
-              l10n.howCanWeHelp,
-              style: textTheme.bodyLarge?.copyWith(
-                color: textTheme.bodySmall?.color,
+              SizedBox(height: AppSpacing.xxl.h),
+              _SectionHeader(
+                title: l10n.emergencyServices,
+                icon: Icons.emergency_share_outlined,
+                color: theme.colorScheme.primary,
               ),
-            ),
-
-            SizedBox(height: 28.h),
-
-            // Emergency Actions Section
-            Text(
-              l10n.emergencyServices,
-              style: textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w700,
+              SizedBox(height: AppSpacing.md.h),
+              EmergencyOptionCard(
+                title: l10n.requestAmbulance,
+                subtitle: l10n.forMyselfOrFamily,
+                icon: Icons.local_hospital,
+                color: theme.colorScheme.primary,
+                onTap: () =>
+                    _navigateToEmergencyForm(context, isSelfCase: true),
               ),
-            ),
-
-            SizedBox(height: 16.h),
-
-            // Request Ambulance Card
-            EmergencyOptionCard(
-              title: l10n.requestAmbulance,
-              subtitle: l10n.forMyselfOrFamily,
-              icon: Icons.local_hospital,
-              color: colorScheme.primary,
-              onTap: () {
-                _navigateToEmergencyForm(context, isSelfCase: true);
-              },
-            ),
-
-            SizedBox(height: 12.h),
-
-            // Report Someone Else Card
-            EmergencyOptionCard(
-              title: l10n.reportEmergency,
-              subtitle: l10n.witnessingEmergency,
-              icon: Icons.warning_amber_rounded,
-              color: const Color(0xFFF57C00), // Orange for urgency
-              onTap: () {
-                _navigateToEmergencyForm(context, isSelfCase: false);
-              },
-            ),
-
-            SizedBox(height: 32.h),
-
-            // Quick Access Section
-            Text(
-              l10n.quickAccess,
-              style: textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w700,
+              SizedBox(height: AppSpacing.sm.h),
+              EmergencyOptionCard(
+                title: l10n.reportEmergency,
+                subtitle: l10n.witnessingEmergency,
+                icon: Icons.warning_amber_rounded,
+                color: tokens.warning,
+                onTap: () =>
+                    _navigateToEmergencyForm(context, isSelfCase: false),
               ),
-            ),
-
-            SizedBox(height: 16.h),
-
-            // Quick Access Grid
-            _buildQuickAccessGrid(context, theme, l10n),
-
-            SizedBox(height: 32.h),
-
-            // Emergency Hotline Banner
-            _buildHotlineBanner(theme, isDark, l10n),
-
-            SizedBox(height: 20.h),
-          ],
+              SizedBox(height: AppSpacing.xxl.h),
+              _SectionHeader(
+                title: l10n.quickAccess,
+                icon: Icons.dashboard_customize_outlined,
+                color: tokens.info,
+              ),
+              SizedBox(height: AppSpacing.md.h),
+              HomeQuickAccessGrid(
+                firstAidTitle: l10n.firstAid,
+                firstAidSubtitle: l10n.quickGuides,
+                hospitalsTitle: l10n.hospitals,
+                hospitalsSubtitle: l10n.findNearby,
+                historyTitle: l10n.history,
+                historySubtitle: l10n.pastRequests,
+                safetyTitle: l10n.safetyTips,
+                safetySubtitle: l10n.stayPrepared,
+                onFirstAidTap: () => _showFirstAidGuide(context),
+                onHospitalsTap: () => _showNearbyHospitals(context),
+                onHistoryTap: () => _navigateToHistory(context),
+                onSafetyTap: () => _showEmergencyTips(context),
+              ),
+              SizedBox(height: AppSpacing.xxl.h),
+              HomeHotlineBanner(
+                title: l10n.emergencyHotline,
+                subtitle: l10n.support24_7,
+              ),
+              SizedBox(height: AppSpacing.lg.h),
+            ],
+          ),
         ),
       ),
-
-      // Bottom Navigation Bar
-      bottomNavigationBar: _buildBottomNavigationBar(context),
+      bottomNavigationBar: showBottomNavigationBar
+          ? _buildBottomNavigationBar(context)
+          : null,
     );
   }
 
-  // Quick Access Grid
-  Widget _buildQuickAccessGrid(
-    BuildContext context,
-    ThemeData theme,
-    AppLocalizations l10n,
-  ) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: InfoCard(
-                title: l10n.firstAid,
-                subtitle: l10n.quickGuides,
-                icon: Icons.medical_services_outlined,
-                iconColor: const Color(0xFF2E7D32),
-                onTap: () => _showFirstAidGuide(context),
-              ),
-            ),
-            SizedBox(width: 12.w),
-            Expanded(
-              child: InfoCard(
-                title: l10n.hospitals,
-                subtitle: l10n.findNearby,
-                icon: Icons.local_hospital_outlined,
-                iconColor: const Color(0xFF1976D2),
-                onTap: () => _showNearbyHospitals(context),
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: 12.h),
-        Row(
-          children: [
-            Expanded(
-              child: InfoCard(
-                title: l10n.history,
-                subtitle: l10n.pastRequests,
-                icon: Icons.history,
-                iconColor: const Color(0xFF6A1B9A),
-                onTap: () => _navigateToHistory(context),
-              ),
-            ),
-            SizedBox(width: 12.w),
-            Expanded(
-              child: InfoCard(
-                title: l10n.safetyTips,
-                subtitle: l10n.stayPrepared,
-                icon: Icons.lightbulb_outline,
-                iconColor: const Color(0xFFF57C00),
-                onTap: () => _showEmergencyTips(context),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  // Emergency Hotline Banner
-  Widget _buildHotlineBanner(
-    ThemeData theme,
-    bool isDark,
-    AppLocalizations l10n,
-  ) {
-    return Container(
-      padding: EdgeInsets.all(20.w),
-      decoration: BoxDecoration(
-        color: isDark
-            ? theme.colorScheme.primary.withOpacity(0.15)
-            : theme.colorScheme.primary.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(
-          color: theme.colorScheme.primary.withOpacity(0.3),
-          width: 1.5,
-        ),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: EdgeInsets.all(12.w),
-            decoration: BoxDecoration(
-              color: theme.colorScheme.primary,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(Icons.phone, color: Colors.white, size: 24.sp),
-          ),
-          SizedBox(width: 16.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10n.emergencyHotline,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: theme.colorScheme.primary,
-                  ),
-                ),
-                SizedBox(height: 4.h),
-                Text(
-                  l10n.support24_7,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Icon(
-            Icons.arrow_forward_ios_rounded,
-            color: theme.colorScheme.primary,
-            size: 18.sp,
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Bottom Navigation Bar
   BottomNavigationBar _buildBottomNavigationBar(BuildContext context) {
     return BottomNavigationBar(
       currentIndex: 0,
@@ -264,20 +138,19 @@ class HomeScreen extends StatelessWidget {
       ],
       onTap: (index) {
         switch (index) {
-          case 0:
-            break;
           case 1:
             _navigateToHistory(context);
             break;
           case 2:
             _navigateToProfile(context);
             break;
+          case 0:
+            break;
         }
       },
     );
   }
 
-  // Navigation Methods
   void _navigateToEmergencyForm(
     BuildContext context, {
     required bool isSelfCase,
@@ -291,14 +164,16 @@ class HomeScreen extends StatelessWidget {
 
   void _showFirstAidGuide(BuildContext context) {
     final theme = Theme.of(context);
+    final tokens = context.appThemeTokens;
     final l10n = AppLocalizations.of(context)!;
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Row(
           children: [
             Icon(Icons.medical_services, color: theme.colorScheme.primary),
-            SizedBox(width: 8.w),
+            SizedBox(width: AppSpacing.xs.w),
             Text(l10n.firstAidGuide),
           ],
         ),
@@ -307,29 +182,64 @@ class HomeScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildFirstAidStep('1', l10n.checkSceneSafety, theme),
-              _buildFirstAidStep('2', l10n.callEmergencyServices, theme),
-              _buildFirstAidStep('3', l10n.checkResponsiveness, theme),
-              _buildFirstAidStep('4', l10n.performCPR, theme),
-              _buildFirstAidStep('5', l10n.stopBleeding, theme),
-              _buildFirstAidStep('6', l10n.keepPersonWarm, theme),
-              _buildFirstAidStep('7', l10n.monitorUntilHelp, theme),
+              _buildFirstAidStep(
+                context,
+                '1',
+                l10n.checkSceneSafety,
+                tokens.success,
+              ),
+              _buildFirstAidStep(
+                context,
+                '2',
+                l10n.callEmergencyServices,
+                tokens.success,
+              ),
+              _buildFirstAidStep(
+                context,
+                '3',
+                l10n.checkResponsiveness,
+                tokens.success,
+              ),
+              _buildFirstAidStep(context, '4', l10n.performCPR, tokens.success),
+              _buildFirstAidStep(
+                context,
+                '5',
+                l10n.stopBleeding,
+                tokens.success,
+              ),
+              _buildFirstAidStep(
+                context,
+                '6',
+                l10n.keepPersonWarm,
+                tokens.success,
+              ),
+              _buildFirstAidStep(
+                context,
+                '7',
+                l10n.monitorUntilHelp,
+                tokens.success,
+              ),
             ],
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
+            child: Text(l10n.close),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildFirstAidStep(String number, String text, ThemeData theme) {
+  Widget _buildFirstAidStep(
+    BuildContext context,
+    String number,
+    String text,
+    Color color,
+  ) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 12.h),
+      padding: EdgeInsets.only(bottom: AppSpacing.sm.h),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -337,32 +247,24 @@ class HomeScreen extends StatelessWidget {
             width: 28.w,
             height: 28.h,
             decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(5.9),
-                  blurRadius: 20,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-              color: const Color(0xFF2E7D32).withOpacity(0.15),
+              color: color.withValues(alpha: 0.15),
               shape: BoxShape.circle,
             ),
-            child: Center(
-              child: Text(
-                number,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFF2E7D32),
-                  fontSize: 13,
-                ),
+            alignment: Alignment.center,
+            child: Text(
+              number,
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                color: color,
+                fontSize: 13,
               ),
             ),
           ),
-          SizedBox(width: 12.w),
+          SizedBox(width: AppSpacing.sm.w),
           Expanded(
             child: Padding(
               padding: EdgeInsets.only(top: 4.h),
-              child: Text(text),
+              child: Text(text, style: Theme.of(context).textTheme.bodyMedium),
             ),
           ),
         ],
@@ -372,14 +274,16 @@ class HomeScreen extends StatelessWidget {
 
   void _showNearbyHospitals(BuildContext context) {
     final theme = Theme.of(context);
+    final tokens = context.appThemeTokens;
     final l10n = AppLocalizations.of(context)!;
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Row(
           children: [
             Icon(Icons.local_hospital, color: theme.colorScheme.primary),
-            SizedBox(width: 8.w),
+            SizedBox(width: AppSpacing.xs.w),
             Text(l10n.nearbyHospitals),
           ],
         ),
@@ -389,58 +293,108 @@ class HomeScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               _buildHospitalItem(
+                context,
                 l10n.cityGeneralHospital,
                 '2.3 km',
                 Icons.local_hospital,
+                tokens.info,
               ),
               _buildHospitalItem(
+                context,
                 l10n.emergencyMedicalCenter,
                 '3.1 km',
                 Icons.emergency,
+                tokens.info,
               ),
               _buildHospitalItem(
+                context,
                 l10n.rescueHospital,
                 '4.5 km',
                 Icons.medical_services,
+                tokens.info,
               ),
-              _buildHospitalItem(l10n.firstAidClinic, '1.8 km', Icons.healing),
+              _buildHospitalItem(
+                context,
+                l10n.firstAidClinic,
+                '1.8 km',
+                Icons.healing,
+                tokens.info,
+              ),
             ],
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
+            child: Text(l10n.close),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildHospitalItem(String name, String distance, IconData icon) {
+  Widget _buildHospitalItem(
+    BuildContext context,
+    String name,
+    String distance,
+    IconData icon,
+    Color iconColor,
+  ) {
+    final theme = Theme.of(context);
+
     return Padding(
-      padding: EdgeInsets.only(bottom: 16.h),
+      padding: EdgeInsets.only(bottom: AppSpacing.md.h),
       child: Row(
         children: [
-          Icon(icon, size: 22.sp, color: const Color(0xFF1976D2)),
-          SizedBox(width: 12.w),
+          Icon(icon, size: 22.sp, color: iconColor),
+          SizedBox(width: AppSpacing.sm.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name, style: const TextStyle(fontWeight: FontWeight.w600)),
-                SizedBox(height: 2.h),
                 Text(
-                  distance,
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 12.sp,
+                  name,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
+                SizedBox(height: 2.h),
+                Text(distance, style: theme.textTheme.bodySmall),
               ],
             ),
           ),
-          Icon(Icons.directions, size: 20.sp, color: Colors.grey.shade400),
+          Icon(
+            Icons.directions,
+            size: 20.sp,
+            color: theme.textTheme.bodySmall?.color,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSafetyTip(BuildContext context, String text, Color color) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: AppSpacing.sm.h),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 24.w,
+            height: 24.w,
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.14),
+              borderRadius: BorderRadius.circular(AppRadii.sm.r),
+            ),
+            child: Icon(Icons.check_rounded, color: color, size: 16.sp),
+          ),
+          SizedBox(width: AppSpacing.sm.w),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(top: 2.h),
+              child: Text(text, style: Theme.of(context).textTheme.bodyMedium),
+            ),
+          ),
         ],
       ),
     );
@@ -448,14 +402,16 @@ class HomeScreen extends StatelessWidget {
 
   void _showEmergencyTips(BuildContext context) {
     final theme = Theme.of(context);
+    final tokens = context.appThemeTokens;
     final l10n = AppLocalizations.of(context)!;
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Row(
           children: [
             Icon(Icons.lightbulb, color: theme.colorScheme.primary),
-            SizedBox(width: 8.w),
+            SizedBox(width: AppSpacing.xs.w),
             Text(l10n.safetyTips),
           ],
         ),
@@ -464,24 +420,19 @@ class HomeScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('• ${l10n.safetyTip1}'),
-              const SizedBox(height: 10),
-              Text('• ${l10n.safetyTip2}'),
-              const SizedBox(height: 10),
-              Text('• ${l10n.safetyTip3}'),
-              const SizedBox(height: 10),
-              Text('• ${l10n.safetyTip4}'),
-              const SizedBox(height: 10),
-              Text('• ${l10n.safetyTip5}'),
-              const SizedBox(height: 10),
-              Text('• ${l10n.safetyTip6}'),
+              _buildSafetyTip(context, l10n.safetyTip1, tokens.warning),
+              _buildSafetyTip(context, l10n.safetyTip2, tokens.warning),
+              _buildSafetyTip(context, l10n.safetyTip3, tokens.warning),
+              _buildSafetyTip(context, l10n.safetyTip4, tokens.warning),
+              _buildSafetyTip(context, l10n.safetyTip5, tokens.warning),
+              _buildSafetyTip(context, l10n.safetyTip6, tokens.warning),
             ],
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
+            child: Text(l10n.close),
           ),
         ],
       ),
@@ -494,5 +445,132 @@ class HomeScreen extends StatelessWidget {
 
   void _navigateToProfile(BuildContext context) {
     Navigator.pushNamed(context, AppRoutes.userProfile);
+  }
+}
+
+class _HomeHeroPanel extends StatelessWidget {
+  const _HomeHeroPanel({
+    required this.title,
+    required this.subtitle,
+    required this.label,
+  });
+
+  final String title;
+  final String subtitle;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final tokens = context.appThemeTokens;
+
+    return Container(
+      padding: EdgeInsets.all(AppSpacing.lg.w),
+      decoration: BoxDecoration(
+        color: tokens.surfaceRaised,
+        borderRadius: BorderRadius.circular(AppRadii.lg.r),
+        border: Border.all(color: tokens.outlineSoft),
+        boxShadow: [
+          BoxShadow(
+            color: theme.shadowColor.withValues(alpha: 0.06),
+            blurRadius: 20.r,
+            offset: Offset(0, 10.h),
+          ),
+        ],
+      ),
+      child: AppScreenHeader(
+        title: title,
+        subtitle: subtitle,
+        trailing: Semantics(
+          label: label,
+          child: Container(
+            constraints: BoxConstraints(maxWidth: 132.w),
+            padding: EdgeInsets.symmetric(
+              horizontal: AppSpacing.sm.w,
+              vertical: AppSpacing.xs.h,
+            ),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primary.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(AppRadii.pill.r),
+              border: Border.all(
+                color: theme.colorScheme.primary.withValues(alpha: 0.18),
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.verified_user_outlined,
+                  size: 14.sp,
+                  color: theme.colorScheme.primary,
+                ),
+                SizedBox(width: 6.w),
+                Flexible(
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: theme.colorScheme.primary,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  const _SectionHeader({
+    required this.title,
+    required this.icon,
+    required this.color,
+  });
+
+  final String title;
+  final IconData icon;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final tokens = context.appThemeTokens;
+
+    return Row(
+      children: [
+        Container(
+          width: 32.w,
+          height: 32.w,
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(AppRadii.sm.r),
+            border: Border.all(color: color.withValues(alpha: 0.16)),
+          ),
+          child: Icon(icon, color: color, size: 18.sp),
+        ),
+        SizedBox(width: AppSpacing.sm.w),
+        Expanded(
+          child: Text(
+            title,
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ),
+        Container(
+          width: 44.w,
+          height: 1,
+          decoration: BoxDecoration(
+            color: tokens.outlineSoft,
+            borderRadius: BorderRadius.circular(AppRadii.pill.r),
+          ),
+        ),
+      ],
+    );
   }
 }
