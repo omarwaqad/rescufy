@@ -19,6 +19,7 @@ class AppRoutes {
   // =========================
   static const String userHome = '/user-home';
   static const String emergencyForm = '/emergency-form';
+  static const String userHospitals = '/user/hospitals';
   static const String userHistory = '/user/history';
   static const String userProfile = '/user/profile';
   static const String editProfile = '/user/profile/edit';

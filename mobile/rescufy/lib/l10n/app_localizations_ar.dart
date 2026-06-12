@@ -206,16 +206,181 @@ class AppLocalizationsAr extends AppLocalizations {
   String get nearbyHospitals => 'المستشفيات القريبة';
 
   @override
-  String get cityGeneralHospital => 'مستشفى المدينة العام';
+  String get hospitalsSubtitle =>
+      'قارن المستشفيات القريبة الجاهزة للطوارئ وتحرك بسرعة.';
 
   @override
-  String get emergencyMedicalCenter => 'مركز الطوارئ الطبي';
+  String get yourLocation => 'موقعك';
 
   @override
-  String get rescueHospital => 'مستشفى الإنقاذ';
+  String get openNow => 'مفتوح الآن';
 
   @override
-  String get firstAidClinic => 'عيادة الإسعافات الأولية';
+  String get limited => 'سعة محدودة';
+
+  @override
+  String get unavailable => 'غير متاح';
+
+  @override
+  String availableBeds(int count) {
+    return '$count سرير متاح';
+  }
+
+  @override
+  String icuAvailability(int count) {
+    return '$count عناية مركزة متاحة';
+  }
+
+  @override
+  String startingFromPrice(String price) {
+    return 'يبدأ من $price';
+  }
+
+  @override
+  String distanceKm(String distance) {
+    return 'يبعد $distance كم';
+  }
+
+  @override
+  String get call => 'اتصال';
+
+  @override
+  String get directions => 'الاتجاهات';
+
+  @override
+  String get refresh => 'تحديث';
+
+  @override
+  String get retry => 'إعادة المحاولة';
+
+  @override
+  String get locationUnavailable => 'الموقع غير متاح';
+
+  @override
+  String get enableLocationToFindHospitals =>
+      'فعّل خدمات الموقع لعرض المستشفيات القريبة.';
+
+  @override
+  String get noHospitalsNearby => 'لا توجد مستشفيات قريبة';
+
+  @override
+  String get noHospitalsNearbyMessage => 'جرّب توسيع نطاق البحث أو حدّث موقعك.';
+
+  @override
+  String get hospitalsLoadFailed => 'تعذر تحميل المستشفيات القريبة.';
+
+  @override
+  String get liveCapacity => 'السعة الحالية';
+
+  @override
+  String get mapPreviewUnavailable => 'معاينة الخريطة غير متاحة';
+
+  @override
+  String get mapConfigurationRequired =>
+      'أضف مفتاح Google Maps API لتفعيل معاينة الخريطة.';
+
+  @override
+  String get hospitalStatusAvailable => 'متاح';
+
+  @override
+  String get hospitalStatusUnavailable => 'غير متاح';
+
+  @override
+  String get hospitalStatusUnknown => 'الحالة غير معروفة';
+
+  @override
+  String get requestHistoryTitle => 'سجل الطلبات';
+
+  @override
+  String get requestHistoryDetailsTitle => 'تفاصيل الطلب';
+
+  @override
+  String get requestHistoryEmptyTitle => 'لا يوجد سجل طلبات';
+
+  @override
+  String get requestHistoryEmptyMessage =>
+      'ستظهر طلبات الطوارئ هنا بعد إرسال أول طلب.';
+
+  @override
+  String get requestHistoryFirstRequest => 'أنشئ أول طلب';
+
+  @override
+  String get requestHistoryLoadFailed => 'تعذر تحميل سجل الطلبات.';
+
+  @override
+  String get requestHistoryCompleted => 'مكتمل';
+
+  @override
+  String get requestHistoryInProgress => 'قيد التنفيذ';
+
+  @override
+  String get requestHistoryCancelled => 'ملغي';
+
+  @override
+  String get requestId => 'رقم الطلب';
+
+  @override
+  String get requestStatus => 'حالة الطلب';
+
+  @override
+  String get createdDate => 'تاريخ الإنشاء';
+
+  @override
+  String get assignedAmbulancePlate => 'لوحة سيارة الإسعاف';
+
+  @override
+  String get driverName => 'اسم السائق';
+
+  @override
+  String get hospitalName => 'اسم المستشفى';
+
+  @override
+  String get descriptionLabel => 'الوصف';
+
+  @override
+  String get addressLabel => 'العنوان';
+
+  @override
+  String get viewDetails => 'عرض التفاصيل';
+
+  @override
+  String get unknownRequestStatus => 'غير معروف';
+
+  @override
+  String get requestStatusPending => 'قيد الانتظار';
+
+  @override
+  String get requestStatusAssigned => 'تم التعيين';
+
+  @override
+  String get requestStatusAccepted => 'تم القبول';
+
+  @override
+  String get requestStatusOnTheWay => 'في الطريق';
+
+  @override
+  String get requestStatusArrived => 'تم الوصول';
+
+  @override
+  String get requestStatusPickedUp => 'تم النقل';
+
+  @override
+  String get requestStatusUnderExecuting => 'قيد التنفيذ';
+
+  @override
+  String get requestStatusDelivered => 'تم التسليم';
+
+  @override
+  String get requestStatusNotDelivered => 'لم يتم التسليم';
+
+  @override
+  String get requestStatusCanceled => 'ملغي';
+
+  @override
+  String get requestStatusFinished => 'منتهي';
+
+  @override
+  String get requestStatusClosed => 'مغلق';
 
   @override
   String get safetyTip1 => 'ابق هادئاً وقيّم الموقف';

@@ -88,3 +88,7 @@ assets/tmp/
 # Symbolication / Obfuscation
 app.*.symbols
 app.*.map.json
+
+
+#agents
+.agents/

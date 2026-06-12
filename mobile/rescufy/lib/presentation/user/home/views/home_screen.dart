@@ -126,6 +126,11 @@ class HomeScreen extends StatelessWidget {
           label: AppLocalizations.of(context)!.home,
         ),
         BottomNavigationBarItem(
+          icon: const Icon(Icons.local_hospital_outlined),
+          activeIcon: const Icon(Icons.local_hospital),
+          label: AppLocalizations.of(context)!.hospitals,
+        ),
+        BottomNavigationBarItem(
           icon: const Icon(Icons.history_outlined),
           activeIcon: const Icon(Icons.history),
           label: AppLocalizations.of(context)!.history,
@@ -139,9 +144,12 @@ class HomeScreen extends StatelessWidget {
       onTap: (index) {
         switch (index) {
           case 1:
-            _navigateToHistory(context);
+            _navigateToHospitals(context);
             break;
           case 2:
+            _navigateToHistory(context);
+            break;
+          case 3:
             _navigateToProfile(context);
             break;
           case 0:
@@ -273,104 +281,7 @@ class HomeScreen extends StatelessWidget {
   }
 
   void _showNearbyHospitals(BuildContext context) {
-    final theme = Theme.of(context);
-    final tokens = context.appThemeTokens;
-    final l10n = AppLocalizations.of(context)!;
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Row(
-          children: [
-            Icon(Icons.local_hospital, color: theme.colorScheme.primary),
-            SizedBox(width: AppSpacing.xs.w),
-            Text(l10n.nearbyHospitals),
-          ],
-        ),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildHospitalItem(
-                context,
-                l10n.cityGeneralHospital,
-                '2.3 km',
-                Icons.local_hospital,
-                tokens.info,
-              ),
-              _buildHospitalItem(
-                context,
-                l10n.emergencyMedicalCenter,
-                '3.1 km',
-                Icons.emergency,
-                tokens.info,
-              ),
-              _buildHospitalItem(
-                context,
-                l10n.rescueHospital,
-                '4.5 km',
-                Icons.medical_services,
-                tokens.info,
-              ),
-              _buildHospitalItem(
-                context,
-                l10n.firstAidClinic,
-                '1.8 km',
-                Icons.healing,
-                tokens.info,
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l10n.close),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHospitalItem(
-    BuildContext context,
-    String name,
-    String distance,
-    IconData icon,
-    Color iconColor,
-  ) {
-    final theme = Theme.of(context);
-
-    return Padding(
-      padding: EdgeInsets.only(bottom: AppSpacing.md.h),
-      child: Row(
-        children: [
-          Icon(icon, size: 22.sp, color: iconColor),
-          SizedBox(width: AppSpacing.sm.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                SizedBox(height: 2.h),
-                Text(distance, style: theme.textTheme.bodySmall),
-              ],
-            ),
-          ),
-          Icon(
-            Icons.directions,
-            size: 20.sp,
-            color: theme.textTheme.bodySmall?.color,
-          ),
-        ],
-      ),
-    );
+    _navigateToHospitals(context);
   }
 
   Widget _buildSafetyTip(BuildContext context, String text, Color color) {
@@ -440,11 +351,15 @@ class HomeScreen extends StatelessWidget {
   }
 
   void _navigateToHistory(BuildContext context) {
-    Navigator.pushNamed(context, AppRoutes.userHistory);
+    Navigator.pushReplacementNamed(context, AppRoutes.userHistory);
+  }
+
+  void _navigateToHospitals(BuildContext context) {
+    Navigator.pushReplacementNamed(context, AppRoutes.userHospitals);
   }
 
   void _navigateToProfile(BuildContext context) {
-    Navigator.pushNamed(context, AppRoutes.userProfile);
+    Navigator.pushReplacementNamed(context, AppRoutes.userProfile);
   }
 }
 

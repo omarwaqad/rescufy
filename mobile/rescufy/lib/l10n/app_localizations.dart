@@ -488,29 +488,335 @@ abstract class AppLocalizations {
   /// **'Nearby Hospitals'**
   String get nearbyHospitals;
 
-  /// Hospital name
+  /// Hospitals screen subtitle
   ///
   /// In en, this message translates to:
-  /// **'City General Hospital'**
-  String get cityGeneralHospital;
+  /// **'Compare nearby emergency-ready hospitals and head out fast.'**
+  String get hospitalsSubtitle;
 
-  /// Hospital name
+  /// Current user location label
   ///
   /// In en, this message translates to:
-  /// **'Emergency Medical Center'**
-  String get emergencyMedicalCenter;
+  /// **'Your location'**
+  String get yourLocation;
 
-  /// Hospital name
+  /// Available/open status label
   ///
   /// In en, this message translates to:
-  /// **'Rescue Hospital'**
-  String get rescueHospital;
+  /// **'Open now'**
+  String get openNow;
 
-  /// Clinic name
+  /// Limited status label
   ///
   /// In en, this message translates to:
-  /// **'First Aid Clinic'**
-  String get firstAidClinic;
+  /// **'Limited'**
+  String get limited;
+
+  /// Unavailable status label
+  ///
+  /// In en, this message translates to:
+  /// **'Unavailable'**
+  String get unavailable;
+
+  /// Available beds count label
+  ///
+  /// In en, this message translates to:
+  /// **'{count} beds available'**
+  String availableBeds(int count);
+
+  /// Available ICU count label
+  ///
+  /// In en, this message translates to:
+  /// **'{count} ICU available'**
+  String icuAvailability(int count);
+
+  /// Hospital starting price label
+  ///
+  /// In en, this message translates to:
+  /// **'Starting from {price}'**
+  String startingFromPrice(String price);
+
+  /// Distance in kilometers label
+  ///
+  /// In en, this message translates to:
+  /// **'{distance} km away'**
+  String distanceKm(String distance);
+
+  /// Call action
+  ///
+  /// In en, this message translates to:
+  /// **'Call'**
+  String get call;
+
+  /// Directions action
+  ///
+  /// In en, this message translates to:
+  /// **'Directions'**
+  String get directions;
+
+  /// Refresh action
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get refresh;
+
+  /// Retry action
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// Location unavailable label
+  ///
+  /// In en, this message translates to:
+  /// **'Location unavailable'**
+  String get locationUnavailable;
+
+  /// Hospitals location error message
+  ///
+  /// In en, this message translates to:
+  /// **'Enable location services to load nearby hospitals.'**
+  String get enableLocationToFindHospitals;
+
+  /// Empty hospitals state title
+  ///
+  /// In en, this message translates to:
+  /// **'No nearby hospitals found'**
+  String get noHospitalsNearby;
+
+  /// Empty hospitals state subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Try expanding the search radius or refresh your location.'**
+  String get noHospitalsNearbyMessage;
+
+  /// Hospitals load failure fallback
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load nearby hospitals.'**
+  String get hospitalsLoadFailed;
+
+  /// Capacity status label
+  ///
+  /// In en, this message translates to:
+  /// **'Live capacity'**
+  String get liveCapacity;
+
+  /// Map unavailable message
+  ///
+  /// In en, this message translates to:
+  /// **'Map preview unavailable'**
+  String get mapPreviewUnavailable;
+
+  /// Map configuration hint
+  ///
+  /// In en, this message translates to:
+  /// **'Add your Google Maps API key to enable the live map preview.'**
+  String get mapConfigurationRequired;
+
+  /// Hospital available status label
+  ///
+  /// In en, this message translates to:
+  /// **'Available'**
+  String get hospitalStatusAvailable;
+
+  /// Hospital unavailable status label
+  ///
+  /// In en, this message translates to:
+  /// **'Unavailable'**
+  String get hospitalStatusUnavailable;
+
+  /// Hospital unknown status label
+  ///
+  /// In en, this message translates to:
+  /// **'Status unknown'**
+  String get hospitalStatusUnknown;
+
+  /// Request history screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Request History'**
+  String get requestHistoryTitle;
+
+  /// Request history details bottom sheet title
+  ///
+  /// In en, this message translates to:
+  /// **'Request Details'**
+  String get requestHistoryDetailsTitle;
+
+  /// Empty request history title
+  ///
+  /// In en, this message translates to:
+  /// **'No Request History'**
+  String get requestHistoryEmptyTitle;
+
+  /// Empty request history subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Your emergency requests will appear here once you make your first request.'**
+  String get requestHistoryEmptyMessage;
+
+  /// Empty request history action
+  ///
+  /// In en, this message translates to:
+  /// **'Make Your First Request'**
+  String get requestHistoryFirstRequest;
+
+  /// Request history load failure fallback
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load request history.'**
+  String get requestHistoryLoadFailed;
+
+  /// Completed requests stat label
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get requestHistoryCompleted;
+
+  /// In progress requests stat label
+  ///
+  /// In en, this message translates to:
+  /// **'In Progress'**
+  String get requestHistoryInProgress;
+
+  /// Cancelled requests stat label
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get requestHistoryCancelled;
+
+  /// Request ID label
+  ///
+  /// In en, this message translates to:
+  /// **'Request ID'**
+  String get requestId;
+
+  /// Request status label
+  ///
+  /// In en, this message translates to:
+  /// **'Request Status'**
+  String get requestStatus;
+
+  /// Created date label
+  ///
+  /// In en, this message translates to:
+  /// **'Created Date'**
+  String get createdDate;
+
+  /// Assigned ambulance plate label
+  ///
+  /// In en, this message translates to:
+  /// **'Assigned Ambulance Plate'**
+  String get assignedAmbulancePlate;
+
+  /// Driver name label
+  ///
+  /// In en, this message translates to:
+  /// **'Driver Name'**
+  String get driverName;
+
+  /// Hospital name label
+  ///
+  /// In en, this message translates to:
+  /// **'Hospital Name'**
+  String get hospitalName;
+
+  /// Description field label
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get descriptionLabel;
+
+  /// Address field label
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get addressLabel;
+
+  /// View details action
+  ///
+  /// In en, this message translates to:
+  /// **'View Details'**
+  String get viewDetails;
+
+  /// Unknown request status fallback
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get unknownRequestStatus;
+
+  /// Pending request status label
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get requestStatusPending;
+
+  /// Assigned request status label
+  ///
+  /// In en, this message translates to:
+  /// **'Assigned'**
+  String get requestStatusAssigned;
+
+  /// Accepted request status label
+  ///
+  /// In en, this message translates to:
+  /// **'Accepted'**
+  String get requestStatusAccepted;
+
+  /// On the way request status label
+  ///
+  /// In en, this message translates to:
+  /// **'On The Way'**
+  String get requestStatusOnTheWay;
+
+  /// Arrived request status label
+  ///
+  /// In en, this message translates to:
+  /// **'Arrived'**
+  String get requestStatusArrived;
+
+  /// Picked up request status label
+  ///
+  /// In en, this message translates to:
+  /// **'Picked Up'**
+  String get requestStatusPickedUp;
+
+  /// Under executing request status label
+  ///
+  /// In en, this message translates to:
+  /// **'Under Executing'**
+  String get requestStatusUnderExecuting;
+
+  /// Delivered request status label
+  ///
+  /// In en, this message translates to:
+  /// **'Delivered'**
+  String get requestStatusDelivered;
+
+  /// Not delivered request status label
+  ///
+  /// In en, this message translates to:
+  /// **'Not Delivered'**
+  String get requestStatusNotDelivered;
+
+  /// Canceled request status label
+  ///
+  /// In en, this message translates to:
+  /// **'Canceled'**
+  String get requestStatusCanceled;
+
+  /// Finished request status label
+  ///
+  /// In en, this message translates to:
+  /// **'Finished'**
+  String get requestStatusFinished;
+
+  /// Closed request status label
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get requestStatusClosed;
 
   /// Safety tip 1
   ///
