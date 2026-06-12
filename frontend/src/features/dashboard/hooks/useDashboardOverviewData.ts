@@ -11,11 +11,11 @@ import { startDispatchConnection, onReceiveRequestEvent, onReceiveAlert } from "
 export function useDashboardOverviewData() {
   const { t } = useTranslation("dashboard");
 
-  const [avgDispatchMinutes, setAvgDispatchMinutes] = useState(4.1);
-  const [successRate, setSuccessRate] = useState(93.6);
-  const [failedAssignments, setFailedAssignments] = useState(6);
-  const [availableAmbulances, setAvailableAmbulances] = useState(23);
-  const [totalAmbulances, setTotalAmbulances] = useState(45);
+  const [avgDispatchMinutes] = useState(4.1);
+  const [successRate] = useState(93.6);
+  const [failedAssignments] = useState(6);
+  const [availableAmbulances] = useState(23);
+  const [totalAmbulances] = useState(45);
 
   const [activityEvents, setActivityEvents] = useState<DispatchActivityEvent[]>([]);
   const [alerts, setAlerts] = useState<DashboardAlert[]>([]);
