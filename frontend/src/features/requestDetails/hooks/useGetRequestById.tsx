@@ -244,6 +244,7 @@ export function useGetRequestById() {
         );
 
         const data = normalizeRequestDetail(response.data);
+        console.log("Raw API response:", response.data);
 
         if (!data) {
           toast.error(t("requests:fetchRequests.error"), {

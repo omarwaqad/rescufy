@@ -183,7 +183,7 @@ export default function AmbulanceProfile() {
         </Link>
       </header>
 
-      <AmbulanceProfileDetails profile={profile} statusKey={statusKey} />
+      <AmbulanceProfileDetails profile={profile} statusKey={statusKey} onRefresh={() => id && fetchAmbulanceById(id)} />
     </section>
   );
 }

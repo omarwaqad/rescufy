@@ -11,9 +11,11 @@
         "operations": "Operations",
         "monitoring": "Monitoring",
         "management": "Management",
-            "hospitalProfile": "My Hospital"
-
-
+        "hospitalProfile": "My Hospital",
+        "rescufy": "Rescufy",
+        "emergencyOperations": "Emergency Operations",
+        "systemOperational": "System Operational",
+        "allServicesRunning": "All services running"
     },
     "navbar": {
         "search": "Search...",

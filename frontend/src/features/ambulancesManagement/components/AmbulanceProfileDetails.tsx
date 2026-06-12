@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -11,13 +12,17 @@ import {
   faUserNurse, // ADDED
   faCheckCircle, // ADDED
   faTimesCircle, // ADDED
+  faUsersCog,
 } from "@fortawesome/free-solid-svg-icons";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import type { AmbulanceProfile } from "../types/ambulances.types";
+import { AssignCrewModal } from "./AssignCrewModal";
+import { useGetAmbulanceById } from "../hooks/useGetAmbulanceById";
 
 type AmbulanceProfileDetailsProps = {
   profile: AmbulanceProfile;
   statusKey: string;
+  onRefresh?: () => void;
 };
 
 const statusBadgeClass: Record<string, string> = {
@@ -75,8 +80,10 @@ function formatDate(value: string | undefined, locale: string) {
 export function AmbulanceProfileDetails({
   profile,
   statusKey,
+  onRefresh,
 }: AmbulanceProfileDetailsProps) {
   const { t, i18n } = useTranslation("ambulances");
+  const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
 
   const resolvedStatusClass = statusBadgeClass[statusKey] ?? statusBadgeClass.offline;
   const locationHref = `https://www.google.com/maps?q=${profile.simLatitude},${profile.simLongitude}`;
@@ -116,6 +123,14 @@ export function AmbulanceProfileDetails({
             <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${resolvedStatusClass}`}>
               {t(`status.${statusKey}`)}
             </span>
+            <button
+              onClick={() => setIsAssignModalOpen(true)}
+              className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-white hover:opacity-90 ml-2 shadow-sm"
+              title={t("staff.assignCrew", "Assign Crew")}
+            >
+              <FontAwesomeIcon icon={faUsersCog} />
+              <span className="hidden sm:inline">{t("staff.assignBtn", "Assign Staff")}</span>
+            </button>
           </div>
         </div>
 
@@ -209,6 +224,13 @@ export function AmbulanceProfileDetails({
           </p>
         </div>
       </aside>
+
+      <AssignCrewModal
+        ambulance={profile}
+        isOpen={isAssignModalOpen}
+        onClose={() => setIsAssignModalOpen(false)}
+        onSuccess={() => onRefresh && onRefresh()}
+      />
     </div>
   );
 }

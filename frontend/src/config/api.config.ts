@@ -45,6 +45,7 @@ export const API_CONFIG = {
       CREATE: "/api/Ambulance",
       UPDATE: (id: string) => `/api/Ambulance/${id}`,
       DELETE: (id: string) => `/api/Ambulance/${id}`,
+      ASSIGN_STAFF: (id: string) => `/api/Ambulance/${id}/assign-staff`,
     },
     REQUESTS: {
       GET_ALL: "/api/Request",

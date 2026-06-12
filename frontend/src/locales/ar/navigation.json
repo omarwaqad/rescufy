@@ -11,7 +11,11 @@
         "operations": "العمليات",
         "monitoring": "المراقبة",
         "management": "الإدارة",
-        "hospitalProfile": "مستشفاي"
+        "hospitalProfile": "مستشفاي",
+        "rescufy": "ريسكوفي",
+        "emergencyOperations": "عمليات الطوارئ",
+        "systemOperational": "النظام يعمل",
+        "allServicesRunning": "جميع الخدمات تعمل"
     },
     "navbar": {
         "search": "بحث...",
