@@ -28,11 +28,10 @@ export function useAllRequestsBoard({
     return () => window.clearInterval(timer);
   }, []);
 
+  // Fetch data initially and whenever the stable fetch ref changes
   useEffect(() => {
-    if (hasFetchedInitial) return;
-    setHasFetchedInitial(true);
     void fetchAdminStreamRequests();
-  }, [fetchAdminStreamRequests, hasFetchedInitial]);
+  }, [fetchAdminStreamRequests]);
 
   const queueRequests = useMemo(() => {
     return requests.map((request) => {

@@ -6,6 +6,11 @@
         "subtitle": "Auto-dispatch monitoring center for live awareness, alerts, and system reasoning.",
         "liveTag": "System Live"
     },
+    "realtime": {
+        "connectionFailed": "Live dispatch updates are unavailable. Historical data is still shown.",
+        "disconnected": "Live feed disconnected",
+        "reconnectHint": "Check your connection or sign in again. The dashboard will keep showing the latest fetched data."
+    },
     "stats": {
         "totalRequests": "Total Requests",
         "completedRequests": "Completed Requests",

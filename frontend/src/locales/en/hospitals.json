@@ -63,7 +63,16 @@
     },
     "filters": {
         "allStates": "All States",
-        "searchPlaceholder": "Search hospitals by name, address, or ID"
+        "searchPlaceholder": "Search hospitals by name, address, or ID",
+        "limitLabel": "Per page",
+        "statusLabel": "status",
+        "sortLabel": "Sort by"
+    },
+    "pagination": {
+        "page": "Page",
+        "of": "of",
+        "previous": "Previous",
+        "next": "Next"
     },
     "operations": {
         "liveMonitoring": "Capacity Monitoring",

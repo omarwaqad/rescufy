@@ -21,15 +21,19 @@ function formatDateTime(iso: string, locale: string): string {
 interface TripReportSectionCardProps {
   tripReport: TripReport | null;
   onOpenModal: () => void;
+  readOnly?: boolean;
 }
 
-export default function TripReportSectionCard({ tripReport, onOpenModal }: TripReportSectionCardProps) {
+export default function TripReportSectionCard({
+  tripReport,
+  onOpenModal,
+  readOnly = false,
+}: TripReportSectionCardProps) {
   const { t, i18n } = useTranslation("requests");
-
-  // get user role from context
   const { user } = useAuth();
+  const isHospitalAdmin = user?.Role === "hospitaladmin";
 
-  if (user?.Role !== "hospitaladmin") {
+  if (!isHospitalAdmin && !(readOnly && tripReport)) {
     return null;
   }
 
@@ -42,6 +46,18 @@ export default function TripReportSectionCard({ tripReport, onOpenModal }: TripR
       {tripReport ? (
         <div className="space-y-3">
           <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+            {tripReport.hospitalName ? (
+              <FieldItem
+                label={t("details.adminLayout.fields.hospitalName", "Hospital")}
+                value={tripReport.hospitalName}
+              />
+            ) : null}
+            {tripReport.patientName ? (
+              <FieldItem
+                label={t("details.patientInfo", "Patient")}
+                value={tripReport.patientName}
+              />
+            ) : null}
             <FieldItem
               label={t("details.adminLayout.fields.admissionTime", "Admission Time")}
               value={formatDateTime(tripReport.admissionTime, i18n.language)}
@@ -59,16 +75,18 @@ export default function TripReportSectionCard({ tripReport, onOpenModal }: TripR
               {tripReport.medicalProcedures || "-"}
             </p>
           </div>
-          <button
-            type="button"
-            onClick={onOpenModal}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/8 px-3 py-1.5 text-xs font-medium text-primary transition hover:bg-primary/15"
-          >
-            <Pencil className="h-3 w-3" />
-            Edit Report
-          </button>
+          {isHospitalAdmin && !readOnly ? (
+            <button
+              type="button"
+              onClick={onOpenModal}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/8 px-3 py-1.5 text-xs font-medium text-primary transition hover:bg-primary/15"
+            >
+              <Pencil className="h-3 w-3" />
+              {t("details.adminLayout.editTripReport", "Edit Report")}
+            </button>
+          ) : null}
         </div>
-      ) : (
+      ) : isHospitalAdmin && !readOnly ? (
         <div className="flex flex-col items-start gap-3">
           <p className="text-sm text-muted">{t("details.adminLayout.noTripReport")}</p>
           <button
@@ -77,9 +95,11 @@ export default function TripReportSectionCard({ tripReport, onOpenModal }: TripR
             className="inline-flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/8 px-3 py-1.5 text-xs font-medium text-primary transition hover:bg-primary/15"
           >
             <Plus className="h-3 w-3" />
-            Add Report
+            {t("details.adminLayout.addTripReport", "Add Report")}
           </button>
         </div>
+      ) : (
+        <p className="text-sm text-muted">{t("details.adminLayout.noTripReport")}</p>
       )}
     </SectionCard>
   );

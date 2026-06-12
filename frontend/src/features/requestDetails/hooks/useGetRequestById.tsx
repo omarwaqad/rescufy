@@ -8,8 +8,10 @@ import type {
   RequestDetail,
   RequestStatus,
   AssignmentStatus,
+  TripReport,
 } from "../types/requestDetails.types";
 import { getAuthToken } from "@/features/auth/utils/auth.utils";
+import { isFinishedRequestStatus } from "@/features/requests/utils/requestStatus.utils";
 
 // ===============================
 // 🔹 Helpers
@@ -55,10 +57,26 @@ const requestStatuses: RequestStatus[] = [
 const assignmentStatuses: AssignmentStatus[] = [...requestStatuses];
 
 function parseRequestStatus(value: unknown): RequestStatus {
-  if (typeof value === "string" && requestStatuses.includes(value as RequestStatus)) {
-    return value as RequestStatus;
+  if (typeof value !== "string") {
+    return "Pending";
   }
-  return "Pending";
+
+  const trimmed = value.trim();
+  const normalized = trimmed.toLowerCase();
+
+  if (normalized === "completed" || normalized === "closed") {
+    return "Finished";
+  }
+
+  if (requestStatuses.includes(trimmed as RequestStatus)) {
+    return trimmed as RequestStatus;
+  }
+
+  const matched = requestStatuses.find(
+    (status) => status.toLowerCase() === normalized,
+  );
+
+  return matched ?? "Pending";
 }
 
 function parseAssignmentStatus(value: unknown): AssignmentStatus {
@@ -66,6 +84,61 @@ function parseAssignmentStatus(value: unknown): AssignmentStatus {
     return value as AssignmentStatus;
   }
   return "Pending";
+}
+
+function normalizeTripReport(payload: unknown): TripReport | null {
+  const raw = toRecord(payload);
+  if (!raw) return null;
+
+  const id = toNumberValue(raw.id, NaN);
+  if (!Number.isFinite(id)) return null;
+
+  return {
+    id,
+    requestId: toNumberValue(raw.requestId, 0) || undefined,
+    patientId: toStringValue(raw.patientId, "") || undefined,
+    patientName: toStringValue(raw.patientName, "") || undefined,
+    patientAge: toNumberValue(raw.patientAge, 0) || undefined,
+    patientNationalId: toStringValue(raw.patientNationalId, "") || undefined,
+    hospitalId: toNumberValue(raw.hospitalId, 0) || undefined,
+    hospitalName: toStringValue(raw.hospitalName, "") || undefined,
+    medicalProcedures: toStringValue(raw.medicalProcedures, "-"),
+    admissionTime: toStringValue(raw.admissionTime, ""),
+    dischargeTime: toStringValue(raw.dischargeTime, ""),
+    createdAt: toStringValue(raw.createdAt, "") || undefined,
+    updatedAt: toStringValue(raw.updatedAt, "") || undefined,
+  };
+}
+
+async function fetchTripReportByRequestId(
+  requestId: string,
+  token: string,
+): Promise<TripReport | null> {
+  try {
+    const response = await axios.get(
+      getApiUrl(API_CONFIG.ENDPOINTS.REQUESTS.GET_TRIP_REPORT_BY_REQUEST(requestId)),
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    const payload = toRecord(response.data);
+    return (
+      normalizeTripReport(payload?.data) ??
+      normalizeTripReport(payload?.result) ??
+      normalizeTripReport(payload)
+    );
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 404) {
+      return null;
+    }
+
+    console.error("Failed to load trip report", error);
+    return null;
+  }
 }
 
 // ===============================
@@ -173,15 +246,9 @@ function normalizeRequestDetail(payload: unknown): RequestDetail | null {
     : [];
 
   // 🔹 Trip Report
-  const rawTrip = toRecord(raw.tripReport);
-  const tripReport = rawTrip
-    ? {
-        id: toNumberValue(rawTrip.id, 0),
-        medicalProcedures: toStringValue(rawTrip.medicalProcedures, "-"),
-        admissionTime: toStringValue(rawTrip.admissionTime, ""),
-        dischargeTime: toStringValue(rawTrip.dischargeTime, ""),
-      }
-    : null;
+  const tripReport = normalizeTripReport(raw.tripReport);
+
+  const requestStatus = parseRequestStatus(raw.requestStatus ?? raw.status);
 
   return {
     id,
@@ -192,10 +259,10 @@ function normalizeRequestDetail(payload: unknown): RequestDetail | null {
     description: toStringValue(raw.description, "-"),
     latitude: toNumberValue(raw.latitude, 0),
     longitude: toNumberValue(raw.longitude, 0),
-    address: toStringValue(raw.address, "-"),
+    address: toStringValue(raw.address ?? raw.location, "-"),
     numberOfPeopleAffected: toNumberValue(raw.numberOfPeopleAffected, 0),
 
-    requestStatus: parseRequestStatus(raw.requestStatus),
+    requestStatus,
 
     createdAt: toStringValue(raw.createdAt, ""),
     updatedAt: toStringValue(raw.updatedAt, ""),
@@ -213,13 +280,15 @@ function normalizeRequestDetail(payload: unknown): RequestDetail | null {
 // ===============================
 export function useGetRequestById() {
   const [request, setRequest] = useState<RequestDetail | null>(null);
+  const [events, setEvents] = useState<any[]>([]);
+  const [eventsMetadata, setEventsMetadata] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const { t } = useTranslation(["requests", "auth"]);
   const { isRTL } = useLanguage();
 
   const fetchRequest = useCallback(
-    async (id: string): Promise<RequestDetail | null> => {
+    async (id: string, page = 1, limit = 50): Promise<RequestDetail | null> => {
       setIsLoading(true);
       const toastPosition = isRTL ? "top-left" : "top-right";
 
@@ -242,6 +311,22 @@ export function useGetRequestById() {
             },
           }
         );
+        
+        try {
+          const eventsResponse = await axios.get(
+            getApiUrl(`/api/request/${id}/events`),
+            {
+              headers: { Authorization: `Bearer ${token}` },
+              params: { page, limit }
+            }
+          );
+          if (eventsResponse.data?.data) {
+             setEvents(eventsResponse.data.data);
+             setEventsMetadata(eventsResponse.data.meta);
+          }
+        } catch (e) {
+           console.error("Failed to load events", e);
+        }
 
         const data = normalizeRequestDetail(response.data);
         console.log("Raw API response:", response.data);
@@ -251,6 +336,13 @@ export function useGetRequestById() {
             position: toastPosition,
           });
           return null;
+        }
+
+        if (!data.tripReport && isFinishedRequestStatus(data.requestStatus)) {
+          const tripReport = await fetchTripReportByRequestId(id, token);
+          if (tripReport) {
+            data.tripReport = tripReport;
+          }
         }
 
         setRequest(data);
@@ -287,6 +379,8 @@ export function useGetRequestById() {
 
   return {
     request,
+    events,
+    eventsMetadata,
     isLoading,
     fetchRequest,
   };

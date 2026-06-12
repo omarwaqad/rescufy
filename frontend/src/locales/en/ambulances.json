@@ -45,7 +45,15 @@
         "deleteTooltip": "Delete ambulance"
     },
     "filters": {
-        "searchPlaceholder": "Search ambulances by plate number or ID"
+        "searchPlaceholder": "Search ambulances by plate number or ID",
+        "statusLabel": "Status",
+        "limitLabel": "Per page"
+    },
+    "pagination": {
+        "page": "Page",
+        "of": "of",
+        "previous": "Previous",
+        "next": "Next"
     },
     "controlCenter": {
         "liveMonitoring": "Live Monitoring",

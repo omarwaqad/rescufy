@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { API_CONFIG, getApiUrl } from "@/config/api.config";
 import { getAuthToken } from "@/features/auth/utils/auth.utils";
+import type { Hospital } from "@/features/hospitalsManagement/types/hospitals.types";
 import { useGetHospitals } from "@/features/hospitalsManagement/hooks/useGetHospitals";
 import { normalizeAmbulance, extractAmbulanceCollection } from "@/features/ambulancesManagement/utils/ambulance.api";
 import { userSchema, userEditSchema } from "../schemas/modal.schema";
@@ -24,7 +25,8 @@ interface UseUserFormParams {
 }
 
 export function useUserForm({ isOpen, mode, user, onSubmit }: UseUserFormParams) {
-  const { hospitals, fetchHospitals, isLoading: isHospitalsLoading } = useGetHospitals();
+  const { fetchHospitals, isLoading: isHospitalsLoading } = useGetHospitals();
+  const [hospitals, setHospitals] = useState<Hospital[]>([]);
   const [ambulances, setAmbulances] = useState<AmbulanceOption[]>([]);
   const [isAmbulancesLoading, setIsAmbulancesLoading] = useState(false);
 
@@ -97,7 +99,9 @@ export function useUserForm({ isOpen, mode, user, onSubmit }: UseUserFormParams)
 
   useEffect(() => {
     if (!isOpen) return;
-    if (selectedRole === "HospitalAdmin") void fetchHospitals();
+    if (selectedRole === "HospitalAdmin") {
+      void fetchHospitals().then((result) => setHospitals(result.hospitals));
+    }
     if (selectedRole === "AmbulanceDriver") void fetchAmbulances();
   }, [isOpen, selectedRole, fetchHospitals, fetchAmbulances]);
 

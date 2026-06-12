@@ -1,19 +1,26 @@
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import type { DispatchActivityEvent } from "../components/DispatchActivityFeed";
 import type { DashboardAlert } from "../components/AlertsPanel";
 import type { SystemHealthStatus } from "../components/SystemHealthSection";
+import axios from "axios";
+import { getApiUrl } from "@/config/api.config";
+import { getAuthToken } from "@/features/auth/utils/auth.utils";
+import { startDispatchConnection, onReceiveRequestEvent, onReceiveAlert } from "@/services/signalrService";
 
 export function useDashboardOverviewData() {
   const { t } = useTranslation("dashboard");
 
-  const avgDispatchMinutes = 4.1;
-  const successRate = 93.6;
-  const failedAssignments = 6;
-  const delayedHandOffs = 2;
-  const overloadedHospitals = 3;
+  const [avgDispatchMinutes, setAvgDispatchMinutes] = useState(4.1);
+  const [successRate, setSuccessRate] = useState(93.6);
+  const [failedAssignments, setFailedAssignments] = useState(6);
+  const [availableAmbulances, setAvailableAmbulances] = useState(23);
+  const [totalAmbulances, setTotalAmbulances] = useState(45);
 
-  const availableAmbulances = 23;
-  const totalAmbulances = 45;
+  const [activityEvents, setActivityEvents] = useState<DispatchActivityEvent[]>([]);
+  const [alerts, setAlerts] = useState<DashboardAlert[]>([]);
+  const [isRealtimeConnected, setIsRealtimeConnected] = useState(false);
+  const [realtimeError, setRealtimeError] = useState<string | null>(null);
 
   const healthStatus: SystemHealthStatus =
     failedAssignments >= 10 || avgDispatchMinutes > 6
@@ -22,75 +29,90 @@ export function useDashboardOverviewData() {
         ? "warning"
         : "healthy";
 
-  const activityEvents: DispatchActivityEvent[] = [
-    {
-      id: "ev-1",
-      requestId: "REQ-2026-091",
-      patientName: "Khaled Mahmoud",
-      type: "requestReceived",
-      minutesAgo: 1,
-    },
-    {
-      id: "ev-2",
-      requestId: "REQ-2026-091",
-      patientName: "Khaled Mahmoud",
-      type: "ambulanceAssigned",
-      minutesAgo: 1,
-      ambulanceName: "AMB-14",
-    },
-    {
-      id: "ev-3",
-      requestId: "REQ-2026-089",
-      patientName: "Lama Othman",
-      type: "etaUpdated",
-      minutesAgo: 3,
-      etaMinutes: 6,
-    },
-    {
-      id: "ev-4",
-      requestId: "REQ-2026-083",
-      patientName: "Yasser Adel",
-      type: "completed",
-      minutesAgo: 5,
-      ambulanceName: "AMB-22",
-    },
-  ];
+  useEffect(() => {
+    // Initial fetch for historical data
+    const fetchHistoricalData = async () => {
+      try {
+        const token = getAuthToken();
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
+        
+        // Fetch recent alerts
+        const alertsResponse = await axios.get(getApiUrl("/api/alert"), { headers, params: { page: 1, limit: 10 } });
+        const fetchedAlerts: DashboardAlert[] = (alertsResponse.data?.data || []).map((alert: any) => ({
+          id: alert.alertId || alert.id,
+          severity: alert.level || alert.severity || "info",
+          title: alert.title || "",
+          description: alert.message || alert.description || "",
+          zone: alert.zone || "Unknown",
+          minutesAgo: alert.timestamp ? Math.max(0, Math.floor((new Date().getTime() - new Date(alert.timestamp).getTime()) / 60000)) : 0,
+          recommendation: alert.recommendation || "",
+        }));
+        setAlerts(fetchedAlerts);
+        
+      } catch (error) {
+        console.error("Failed to fetch dashboard data", error);
+      }
+    };
+    
+    void fetchHistoricalData();
 
-  const alerts: DashboardAlert[] = [
-    {
-      id: "alert-1",
-      severity: "critical",
-      title: t("alerts.items.noAmbulance.title"),
-      description: t("alerts.items.noAmbulance.description"),
-      zone: t("alerts.zones.westSector"),
-      minutesAgo: 2,
-      recommendation: t("alerts.items.noAmbulance.recommendation"),
-    },
-    {
-      id: "alert-2",
-      severity: "warning",
-      title: t("alerts.items.dispatchDelay.title"),
-      description: t("alerts.items.dispatchDelay.description", {
-        value: delayedHandOffs,
-      }),
-      zone: t("alerts.zones.centralDistrict"),
-      minutesAgo: 6,
-      recommendation: t("alerts.items.dispatchDelay.recommendation"),
-    },
-    {
-      id: "alert-3",
-      severity: "info",
-      title: t("alerts.items.hospitalLoad.title"),
-      description: t("alerts.items.hospitalLoad.description", {
-        value: overloadedHospitals,
-      }),
-      zone: t("alerts.zones.cityWide"),
-      minutesAgo: 9,
-      recommendation: t("alerts.items.hospitalLoad.recommendation"),
-    },
-  ];
+    // SignalR Real-time updates
+    let cleanupEvents: (() => void) | undefined;
+    let cleanupAlerts: (() => void) | undefined;
 
-  
+    const setupSignalR = async () => {
+      try {
+        const { connection, error } = await startDispatchConnection();
+
+        if (!connection) {
+          setIsRealtimeConnected(false);
+          setRealtimeError(error ?? t("realtime.connectionFailed"));
+          return;
+        }
+
+        setIsRealtimeConnected(true);
+        setRealtimeError(null);
+
+        cleanupEvents = onReceiveRequestEvent((event: any) => {
+        const newEvent: DispatchActivityEvent = {
+          id: event.eventId || Math.random().toString(),
+          requestId: event.requestId,
+          patientName: event.patientName || "Patient",
+          type: event.eventType || "requestReceived", 
+          minutesAgo: 0,
+          ambulanceName: event.ambulanceId,
+          etaMinutes: event.etaMinutes,
+        };
+        setActivityEvents(prev => [newEvent, ...prev].slice(0, 50));
+      });
+
+      cleanupAlerts = onReceiveAlert((alert: any) => {
+        const newAlert: DashboardAlert = {
+          id: alert.alertId || Math.random().toString(),
+          severity: alert.level?.toLowerCase() || "info",
+          title: alert.title || "",
+          description: alert.message || "",
+          zone: alert.zone || "Unknown",
+          minutesAgo: 0,
+          recommendation: alert.recommendation || "",
+        };
+        setAlerts(prev => [newAlert, ...prev].slice(0, 50));
+      });
+      } catch (error) {
+        console.warn("Dispatch SignalR setup failed:", error);
+        setIsRealtimeConnected(false);
+        setRealtimeError(t("realtime.connectionFailed"));
+      }
+    };
+
+    void setupSignalR();
+
+    return () => {
+      if (cleanupEvents) cleanupEvents();
+      if (cleanupAlerts) cleanupAlerts();
+    };
+  }, [t]);
+
   return {
     avgDispatchMinutes,
     successRate,
@@ -100,6 +122,7 @@ export function useDashboardOverviewData() {
     healthStatus,
     activityEvents,
     alerts,
-    
+    isRealtimeConnected,
+    realtimeError,
   };
 }

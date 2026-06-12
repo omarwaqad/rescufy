@@ -30,6 +30,12 @@ export function useAmbulances() {
   const [ambulances, setAmbulances] = useState<AmbulanceControlItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isMutating, setIsMutating] = useState(false);
+  
+  // Pagination and filtering states
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(20);
+  const [totalPages, setTotalPages] = useState(1);
+  const [statusFilter, setStatusFilter] = useState<string>("");
 
   function getAuthHeaders(): AuthHeaders | null {
     const token = getAuthToken();
@@ -72,9 +78,14 @@ export function useAmbulances() {
     }
 
     try {
+      const params: Record<string, string | number> = { page, limit };
+      if (statusFilter) {
+        params.status = statusFilter;
+      }
+      
       const response = await axios.get(
         getApiUrl(API_CONFIG.ENDPOINTS.AMBULANCES.GET_ALL),
-        { headers },
+        { headers, params },
       );
       console.log("Raw ambulance data:", response.data);
 
@@ -84,6 +95,9 @@ export function useAmbulances() {
         .map((item) => enrichAmbulance(item));
 
       setAmbulances(normalized);
+      if (response.data?.meta) {
+        setTotalPages(response.data.meta.totalPages || 1);
+      }
       return true;
     } catch (error) {
       showApiError(error, "ambulances:api.fetchAllError", "ambulances-fetch-error");
@@ -95,7 +109,7 @@ export function useAmbulances() {
 
   useEffect(() => {
     void fetchAmbulances();
-  }, []);
+  }, [page, limit, statusFilter]);
 
   const kpis = {
     total: ambulances.length,
@@ -233,6 +247,13 @@ export function useAmbulances() {
     isLoading,
     isMutating,
     kpis,
+    page,
+    limit,
+    totalPages,
+    statusFilter,
+    setPage,
+    setLimit,
+    setStatusFilter,
     submitAmbulance,
     assignAmbulance,
     trackAmbulance,

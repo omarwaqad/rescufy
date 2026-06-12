@@ -8,6 +8,7 @@ export function RequestItem({
   onSelect,
 }: RequestItemProps) {
   const {
+    t,
     theme,
     dispatchTheme,
     previewDescription,
@@ -18,6 +19,8 @@ export function RequestItem({
     timelineEntries,
     statusIcon,
     isFailed,
+    isTerminal,
+    statusKey,
   } = useRequestItemView(request);
 
   return (
@@ -203,74 +206,84 @@ export function RequestItem({
           {assignedAmbulanceLabel}
         </div>
 
-        {/* ETA */}
+        {!isTerminal ? (
+          <div
+            className="
+              rounded-full
+              border border-border/60
+
+              bg-surface-muted/40
+
+              px-2.5 py-1
+
+              text-xs text-body
+            "
+          >
+            ETA {etaLabel}
+          </div>
+        ) : null}
+      </div>
+
+      {isTerminal ? (
+        <p className="mt-4 rounded-xl border border-border/60 bg-surface-muted/25 px-3 py-2 text-xs text-body">
+          {statusKey === "COMPLETED"
+            ? t("board.item.completedSummary")
+            : statusKey === "CANCELED"
+              ? t("board.item.canceledSummary")
+              : t("board.item.failedSummary")}
+        </p>
+      ) : (
         <div
           className="
-            rounded-full
-            border border-border/60
-
-            bg-surface-muted/40
-
-            px-2.5 py-1
-
-            text-xs text-body
+            mt-4
+            grid grid-cols-2 gap-2
+            xl:grid-cols-4
           "
         >
-          ETA {etaLabel}
-        </div>
-      </div>
-
-      {/* Timeline */}
-      <div
-        className="
-          mt-4
-          grid grid-cols-2 gap-2
-          xl:grid-cols-4
-        "
-      >
-        {timelineEntries.map((entry) => {
-          return (
-            <div
-              key={`${request.id}-${entry.key}`}
-              className={`
-                rounded-xl
-                border
-
-                px-3 py-2
-
-                transition-colors
-
-                ${
-                  entry.reached
-                    ? `
-                      border-primary/25
-                      bg-primary/10
-                    `
-                    : `
-                      border-border/60
-                      bg-surface-muted/25
-                    `
-                }
-              `}
-            >
-              <p
+          {timelineEntries.map((entry) => {
+            return (
+              <div
+                key={`${request.id}-${entry.key}`}
                 className={`
-                  text-[10px]
-                  font-semibold
-                  uppercase
-                  tracking-[0.08em]
+                  rounded-xl
+                  border
 
-                  ${entry.active ? "text-primary" : "text-muted"}
+                  px-3 py-2
+
+                  transition-colors
+
+                  ${
+                    entry.reached
+                      ? `
+                        border-primary/25
+                        bg-primary/10
+                      `
+                      : `
+                        border-border/60
+                        bg-surface-muted/25
+                      `
+                  }
                 `}
               >
-                {entry.label}
-              </p>
+                <p
+                  className={`
+                    text-[10px]
+                    font-semibold
+                    uppercase
+                    tracking-[0.08em]
 
-              <p className="mt-1 text-xs text-body">{entry.time}</p>
-            </div>
-          );
-        })}
-      </div>
+                    ${entry.active ? "text-primary" : "text-muted"}
+                  `}
+                >
+                  {entry.label}
+                </p>
+
+                <p className="mt-1 text-xs text-body">{entry.time}</p>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </button>
   );
 }

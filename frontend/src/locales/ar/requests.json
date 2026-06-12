@@ -247,13 +247,56 @@
         },
         "filters": {
             "title": "مرشحات المراقبة",
+            "toggle": "إظهار/إخفاء التصفية",
+            "clear": "مسح التصفية",
             "searchLabel": "البحث",
             "searchPlaceholder": "ابحث بالمريض أو الموقع أو رقم الطلب",
             "severityLabel": "الخطورة",
             "statusLabel": "حالة الإسناد",
+            "timePeriodLabel": "الفترة الزمنية",
+            "failureReasonLabel": "سبب الفشل",
+            "waitingMoreThanLabel": "انتظار > (د)",
+            "waitingMoreThanPlaceholder": "مثال: 20",
             "sortLabel": "الترتيب",
             "sortNewest": "الأحدث",
-            "sortLongest": "الأطول انتظاراً"
+            "sortLongest": "الأطول انتظاراً",
+            "all": "الكل",
+            "anyTime": "أي وقت",
+            "any": "أي",
+            "severity": {
+                "critical": "حرجة",
+                "high": "عالية",
+                "medium": "متوسطة",
+                "low": "منخفضة"
+            },
+            "status": {
+                "waiting": "قيد الانتظار",
+                "searching": "قيد البحث",
+                "assigned": "مُسندة",
+                "enRoute": "في الطريق",
+                "arrived": "وصلت",
+                "closed": "مغلقة",
+                "failed": "فاشلة",
+                "escalated": "مُصعّدة"
+            },
+            "timePeriod": {
+                "15m": "آخر 15 دقيقة",
+                "1h": "آخر ساعة",
+                "24h": "آخر 24 ساعة"
+            },
+            "failureReason": {
+                "failed_dispatch": "فشل الإسناد",
+                "no_ambulance": "لا توجد سيارة إسعاف",
+                "eta_exceeded": "تجاوز وقت الوصول",
+                "gps_unavailable": "GPS غير متاح"
+            },
+            "sort": {
+                "default": "افتراضي (الأحدث أولاً)",
+                "createdAt_asc": "الأقدم أولاً",
+                "severity_desc": "الخطورة (الأعلى)",
+                "waitingTime_desc": "وقت الانتظار (الأطول)",
+                "aiConfidence_desc": "ثقة الذكاء الاصطناعي (الأعلى)"
+            }
         },
         "summary": {
             "critical": "حرجة: {{count}}",
@@ -281,7 +324,10 @@
             "searchingUnits": "جارٍ البحث عن وحدات متاحة",
             "eta": "الوقت المتوقع:",
             "etaMinutes": "{{count}} د",
-            "etaUnknown": "جارٍ تقييم أقرب سيارة إسعاف"
+            "etaUnknown": "جارٍ تقييم أقرب سيارة إسعاف",
+            "completedSummary": "اكتمل هذا الطلب. لم يعد يتم تتبع الجدول الزمني للرحلة.",
+            "canceledSummary": "تم إلغاء هذا الطلب. لا يلزم اتخاذ إجراءات توزيع إضافية.",
+            "failedSummary": "فشل هذا الطلب أثناء التوزيع. راجع التفاصيل لمعرفة سجل التدخل."
         },
         "details": {
             "title": "رؤية النظام",

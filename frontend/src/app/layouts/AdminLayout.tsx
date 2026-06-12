@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import SideBar from "../../components/SideBar";
 import { Outlet, useLocation } from "react-router-dom";
+
+import SideBar from "../../components/SideBar";
 import AdminNavbar from "../../components/AdminNavBar";
 import Breadcrumb from "../../components/Breadcrumb";
-import { useMediaQuery } from "../../shared/hooks/useMediaQuery";
 import Footer from "@/components/Footer";
+
+import { useMediaQuery } from "../../shared/hooks/useMediaQuery";
 
 export default function AdminLayout() {
   const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -28,7 +30,7 @@ export default function AdminLayout() {
 
   return (
     <div className="flex min-h-screen bg-background">
-      {/* Overlay (mobile only) */}
+      {/* Mobile Overlay */}
       <AnimatePresence>
         {sidebarOpen && !isDesktop && (
           <motion.div
@@ -36,7 +38,7 @@ export default function AdminLayout() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.01 }}
-            className="fixed inset-0 bg-black/10 z-40 backdrop-blur-xs"
+            className="fixed inset-0 z-40 bg-black/10 backdrop-blur-xs"
             onClick={closeSidebar}
           />
         )}
@@ -50,15 +52,17 @@ export default function AdminLayout() {
         setIsExpanded={setIsExpanded}
       />
 
-      {/* Content */}
-      <div className="flex-1 flex flex-col min-w-0 md:ltr:ml-10 md:rtl:mr-10  px-3 sm:px-4 md:px-6 xl:px-12">
+      {/* Right Section */}
+      <div className="flex flex-1 flex-col min-h-screen min-w-0 ">
+        {/* Navbar */}
         <AdminNavbar
           onMenuClick={toggleSidebar}
           isExpanded={isExpanded}
           setIsExpanded={setIsExpanded}
         />
 
-        <main className="flex-1 pt-20 md:pt-24 pb-6 md:px-10 px-4 lg:px-5 overflow-y-auto w-full max-w-7xl mx-auto">
+        {/* Main Content */}
+        <main className="flex-1 pt-20 md:pt-24 pb-6 md:px-10 px-4 lg:px-5 w-full max-w-7xl mx-auto">
           <Breadcrumb />
 
           <AnimatePresence mode="wait">
@@ -66,14 +70,17 @@ export default function AdminLayout() {
               key={location.pathname}
               initial={{ opacity: 0, y: 2 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1 }}
+              transition={{ duration: 0.3 }}
             >
               <Outlet />
             </motion.div>
           </AnimatePresence>
         </main>
 
-        <Footer />
+        {/* Footer */}
+        <div className="mt-auto lg:pl-10">
+          <Footer />
+        </div>
       </div>
     </div>
   );

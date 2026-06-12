@@ -4,12 +4,13 @@ import { HospitalFormModal } from "./HospitalFormModal";
 import { HospitalsKPISection } from "./HospitalsKPISection";
 import { HospitalsInsightsPanel } from "./HospitalsInsightsPanel";
 import { HospitalsListSkeleton } from "./HospitalsListSkeleton";
-import { useHospitals } from "../hooks/useHospitals";
+import HospitalsStates from "./HospitalsStates";
+import { useHospitals, type HospitalSortOption } from "../hooks/useHospitals";
 import { useTranslation } from "react-i18next";
 import { motion, useReducedMotion } from "framer-motion";
 import { useNavigate } from "react-router";
 import { Plus, ShieldAlert } from "lucide-react";
-import { resolveHospitalLoad } from "../utils/hospital.metrics";
+import SelectField from "@/shared/ui/SelectField";
 
 function sanitizePhoneNumber(phone: string) {
   return phone.replace(/\s+/g, "");
@@ -25,11 +26,24 @@ export default function AllHospitals() {
   } | null>(null);
 
   const {
-    hospitals,
+    hospitals: operationalHospitals,
+    allHospitals,
     isModalOpen,
     modalMode,
     selectedHospital,
     isLoading,
+    page,
+    limit,
+    totalPages,
+    totalItems,
+    statusFilter,
+    searchQuery,
+    sortOption,
+    setPage,
+    setStatusFilter,
+    setSearchQuery,
+    setSortOption,
+    setLimit,
     openAddModal,
     openEditModal,
     closeModal,
@@ -37,26 +51,25 @@ export default function AllHospitals() {
     handleDeleteHospital,
   } = useHospitals();
 
-  const operationalHospitals = useMemo(
-    () =>
-      hospitals.map((hospital) => {
-        const load = resolveHospitalLoad(hospital.availableBeds, hospital.bedCapacity);
+  const limitOptions = [
+    { label: "10", value: "10" },
+    { label: "20", value: "20" },
+    { label: "50", value: "50" },
+  ];
 
-        return {
-          ...hospital,
-          ...load,
-        };
-      }),
-    [hospitals],
-  );
+  const sortOptions = [
+    { label: t("operations.filters.sort.criticalFirst"), value: "criticalFirst" },
+    { label: t("operations.filters.sort.occupancyHigh"), value: "occupancyHigh" },
+    { label: t("operations.filters.sort.availableHigh"), value: "availableHigh" },
+  ];
 
   const kpis = useMemo(() => {
-    const total = operationalHospitals.length;
-    const normal = operationalHospitals.filter((item) => item.status === "NORMAL").length;
-    const busyOrCritical = operationalHospitals.filter(
+    const total = allHospitals.length;
+    const normal = allHospitals.filter((item) => item.status === "NORMAL").length;
+    const busyOrCritical = allHospitals.filter(
       (item) => item.status === "BUSY" || item.status === "CRITICAL",
     ).length;
-    const full = operationalHospitals.filter((item) => item.status === "FULL").length;
+    const full = allHospitals.filter((item) => item.status === "FULL").length;
 
     return {
       total,
@@ -64,23 +77,23 @@ export default function AllHospitals() {
       busyOrCritical,
       full,
     };
-  }, [operationalHospitals]);
+  }, [allHospitals]);
 
   const insights = useMemo(() => {
-    const totalUsedBeds = operationalHospitals.reduce((sum, item) => sum + item.usedBeds, 0);
-    const totalAvailableBeds = operationalHospitals.reduce(
+    const totalUsedBeds = allHospitals.reduce((sum, item) => sum + item.usedBeds, 0);
+    const totalAvailableBeds = allHospitals.reduce(
       (sum, item) => sum + item.availableBeds,
       0,
     );
     const avgOccupancy =
-      operationalHospitals.length > 0
+      allHospitals.length > 0
         ? Math.round(
-            operationalHospitals.reduce((sum, item) => sum + item.occupancyPercent, 0) /
-              operationalHospitals.length,
+            allHospitals.reduce((sum, item) => sum + item.occupancyPercent, 0) /
+              allHospitals.length,
           )
         : 0;
 
-    const stressedHospitals = [...operationalHospitals]
+    const stressedHospitals = [...allHospitals]
       .filter((item) => item.status === "FULL" || item.status === "CRITICAL")
       .sort((a, b) => b.occupancyPercent - a.occupancyPercent)
       .slice(0, 5)
@@ -97,7 +110,7 @@ export default function AllHospitals() {
       avgOccupancy,
       stressedHospitals,
     };
-  }, [operationalHospitals]);
+  }, [allHospitals]);
 
   const controlTone =
     kpis.full > 0
@@ -173,6 +186,41 @@ export default function AllHospitals() {
     full={kpis.full}
   />
 
+  <div className="rounded-2xl border border-border bg-background-second/60 p-4 shadow-card">
+    <div className="mb-3">
+      <h3 className="text-sm font-semibold text-heading">{t("operations.filters.title")}</h3>
+    </div>
+    <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+      <label className="block space-y-1.5">
+        <span className="text-xs font-medium text-muted">{t("operations.filters.searchLabel")}</span>
+        <input
+          type="search"
+        
+          value={searchQuery}
+          onChange={(event) => setSearchQuery(event.target.value)}
+          placeholder={t("filters.searchPlaceholder")}
+          className="h-9 w-full rounded-xl border border-border bg-surface-muted/30 px-3 text-xs text-body outline-none transition focus:border-primary/50"
+        />
+      </label>
+
+      <HospitalsStates  value={statusFilter} onChange={setStatusFilter} />
+      <SelectField
+        label={t("operations.filters.sortLabel")}
+        value={sortOption}
+        onChange={(value) => setSortOption(value as HospitalSortOption)}
+        options={sortOptions}
+        triggerClassName="h-9 text-xs"
+      />
+      <SelectField
+        label={t("filters.limitLabel")}
+        value={String(limit)}
+        onChange={(value) => setLimit(Number(value))}
+        options={limitOptions}
+        triggerClassName="h-9 text-xs"
+      />
+    </div>
+  </div>
+
   <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
     {/* Hospitals List */}
     <section
@@ -193,7 +241,7 @@ export default function AllHospitals() {
 
           <p className="text-xs text-muted">
             {t("operations.list.subtitle", {
-              count: operationalHospitals.length,
+              count: totalItems,
             })}
           </p>
         </div>
@@ -281,12 +329,36 @@ export default function AllHospitals() {
           ))}
         </motion.div>
       )}
+
+      {totalPages > 1 ? (
+        <div className="mt-4 flex items-center justify-between border-t border-border/60 pt-4">
+          <button
+            type="button"
+            onClick={() => setPage((current) => Math.max(1, current - 1))}
+            disabled={page === 1 || isLoading}
+            className="rounded-lg border border-border px-3 py-1 text-xs text-body transition hover:bg-surface-muted/50 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {t("pagination.previous")}
+          </button>
+          <span className="text-xs text-muted">
+            {t("pagination.page")} {page} {t("pagination.of")} {totalPages}
+          </span>
+          <button
+            type="button"
+            onClick={() => setPage((current) => Math.min(totalPages, current + 1))}
+            disabled={page === totalPages || isLoading}
+            className="rounded-lg border border-border px-3 py-1 text-xs text-body transition hover:bg-surface-muted/50 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {t("pagination.next")}
+          </button>
+        </div>
+      ) : null}
     </section>
 
     {/* Insights Panel */}
     <div className="xl:sticky xl:top-24 h-fit">
       <HospitalsInsightsPanel
-        totalHospitals={operationalHospitals.length}
+        totalHospitals={allHospitals.length}
         avgOccupancy={insights.avgOccupancy}
         totalAvailableBeds={insights.totalAvailableBeds}
         totalUsedBeds={insights.totalUsedBeds}

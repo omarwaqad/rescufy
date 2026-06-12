@@ -63,7 +63,16 @@
     },
     "filters": {
         "allStates": "جميع الحالات",
-        "searchPlaceholder": "البحث بالاسم أو العنوان أو المعرّف"
+        "searchPlaceholder": "البحث بالاسم أو العنوان أو المعرّف",
+        "limitLabel": "لكل صفحة",
+        "statusLabel": "الحالة",
+        "sortLabel": "الترتيب"
+    },
+    "pagination": {
+        "page": "صفحة",
+        "of": "من",
+        "previous": "السابق",
+        "next": "التالي"
     },
     "operations": {
         "liveMonitoring": "مراقبة السعة",

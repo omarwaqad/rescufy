@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { getAuthToken } from "@/features/auth/utils/auth.utils";
@@ -55,6 +55,7 @@ export function useGetRequests() {
       // This hook treats the API as the source of truth for initial load and manual refreshes.
       const apiRequests = await fetchRequestsApi(token);
       setRequests(apiRequests);
+      console.log("Fetched requests from API:", apiRequests);
       return apiRequests;
     } catch (error: any) {
       console.error("Fetch requests error:", error);
@@ -65,7 +66,14 @@ export function useGetRequests() {
     }
   }
 
-  async function fetchAdminStreamRequests(): Promise<Request[]> {
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(20);
+  const [totalPages, setTotalPages] = useState(1);
+  
+  // Custom filters
+  const [filters, setFilters] = useState<Record<string, any>>({});
+
+  const fetchAdminStreamRequests = useCallback(async (): Promise<Request[]> => {
     setIsLoading(true);
 
     try {
@@ -76,10 +84,19 @@ export function useGetRequests() {
         return [];
       }
 
-      // Fetch the administrative "stream" endpoint: used by admin UIs to load a prefiltered set.
-      const streamItems = await fetchAdminStreamApi(token);
-      setRequests(streamItems);
-      return streamItems;
+      const params: Record<string, string | number> = { page, limit, ...filters };
+      Object.keys(params).forEach((key) => {
+        const value = params[key];
+        if (value === undefined || value === null || value === "") {
+          delete params[key];
+        }
+      });
+
+      const response = await fetchAdminStreamApi(token, params);
+      setRequests(response.data);
+      console.log("Fetched admin stream requests from API:", response.data);
+      setTotalPages(response.meta.totalPages || 1);
+      return response.data;
     } catch (error: any) {
       console.error("Fetch admin stream requests error:", error);
       showFetchError(error);
@@ -87,7 +104,8 @@ export function useGetRequests() {
     } finally {
       setIsLoading(false);
     }
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, limit, filters]); // deliberately excluding t and toastPosition to avoid refetching loops
 
   useEffect(() => {
     let unsubscribeNewRequest = () => {};
@@ -136,5 +154,12 @@ export function useGetRequests() {
     fetchRequests,
     fetchAdminStreamRequests,
     setRequests,
+    page,
+    limit,
+    totalPages,
+    setPage,
+    setLimit,
+    filters,
+    setFilters
   };
 }

@@ -45,6 +45,7 @@ export function RequestDetailsPanel({
     userName,
     address,
     waitingLabel,
+    isTerminal,
   } = view;
 
   return (
@@ -102,7 +103,9 @@ export function RequestDetailsPanel({
           <p className="mt-1 text-sm font-semibold text-heading">
             {selectedAmbulanceLabel}
           </p>
-          <p className="mt-1 text-xs text-body">{t("board.item.eta")} {etaLabel}</p>
+          {!isTerminal ? (
+            <p className="mt-1 text-xs text-body">{t("board.item.eta")} {etaLabel}</p>
+          ) : null}
         </div>
       </div>
 
@@ -120,23 +123,27 @@ export function RequestDetailsPanel({
             {t("actions.view")}
           </button>
 
-          <button
-            type="button"
-            onClick={() => onReassignAmbulance(request.id)}
-            className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-primary/40 bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary/90"
-          >
-            <RefreshCw className="h-4 w-4" />
-            {t("board.actions.reassignAmbulance")}
-          </button>
+          {!isTerminal ? (
+            <>
+              <button
+                type="button"
+                onClick={() => onReassignAmbulance(request.id)}
+                className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-primary/40 bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary/90"
+              >
+                <RefreshCw className="h-4 w-4" />
+                {t("board.actions.reassignAmbulance")}
+              </button>
 
-          <button
-            type="button"
-            onClick={ () => onCancelAssignment(request.id) }
-            className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-red-300 bg-red-100 px-4 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-200 dark:border-red-500/35 dark:bg-red-500/12 dark:text-red-300 dark:hover:bg-red-500/18"
-          >
-            <Ban className="h-4 w-4" />
-            {t("board.actions.cancelAssignment")}
-          </button>
+              <button
+                type="button"
+                onClick={() => onCancelAssignment(request.id)}
+                className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-red-300 bg-red-100 px-4 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-200 dark:border-red-500/35 dark:bg-red-500/12 dark:text-red-300 dark:hover:bg-red-500/18"
+              >
+                <Ban className="h-4 w-4" />
+                {t("board.actions.cancelAssignment")}
+              </button>
+            </>
+          ) : null}
         </div>
       </div>
     </aside>

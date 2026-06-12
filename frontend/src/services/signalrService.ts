@@ -20,6 +20,26 @@ import { getAuthToken } from "@/features/auth/utils/auth.utils";
  */
 
 let connection: HubConnection | null = null;
+let dispatchConnection: HubConnection | null = null;
+
+export type SignalRConnectionResult = {
+  connection: HubConnection | null;
+  error: string | null;
+};
+
+async function resetDispatchConnection() {
+  if (!dispatchConnection) {
+    return;
+  }
+
+  try {
+    await dispatchConnection.stop();
+  } catch {
+    // Ignore stop errors while resetting a failed connection.
+  }
+
+  dispatchConnection = null;
+}
 
 function getPayload(event: any): unknown {
   // The server may wrap payloads in different shapes (payload, data, or the event itself).
@@ -51,6 +71,34 @@ export async function startConnection(): Promise<HubConnection | null> {
   }
 
   return connection;
+}
+
+export async function startDispatchConnection(): Promise<SignalRConnectionResult> {
+  try {
+    if (!dispatchConnection) {
+      dispatchConnection = new HubConnectionBuilder()
+        .withUrl(getApiUrl("/hubs/dispatch"), {
+          // SignalR appends this as `access_token` during negotiate and transport setup.
+          accessTokenFactory: () => getAuthToken() ?? "",
+        })
+        .withAutomaticReconnect()
+        .build();
+    }
+
+    if (dispatchConnection.state === HubConnectionState.Disconnected) {
+      await dispatchConnection.start();
+    }
+
+    return { connection: dispatchConnection, error: null };
+  } catch (error) {
+    console.warn("Dispatch SignalR connection failed:", error);
+    await resetDispatchConnection();
+
+    const message =
+      error instanceof Error ? error.message : "Failed to connect to dispatch hub";
+
+    return { connection: null, error: message };
+  }
 }
 
 /**
@@ -119,5 +167,29 @@ export function onNotification(callback: (event: unknown) => void): () => void {
 
   return () => {
     connection?.off("ReceiveNotification", notificationHandler);
+  };
+}
+
+export function onReceiveRequestEvent(callback: (event: unknown) => void): () => void {
+  if (!dispatchConnection) return () => {};
+
+  const handler = (event: unknown) => callback(getPayload(event));
+
+  dispatchConnection.on("ReceiveRequestEvent", handler);
+
+  return () => {
+    dispatchConnection?.off("ReceiveRequestEvent", handler);
+  };
+}
+
+export function onReceiveAlert(callback: (event: unknown) => void): () => void {
+  if (!dispatchConnection) return () => {};
+
+  const handler = (event: unknown) => callback(getPayload(event));
+
+  dispatchConnection.on("ReceiveAlert", handler);
+
+  return () => {
+    dispatchConnection?.off("ReceiveAlert", handler);
   };
 }

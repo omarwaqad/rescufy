@@ -46,7 +46,10 @@
         "dispatched": "Dispatched",
         "closed": "Closed",
         "completed": "Completed",
-        "cancelled": "Cancelled"
+        "cancelled": "Cancelled",
+
+        "failed": "Failed",
+        "canceled": "Canceled"
     },
     "priority": {
         "all": "All Priorities",
@@ -215,7 +218,8 @@
             "all": "All Dispatch States",
             "searching": "Searching for best ambulance...",
             "assigned": "Assignment in progress",
-            "failed": "Dispatch failed"
+            "failed": "Dispatch failed",
+            "cancelled": "Assignment cancelled"
         },
         "dispatchStateFilter": {
             "all": "All Dispatch States",
@@ -232,7 +236,9 @@
             "ASSIGNED": "Assignment in progress",
             "ARRIVING": "Ambulance arriving",
             "COMPLETED": "Patient handoff completed",
-            "FAILED": "Dispatch failed"
+            "FAILED": "Dispatch failed",
+            "CANCELLED": "Assignment cancelled",
+            "CANCELED": "Assignment canceled"
         },
         "intervention": {
             "title": "Intervention Required"
@@ -247,13 +253,56 @@
         },
         "filters": {
             "title": "Monitoring Filters",
+            "toggle": "Toggle Filters",
+            "clear": "Clear Filters",
             "searchLabel": "Search",
             "searchPlaceholder": "Search by patient, location, or request ID",
             "severityLabel": "Severity",
             "statusLabel": "Dispatch State",
+            "timePeriodLabel": "Time Period",
+            "failureReasonLabel": "Failure Reason",
+            "waitingMoreThanLabel": "Waiting > (min)",
+            "waitingMoreThanPlaceholder": "e.g. 20",
             "sortLabel": "Sort",
             "sortNewest": "Newest",
-            "sortLongest": "Longest Waiting"
+            "sortLongest": "Longest Waiting",
+            "all": "All",
+            "anyTime": "Any Time",
+            "any": "Any",
+            "severity": {
+                "critical": "Critical",
+                "high": "High",
+                "medium": "Medium",
+                "low": "Low"
+            },
+            "status": {
+                "waiting": "Waiting",
+                "searching": "Searching",
+                "assigned": "Assigned",
+                "enRoute": "En Route",
+                "arrived": "Arrived",
+                "closed": "Closed",
+                "failed": "Failed",
+                "escalated": "Escalated"
+            },
+            "timePeriod": {
+                "15m": "Last 15 minutes",
+                "1h": "Last 1 hour",
+                "24h": "Last 24 hours"
+            },
+            "failureReason": {
+                "failed_dispatch": "Failed Dispatch",
+                "no_ambulance": "No Ambulance",
+                "eta_exceeded": "ETA Exceeded",
+                "gps_unavailable": "GPS Unavailable"
+            },
+            "sort": {
+                "default": "Default (Created Desc)",
+                "createdAt_asc": "Created (Oldest)",
+                "severity_desc": "Severity (Highest)",
+                "waitingTime_desc": "Waiting Time (Longest)",
+                "aiConfidence_desc": "AI Confidence (Highest)"
+            }
         },
         "summary": {
             "critical": "Critical: {{count}}",
@@ -281,7 +330,10 @@
             "searchingUnits": "Searching for available units",
             "eta": "ETA:",
             "etaMinutes": "{{count}} min",
-            "etaUnknown": "Evaluating closest ambulance"
+            "etaUnknown": "Evaluating closest ambulance",
+            "completedSummary": "This request is completed. Trip timeline is no longer tracked.",
+            "canceledSummary": "This request was canceled. No further dispatch actions are required.",
+            "failedSummary": "This request failed during dispatch. Review details for intervention history."
         },
         "details": {
             "title": "System Insight",
