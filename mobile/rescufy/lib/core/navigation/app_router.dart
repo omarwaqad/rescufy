@@ -112,12 +112,17 @@ class AppRouter {
 
       case AppRoutes.userHistory:
         return MaterialPageRoute(
+          builder: (_) => const UserNavigationScreen(initialIndex: 2),
+        );
+
+      case AppRoutes.userHospitals:
+        return MaterialPageRoute(
           builder: (_) => const UserNavigationScreen(initialIndex: 1),
         );
 
       case AppRoutes.userProfile:
         return MaterialPageRoute(
-          builder: (_) => const UserNavigationScreen(initialIndex: 2),
+          builder: (_) => const UserNavigationScreen(initialIndex: 3),
         );
 
       case AppRoutes.editProfile:

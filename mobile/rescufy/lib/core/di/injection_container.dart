@@ -12,19 +12,32 @@ import 'package:rescufy/core/services/signalr/signalr_hub_connection_factory.dar
 import 'package:rescufy/data/datasources/local/medical_local_data_source.dart';
 import 'package:rescufy/data/datasources/local/profile_local_datasource.dart';
 import 'package:rescufy/data/datasources/remote/medical_remote_data_source.dart';
+import 'package:rescufy/data/datasources/remote/paramedic_profile_remote_datasource.dart';
 import 'package:rescufy/data/datasources/remote/profile_remote_datasource.dart';
+import 'package:rescufy/data/datasources/remote/hospital_remote_datasource.dart';
+import 'package:rescufy/data/datasources/remote/request_history_remote_datasource.dart';
 import 'package:rescufy/data/models/medical_profile/allergy_model.dart';
 import 'package:rescufy/data/models/medical_profile/chronic_disease_model.dart';
 import 'package:rescufy/data/models/medical_profile/emergency_contact_model.dart';
 import 'package:rescufy/data/models/medical_profile/medication_model.dart';
 import 'package:rescufy/data/models/medical_profile/past_surgery_model.dart';
 import 'package:rescufy/data/models/medical_profile/profile_model.dart';
+import 'package:rescufy/data/repositories/hospital_repository_impl.dart';
 import 'package:rescufy/data/repositories/medical_repository.dart';
+import 'package:rescufy/data/repositories/paramedic_profile_repository_impl.dart';
 import 'package:rescufy/data/repositories/profile_repository_impl.dart';
+import 'package:rescufy/data/repositories/request_history_repository_impl.dart';
+import 'package:rescufy/domain/repositories/hospital_repository.dart';
+import 'package:rescufy/domain/repositories/paramedic_profile_repository.dart';
+import 'package:rescufy/domain/usecases/get_nearby_hospitals_usecase.dart';
 import 'package:rescufy/domain/repositories/profile_repository.dart';
+import 'package:rescufy/domain/repositories/request_history_repository.dart';
 import 'package:rescufy/presentation/paramedic/active_case/cubit/active_case_cubit.dart';
 import 'package:rescufy/presentation/paramedic/dashboard/cubit/dashboard_cubit.dart';
 import 'package:rescufy/presentation/paramedic/incoming_request/cubit/incoming_request_cubit.dart';
+import 'package:rescufy/presentation/paramedic/profile/cubit/paramedic_profile_cubit.dart';
+import 'package:rescufy/presentation/user/history/cubit/request_history_cubit.dart';
+import 'package:rescufy/presentation/user/hospitals/cubit/hospitals_cubit.dart';
 import 'package:rescufy/presentation/user/profile/cubit/profile_cubit.dart';
 import 'package:rescufy/presentation/user/request/cubit/emergency_request_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -58,8 +71,27 @@ import 'package:rescufy/data/repositories/emergency_repository_impl.dart';
 import 'package:rescufy/domain/repositories/emergency_repository.dart';
 
 final sl = GetIt.instance;
+Future<void>? _initFuture;
+bool _initialized = false;
 
-Future<void> init() async {
+Future<void> init() {
+  if (_initialized) {
+    return Future.value();
+  }
+
+  return _initFuture ??= _init().catchError((
+    Object error,
+    StackTrace stackTrace,
+  ) async {
+    _initFuture = null;
+    if (!_initialized) {
+      await sl.reset();
+    }
+    Error.throwWithStackTrace(error, stackTrace);
+  });
+}
+
+Future<void> _init() async {
   // =============================
   // External
   // =============================
@@ -156,6 +188,15 @@ Future<void> init() async {
     () => ProfileRemoteDataSourceImpl(sl()),
   );
   sl.registerLazySingleton(() => MedicalRemoteDataSource(sl()));
+  sl.registerLazySingleton<HospitalRemoteDataSource>(
+    () => HospitalRemoteDataSourceImpl(sl()),
+  );
+  sl.registerLazySingleton<RequestHistoryRemoteDataSource>(
+    () => RequestHistoryRemoteDataSourceImpl(sl()),
+  );
+  sl.registerLazySingleton<ParamedicProfileRemoteDataSource>(
+    () => ParamedicProfileRemoteDataSourceImpl(sl()),
+  );
 
   // sl.registerLazySingleton<ParamedicEmergencyRemoteDataSource>(
   //       () => paramedic_ds.ParamedicEmergencyRemoteDataSourceImpl(sl()),
@@ -174,6 +215,15 @@ Future<void> init() async {
   sl.registerLazySingleton<EmergencyRepository>(
     () => EmergencyRepositoryImpl(sl()),
   );
+  sl.registerLazySingleton<HospitalRepository>(
+    () => HospitalRepositoryImpl(sl()),
+  );
+  sl.registerLazySingleton<RequestHistoryRepository>(
+    () => RequestHistoryRepositoryImpl(sl()),
+  );
+  sl.registerLazySingleton<ParamedicProfileRepository>(
+    () => ParamedicProfileRepositoryImpl(sl()),
+  );
   // sl.registerLazySingleton<ParamedicEmergencyRepository>(
   //   () => ParamedicEmergencyRepositoryImpl(sl()),
   // );
@@ -184,6 +234,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => ThemeCubit());
   sl.registerLazySingleton(() => LocaleCubit(sl()));
   sl.registerLazySingleton(() => AuthCubit(authRepository: sl()));
+  sl.registerLazySingleton(() => GetNearbyHospitalsUseCase(sl()));
 
   // =============================
   // Cubits (FACTORY — one per route)
@@ -195,9 +246,12 @@ Future<void> init() async {
   sl.registerFactory(() => ResetPasswordCubit(sl<AuthRepository>()));
   sl.registerFactory(() => ProfileCubit(sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory(() => EmergencyRequestCubit(sl(), sl()));
+  sl.registerFactory(() => HospitalsCubit(sl(), sl()));
+  sl.registerFactory(() => RequestHistoryCubit(sl()));
 
   // Paramedic Cubits
   sl.registerFactory(() => DashboardCubit(notificationSignalRService: sl()));
+  sl.registerFactory(() => ParamedicProfileCubit(sl(), sl()));
   sl.registerFactoryParam<IncomingRequestCubit, IncomingRequest, void>(
     (request, _) => IncomingRequestCubit(
       request: request,
@@ -213,4 +267,6 @@ Future<void> init() async {
       locationService: sl(),
     ),
   );
+
+  _initialized = true;
 }

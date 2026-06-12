@@ -6,6 +6,7 @@ class RoleHomeRouteMapper {
 
   static String fromRole(UserRole role) {
     switch (role) {
+      case UserRole.ambulanceDriver:
       case UserRole.paramedic:
         return AppRoutes.paramedicShell;
       case UserRole.user:

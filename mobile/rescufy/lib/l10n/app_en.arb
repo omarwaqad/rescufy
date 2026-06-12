@@ -330,25 +330,245 @@
   "@nearbyHospitals": {
     "description": "Nearby hospitals dialog title"
   },
-
-  "cityGeneralHospital": "City General Hospital",
-  "@cityGeneralHospital": {
-    "description": "Hospital name"
+  "hospitalsSubtitle": "Compare nearby emergency-ready hospitals and head out fast.",
+  "@hospitalsSubtitle": {
+    "description": "Hospitals screen subtitle"
   },
-
-  "emergencyMedicalCenter": "Emergency Medical Center",
-  "@emergencyMedicalCenter": {
-    "description": "Hospital name"
+  "yourLocation": "Your location",
+  "@yourLocation": {
+    "description": "Current user location label"
   },
-
-  "rescueHospital": "Rescue Hospital",
-  "@rescueHospital": {
-    "description": "Hospital name"
+  "openNow": "Open now",
+  "@openNow": {
+    "description": "Available/open status label"
   },
-
-  "firstAidClinic": "First Aid Clinic",
-  "@firstAidClinic": {
-    "description": "Clinic name"
+  "limited": "Limited",
+  "@limited": {
+    "description": "Limited status label"
+  },
+  "unavailable": "Unavailable",
+  "@unavailable": {
+    "description": "Unavailable status label"
+  },
+  "availableBeds": "{count} beds available",
+  "@availableBeds": {
+    "description": "Available beds count label",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "icuAvailability": "{count} ICU available",
+  "@icuAvailability": {
+    "description": "Available ICU count label",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "startingFromPrice": "Starting from {price}",
+  "@startingFromPrice": {
+    "description": "Hospital starting price label",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "distanceKm": "{distance} km away",
+  "@distanceKm": {
+    "description": "Distance in kilometers label",
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "call": "Call",
+  "@call": {
+    "description": "Call action"
+  },
+  "directions": "Directions",
+  "@directions": {
+    "description": "Directions action"
+  },
+  "refresh": "Refresh",
+  "@refresh": {
+    "description": "Refresh action"
+  },
+  "retry": "Retry",
+  "@retry": {
+    "description": "Retry action"
+  },
+  "locationUnavailable": "Location unavailable",
+  "@locationUnavailable": {
+    "description": "Location unavailable label"
+  },
+  "enableLocationToFindHospitals": "Enable location services to load nearby hospitals.",
+  "@enableLocationToFindHospitals": {
+    "description": "Hospitals location error message"
+  },
+  "noHospitalsNearby": "No nearby hospitals found",
+  "@noHospitalsNearby": {
+    "description": "Empty hospitals state title"
+  },
+  "noHospitalsNearbyMessage": "Try expanding the search radius or refresh your location.",
+  "@noHospitalsNearbyMessage": {
+    "description": "Empty hospitals state subtitle"
+  },
+  "hospitalsLoadFailed": "Unable to load nearby hospitals.",
+  "@hospitalsLoadFailed": {
+    "description": "Hospitals load failure fallback"
+  },
+  "liveCapacity": "Live capacity",
+  "@liveCapacity": {
+    "description": "Capacity status label"
+  },
+  "mapPreviewUnavailable": "Map preview unavailable",
+  "@mapPreviewUnavailable": {
+    "description": "Map unavailable message"
+  },
+  "mapConfigurationRequired": "Add your Google Maps API key to enable the live map preview.",
+  "@mapConfigurationRequired": {
+    "description": "Map configuration hint"
+  },
+  "hospitalStatusAvailable": "Available",
+  "@hospitalStatusAvailable": {
+    "description": "Hospital available status label"
+  },
+  "hospitalStatusUnavailable": "Unavailable",
+  "@hospitalStatusUnavailable": {
+    "description": "Hospital unavailable status label"
+  },
+  "hospitalStatusUnknown": "Status unknown",
+  "@hospitalStatusUnknown": {
+    "description": "Hospital unknown status label"
+  },
+  "requestHistoryTitle": "Request History",
+  "@requestHistoryTitle": {
+    "description": "Request history screen title"
+  },
+  "requestHistoryDetailsTitle": "Request Details",
+  "@requestHistoryDetailsTitle": {
+    "description": "Request history details bottom sheet title"
+  },
+  "requestHistoryEmptyTitle": "No Request History",
+  "@requestHistoryEmptyTitle": {
+    "description": "Empty request history title"
+  },
+  "requestHistoryEmptyMessage": "Your emergency requests will appear here once you make your first request.",
+  "@requestHistoryEmptyMessage": {
+    "description": "Empty request history subtitle"
+  },
+  "requestHistoryFirstRequest": "Make Your First Request",
+  "@requestHistoryFirstRequest": {
+    "description": "Empty request history action"
+  },
+  "requestHistoryLoadFailed": "Unable to load request history.",
+  "@requestHistoryLoadFailed": {
+    "description": "Request history load failure fallback"
+  },
+  "requestHistoryCompleted": "Completed",
+  "@requestHistoryCompleted": {
+    "description": "Completed requests stat label"
+  },
+  "requestHistoryInProgress": "In Progress",
+  "@requestHistoryInProgress": {
+    "description": "In progress requests stat label"
+  },
+  "requestHistoryCancelled": "Cancelled",
+  "@requestHistoryCancelled": {
+    "description": "Cancelled requests stat label"
+  },
+  "requestId": "Request ID",
+  "@requestId": {
+    "description": "Request ID label"
+  },
+  "requestStatus": "Request Status",
+  "@requestStatus": {
+    "description": "Request status label"
+  },
+  "createdDate": "Created Date",
+  "@createdDate": {
+    "description": "Created date label"
+  },
+  "assignedAmbulancePlate": "Assigned Ambulance Plate",
+  "@assignedAmbulancePlate": {
+    "description": "Assigned ambulance plate label"
+  },
+  "driverName": "Driver Name",
+  "@driverName": {
+    "description": "Driver name label"
+  },
+  "hospitalName": "Hospital Name",
+  "@hospitalName": {
+    "description": "Hospital name label"
+  },
+  "descriptionLabel": "Description",
+  "@descriptionLabel": {
+    "description": "Description field label"
+  },
+  "addressLabel": "Address",
+  "@addressLabel": {
+    "description": "Address field label"
+  },
+  "viewDetails": "View Details",
+  "@viewDetails": {
+    "description": "View details action"
+  },
+  "unknownRequestStatus": "Unknown",
+  "@unknownRequestStatus": {
+    "description": "Unknown request status fallback"
+  },
+  "requestStatusPending": "Pending",
+  "@requestStatusPending": {
+    "description": "Pending request status label"
+  },
+  "requestStatusAssigned": "Assigned",
+  "@requestStatusAssigned": {
+    "description": "Assigned request status label"
+  },
+  "requestStatusAccepted": "Accepted",
+  "@requestStatusAccepted": {
+    "description": "Accepted request status label"
+  },
+  "requestStatusOnTheWay": "On The Way",
+  "@requestStatusOnTheWay": {
+    "description": "On the way request status label"
+  },
+  "requestStatusArrived": "Arrived",
+  "@requestStatusArrived": {
+    "description": "Arrived request status label"
+  },
+  "requestStatusPickedUp": "Picked Up",
+  "@requestStatusPickedUp": {
+    "description": "Picked up request status label"
+  },
+  "requestStatusUnderExecuting": "Under Executing",
+  "@requestStatusUnderExecuting": {
+    "description": "Under executing request status label"
+  },
+  "requestStatusDelivered": "Delivered",
+  "@requestStatusDelivered": {
+    "description": "Delivered request status label"
+  },
+  "requestStatusNotDelivered": "Not Delivered",
+  "@requestStatusNotDelivered": {
+    "description": "Not delivered request status label"
+  },
+  "requestStatusCanceled": "Canceled",
+  "@requestStatusCanceled": {
+    "description": "Canceled request status label"
+  },
+  "requestStatusFinished": "Finished",
+  "@requestStatusFinished": {
+    "description": "Finished request status label"
+  },
+  "requestStatusClosed": "Closed",
+  "@requestStatusClosed": {
+    "description": "Closed request status label"
   },
 
   "safetyTip1": "Stay calm and assess the situation",

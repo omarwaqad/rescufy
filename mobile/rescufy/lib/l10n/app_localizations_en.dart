@@ -206,16 +206,182 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nearbyHospitals => 'Nearby Hospitals';
 
   @override
-  String get cityGeneralHospital => 'City General Hospital';
+  String get hospitalsSubtitle =>
+      'Compare nearby emergency-ready hospitals and head out fast.';
 
   @override
-  String get emergencyMedicalCenter => 'Emergency Medical Center';
+  String get yourLocation => 'Your location';
 
   @override
-  String get rescueHospital => 'Rescue Hospital';
+  String get openNow => 'Open now';
 
   @override
-  String get firstAidClinic => 'First Aid Clinic';
+  String get limited => 'Limited';
+
+  @override
+  String get unavailable => 'Unavailable';
+
+  @override
+  String availableBeds(int count) {
+    return '$count beds available';
+  }
+
+  @override
+  String icuAvailability(int count) {
+    return '$count ICU available';
+  }
+
+  @override
+  String startingFromPrice(String price) {
+    return 'Starting from $price';
+  }
+
+  @override
+  String distanceKm(String distance) {
+    return '$distance km away';
+  }
+
+  @override
+  String get call => 'Call';
+
+  @override
+  String get directions => 'Directions';
+
+  @override
+  String get refresh => 'Refresh';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get locationUnavailable => 'Location unavailable';
+
+  @override
+  String get enableLocationToFindHospitals =>
+      'Enable location services to load nearby hospitals.';
+
+  @override
+  String get noHospitalsNearby => 'No nearby hospitals found';
+
+  @override
+  String get noHospitalsNearbyMessage =>
+      'Try expanding the search radius or refresh your location.';
+
+  @override
+  String get hospitalsLoadFailed => 'Unable to load nearby hospitals.';
+
+  @override
+  String get liveCapacity => 'Live capacity';
+
+  @override
+  String get mapPreviewUnavailable => 'Map preview unavailable';
+
+  @override
+  String get mapConfigurationRequired =>
+      'Add your Google Maps API key to enable the live map preview.';
+
+  @override
+  String get hospitalStatusAvailable => 'Available';
+
+  @override
+  String get hospitalStatusUnavailable => 'Unavailable';
+
+  @override
+  String get hospitalStatusUnknown => 'Status unknown';
+
+  @override
+  String get requestHistoryTitle => 'Request History';
+
+  @override
+  String get requestHistoryDetailsTitle => 'Request Details';
+
+  @override
+  String get requestHistoryEmptyTitle => 'No Request History';
+
+  @override
+  String get requestHistoryEmptyMessage =>
+      'Your emergency requests will appear here once you make your first request.';
+
+  @override
+  String get requestHistoryFirstRequest => 'Make Your First Request';
+
+  @override
+  String get requestHistoryLoadFailed => 'Unable to load request history.';
+
+  @override
+  String get requestHistoryCompleted => 'Completed';
+
+  @override
+  String get requestHistoryInProgress => 'In Progress';
+
+  @override
+  String get requestHistoryCancelled => 'Cancelled';
+
+  @override
+  String get requestId => 'Request ID';
+
+  @override
+  String get requestStatus => 'Request Status';
+
+  @override
+  String get createdDate => 'Created Date';
+
+  @override
+  String get assignedAmbulancePlate => 'Assigned Ambulance Plate';
+
+  @override
+  String get driverName => 'Driver Name';
+
+  @override
+  String get hospitalName => 'Hospital Name';
+
+  @override
+  String get descriptionLabel => 'Description';
+
+  @override
+  String get addressLabel => 'Address';
+
+  @override
+  String get viewDetails => 'View Details';
+
+  @override
+  String get unknownRequestStatus => 'Unknown';
+
+  @override
+  String get requestStatusPending => 'Pending';
+
+  @override
+  String get requestStatusAssigned => 'Assigned';
+
+  @override
+  String get requestStatusAccepted => 'Accepted';
+
+  @override
+  String get requestStatusOnTheWay => 'On The Way';
+
+  @override
+  String get requestStatusArrived => 'Arrived';
+
+  @override
+  String get requestStatusPickedUp => 'Picked Up';
+
+  @override
+  String get requestStatusUnderExecuting => 'Under Executing';
+
+  @override
+  String get requestStatusDelivered => 'Delivered';
+
+  @override
+  String get requestStatusNotDelivered => 'Not Delivered';
+
+  @override
+  String get requestStatusCanceled => 'Canceled';
+
+  @override
+  String get requestStatusFinished => 'Finished';
+
+  @override
+  String get requestStatusClosed => 'Closed';
 
   @override
   String get safetyTip1 => 'Stay calm and assess the situation';

@@ -11,6 +11,10 @@ class UserRoleMapper {
       case 'user':
         return UserRole.user;
       case 'ambulancedriver':
+      case 'ambulance_driver':
+      case 'ambulance driver':
+      case 'driver':
+        return UserRole.ambulanceDriver;
       case 'paramedic':
         return UserRole.paramedic;
       default:

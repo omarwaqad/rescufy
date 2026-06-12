@@ -93,18 +93,28 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, User>> restoreSession() async {
     try {
-      final token = await localDataSource.getToken();
+      final token = await localDataSource.getToken().timeout(
+        const Duration(seconds: 8),
+      );
       if (token == null || token.isEmpty) {
         return const Left(CacheFailure('No active session found'));
       }
 
       final userModel = UserModel.fromToken(token);
-      await localDataSource.saveUser(userModel);
+      await localDataSource.saveUser(userModel).timeout(
+        const Duration(seconds: 8),
+      );
 
       return Right(userModel);
     } catch (_) {
-      await localDataSource.deleteToken();
-      await localDataSource.deleteUser();
+      await localDataSource.deleteToken().timeout(
+        const Duration(seconds: 4),
+        onTimeout: () {},
+      );
+      await localDataSource.deleteUser().timeout(
+        const Duration(seconds: 4),
+        onTimeout: () {},
+      );
       return const Left(CacheFailure('Session restoration failed'));
     }
   }
