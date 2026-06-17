@@ -45,7 +45,15 @@
         "deleteTooltip": "حذف سيارة الإسعاف"
     },
     "filters": {
-        "searchPlaceholder": "البحث برقم اللوحة أو المعرّف"
+        "searchPlaceholder": "البحث برقم اللوحة أو المعرّف",
+        "statusLabel": "الحالة",
+        "limitLabel": "لكل صفحة"
+    },
+    "pagination": {
+        "page": "صفحة",
+        "of": "من",
+        "previous": "السابق",
+        "next": "التالي"
     },
     "controlCenter": {
         "liveMonitoring": "مراقبة مباشرة",

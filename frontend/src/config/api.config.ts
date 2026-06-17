@@ -55,6 +55,8 @@ export const API_CONFIG = {
       CANCEL_REQUEST: (id: string) => `/api/Request/${id}/cancel`,
       REASSIGN_REQUEST: (id: string) => `/api/Request/${id}/reassign`,
       CREATE_TRIP_REPORT: "/api/TripReport",
+      GET_TRIP_REPORT_BY_REQUEST: (requestId: string | number) =>
+        `/api/TripReport/request/${requestId}`,
       UPDATE_TRIP_REPORT: (id: number) => `/api/TripReport/${id}`,
     },
     NOTIFICATIONS: {

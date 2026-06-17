@@ -3,11 +3,13 @@ import { AmbulanceFormModal } from "./AmbulanceFormModal";
 import { KPISection } from "./KPISection";
 import { AmbulanceFleetPanel } from "./AmbulanceFleetPanel";
 import { DeleteAmbulanceDialog } from "./DeleteAmbulanceDialog";
+import AmbulanceStatusFilter from "./AmbulanceStatusFilter";
 import { useAmbulances } from "../hooks/useAmbulances";
 import type { Ambulance, AmbulanceControlItem } from "../types/ambulances.types";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { Plus } from "lucide-react";
+import SelectField from "@/shared/ui/SelectField";
 
 export default function AllAmbulances() {
   const { t } = useTranslation("ambulances");
@@ -25,12 +27,35 @@ export default function AllAmbulances() {
     isLoading,
     isMutating,
     kpis,
+    page,
+    limit,
+    totalPages,
+    statusFilter,
+    setPage,
+    setLimit,
+    setStatusFilter,
     submitAmbulance,
     assignAmbulance,
     trackAmbulance,
     changeAmbulanceStatus,
     handleDeleteAmbulance,
   } = useAmbulances();
+
+  const limitOptions = [
+    { label: "10", value: "10" },
+    { label: "20", value: "20" },
+    { label: "50", value: "50" },
+  ];
+
+  const handleStatusFilterChange = (value: string) => {
+    setStatusFilter(value);
+    setPage(1);
+  };
+
+  const handleLimitChange = (value: string) => {
+    setLimit(Number(value));
+    setPage(1);
+  };
 
   const openAddModal = () => {
     setSelectedAmbulance(undefined);
@@ -143,6 +168,19 @@ export default function AllAmbulances() {
         maintenance={kpis.maintenance}
       />
 
+      <div className="rounded-2xl border border-border bg-background-second/60 p-4 shadow-card">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:max-w-md">
+          <AmbulanceStatusFilter value={statusFilter} onChange={handleStatusFilterChange} />
+          <SelectField
+            label={t("filters.limitLabel")}
+            value={String(limit)}
+            onChange={handleLimitChange}
+            options={limitOptions}
+            triggerClassName="h-9 text-xs"
+          />
+        </div>
+      </div>
+
       <div className="flex flex-col gap-6 w-full">
         <AmbulanceFleetPanel
           ambulances={ambulances}
@@ -154,6 +192,30 @@ export default function AllAmbulances() {
           onDelete={setDeleteCandidate}
           onViewProfile={handleViewProfile}
         />
+
+        {totalPages > 1 ? (
+          <div className="flex items-center justify-between border-t border-border pt-4">
+            <button
+              type="button"
+              onClick={() => setPage((current) => Math.max(1, current - 1))}
+              disabled={page === 1 || isLoading}
+              className="rounded-lg border border-border px-3 py-1 text-xs text-body transition hover:bg-surface-muted/50 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {t("pagination.previous")}
+            </button>
+            <span className="text-xs text-muted">
+              {t("pagination.page")} {page} {t("pagination.of")} {totalPages}
+            </span>
+            <button
+              type="button"
+              onClick={() => setPage((current) => Math.min(totalPages, current + 1))}
+              disabled={page === totalPages || isLoading}
+              className="rounded-lg border border-border px-3 py-1 text-xs text-body transition hover:bg-surface-muted/50 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {t("pagination.next")}
+            </button>
+          </div>
+        ) : null}
       </div>
 
       <button

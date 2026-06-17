@@ -95,9 +95,18 @@ export interface RequestAssignment {
 // ===============================
 export interface TripReport {
   id: number;
+  requestId?: number;
+  patientId?: string;
+  patientName?: string;
+  patientAge?: number;
+  patientNationalId?: string;
+  hospitalId?: number;
+  hospitalName?: string;
   medicalProcedures: string;
   admissionTime: string;
   dischargeTime: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 // ===============================

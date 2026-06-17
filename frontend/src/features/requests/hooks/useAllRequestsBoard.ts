@@ -17,7 +17,6 @@ export function useAllRequestsBoard({
   // - Expose derived metrics (critical/failed/assigned/searching counts) and actions that
   //   mutate local state immediately (reassign/fail) to reflect admin actions optimistically.
   const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [hasFetchedInitial, setHasFetchedInitial] = useState(false);
   const [timeTick, setTimeTick] = useState(0);
 
   useEffect(() => {
@@ -28,11 +27,10 @@ export function useAllRequestsBoard({
     return () => window.clearInterval(timer);
   }, []);
 
+  // Fetch data initially and whenever the stable fetch ref changes
   useEffect(() => {
-    if (hasFetchedInitial) return;
-    setHasFetchedInitial(true);
     void fetchAdminStreamRequests();
-  }, [fetchAdminStreamRequests, hasFetchedInitial]);
+  }, [fetchAdminStreamRequests]);
 
   const queueRequests = useMemo(() => {
     return requests.map((request) => {

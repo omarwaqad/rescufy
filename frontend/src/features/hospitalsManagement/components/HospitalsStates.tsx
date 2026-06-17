@@ -21,7 +21,7 @@ export default function HospitalsStates({
   return (
     <>
       <SelectField
-        label=""
+        label={t('filters.statusLabel')}
         placeholder={t('filters.allStates')}
         value={value}
         onChange={onChange}

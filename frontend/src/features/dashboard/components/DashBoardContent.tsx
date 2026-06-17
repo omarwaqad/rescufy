@@ -1,4 +1,6 @@
 import { motion, useReducedMotion } from "framer-motion";
+import { WifiOff } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { DispatchActivityFeed } from "./DispatchActivityFeed";
 import { SystemHealthSection } from "./SystemHealthSection";
 import { AlertsPanel } from "./AlertsPanel";
@@ -9,6 +11,7 @@ import { useDashboardOverviewData } from "../hooks/useDashboardOverviewData";
 
 export default function DashBoardContent() {
   const shouldReduceMotion = !!useReducedMotion();
+  const { t } = useTranslation("dashboard");
   const {
     totalRequests,
     completedRequests,
@@ -25,11 +28,26 @@ export default function DashBoardContent() {
     healthStatus,
     activityEvents,
     alerts,
+    isRealtimeConnected,
+    realtimeError,
   } = useDashboardOverviewData();
 
   return (
     <section className="relative isolate">
       <DashboardAmbientDecor shouldReduceMotion={shouldReduceMotion} />
+
+      {!isRealtimeConnected && realtimeError ? (
+        <div className="relative z-10 mb-4 rounded-xl border border-amber-500/35 bg-amber-500/10 px-4 py-3">
+          <div className="flex items-start gap-3">
+            <WifiOff className="mt-0.5 h-4 w-4 shrink-0 text-amber-700 dark:text-amber-300" />
+            <div>
+              <p className="text-sm font-semibold text-heading">{t("realtime.disconnected")}</p>
+              <p className="mt-1 text-xs text-body">{realtimeError}</p>
+              <p className="mt-1 text-xs text-muted">{t("realtime.reconnectHint")}</p>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       <DashboardStatsGrid
         shouldReduceMotion={shouldReduceMotion}

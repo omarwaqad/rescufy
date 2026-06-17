@@ -1,18 +1,12 @@
-import {
-  AlertTriangle,
-  CheckCircle2,
-  Loader2,
-  Radar,
-} from "lucide-react";
+import { AlertTriangle, CheckCircle2, Loader2, Radar } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { QueueRequestItem } from "../types/request-ui.types";
+import {
+  isTerminalRequestStatus,
+  normalizeBoardStatus,
+} from "../utils/requestStatus.utils";
 
-const STATE_ORDER = [
-  "RECEIVED",
-  "SEARCHING",
-  "ASSIGNED",
-  "ARRIVING",
-];
+const STATE_ORDER = ["RECEIVED", "SEARCHING", "ASSIGNED", "ARRIVING"];
 
 function getSeverityTheme(severity?: string | null) {
   const norm = severity?.toLowerCase();
@@ -115,7 +109,7 @@ function getDispatchTheme(dispatchState?: string | null) {
     };
   }
 
-  if (norm === "FAILED") {
+  if (norm === "CANCELLED" || norm === "CANCELED") {
     return {
       badge:
         "border-red-300 bg-red-100 text-red-700 dark:border-red-500/35 dark:bg-red-500/12 dark:text-red-300",
@@ -147,11 +141,12 @@ function formatTimelineTime(timestamp: string) {
 
 export function useRequestItemView(request: QueueRequestItem) {
   const { t } = useTranslation("requests");
-  const statusKey = request.status?.toUpperCase() ?? "RECEIVED";
+  const statusKey = normalizeBoardStatus(request.status);
+  const isTerminal = isTerminalRequestStatus(request.status);
   const priorityKey = request.priority?.toLowerCase() ?? "normal";
 
   const theme = getSeverityTheme(request.priority);
-  const dispatchTheme = getDispatchTheme(request.status);
+  const dispatchTheme = getDispatchTheme(statusKey);
 
   const previewDescription =
     request.description?.trim() || t("board.item.descriptionFallback");
@@ -163,9 +158,13 @@ export function useRequestItemView(request: QueueRequestItem) {
       ? t("board.item.etaMinutes", { count: request.eta })
       : t("board.item.etaUnknown");
 
-  const assignedAmbulanceLabel =
-    request.ambulanceId ? `AMB-${request.ambulanceId}` : t("board.item.searchingUnits");
-  const priorityLabel = t(`priority.${priorityKey}`, request.priority ?? "Normal");
+  const assignedAmbulanceLabel = request.ambulanceId
+    ? `AMB-${request.ambulanceId}`
+    : t("board.item.searchingUnits");
+  const priorityLabel = t(
+    `priority.${priorityKey}`,
+    request.priority ?? "Normal",
+  );
 
   const timelineMap = {
     RECEIVED: request.timeline?.requestedAt ?? "",
@@ -174,28 +173,29 @@ export function useRequestItemView(request: QueueRequestItem) {
     ARRIVING: request.timeline?.arrivedAt ?? "",
   };
 
-  const timelineEntries = STATE_ORDER.map((state) => {
-    const logTimestamp = timelineMap[state as keyof typeof timelineMap];
+  const timelineEntries = isTerminal
+    ? []
+    : STATE_ORDER.map((state) => {
+        const logTimestamp = timelineMap[state as keyof typeof timelineMap];
 
-    return {
-      key: state,
-      label: t(`board.timeline.${state}`),
-      time: logTimestamp ? formatTimelineTime(logTimestamp) : "--:--",
-      reached: Boolean(logTimestamp),
-      active: statusKey === state,
-    };
-  });
+        return {
+          key: state,
+          label: t(`board.timeline.${state}`),
+          time: logTimestamp ? formatTimelineTime(logTimestamp) : "--:--",
+          reached: Boolean(logTimestamp),
+          active: statusKey === state,
+        };
+      });
 
-  const statusIcon =
-    request.isSearching ? (
-      <Loader2 className="h-3.5 w-3.5 animate-spin" />
-    ) : request.status?.toLowerCase() === "failed" ? (
-      <AlertTriangle className="h-3.5 w-3.5" />
-    ) : request.status?.toLowerCase() === "completed" ? (
-      <CheckCircle2 className="h-3.5 w-3.5" />
-    ) : (
-      <Radar className="h-3.5 w-3.5" />
-    );
+  const statusIcon = request.isSearching ? (
+    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+  ) : request.status?.toLowerCase() === "failed" ? (
+    <AlertTriangle className="h-3.5 w-3.5" />
+  ) : statusKey === "COMPLETED" ? (
+    <CheckCircle2 className="h-3.5 w-3.5" />
+  ) : (
+    <Radar className="h-3.5 w-3.5" />
+  );
 
   return {
     t,
@@ -208,6 +208,8 @@ export function useRequestItemView(request: QueueRequestItem) {
     priorityLabel,
     timelineEntries,
     statusIcon,
-    isFailed: request.status?.toLowerCase() === "failed",
+    isFailed: statusKey === "FAILED",
+    isTerminal,
+    statusKey,
   };
 }

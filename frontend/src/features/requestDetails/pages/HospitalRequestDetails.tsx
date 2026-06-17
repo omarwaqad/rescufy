@@ -34,7 +34,7 @@ export default function HospitalRequestDetails() {
   const { t, i18n } = useTranslation("requests");
   const { isRTL } = useLanguage();
   const { id } = useParams<{ id: string }>();
-  const { request, isLoading, fetchRequest } = useGetRequestById();
+  const { request, events, isLoading, fetchRequest } = useGetRequestById();
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
 
   useEffect(() => {
@@ -55,24 +55,30 @@ export default function HospitalRequestDetails() {
     );
   }
 
-  // Build timeline events from the request data
-  const timelineEvents = [
-    {
-      title: t("details.adminLayout.timeline.requestCreated"),
-      time: formatDateTime(request.createdAt, i18n.language),
-      description: request.description || t("details.adminLayout.noDescription"),
-    },
-    ...(request.assignments ?? []).map((assignment) => ({
-      title: t("details.adminLayout.timeline.assignmentCreated", { id: assignment.id }),
-      time: formatDateTime(assignment.assignedAt, i18n.language),
-      description: `${assignment.ambulancePlate} → ${assignment.hospitalName ?? t("details.adminLayout.noHospital")}`,
-    })),
-    {
-      title: t("details.adminLayout.timeline.requestUpdated"),
-      time: formatDateTime(request.updatedAt, i18n.language),
-      description: request.comment || t("details.adminLayout.noComment"),
-    },
-  ];
+  // Build timeline events from the request data or external events
+  const timelineEvents = events && events.length > 0
+    ? events.map((ev: any) => ({
+        title: ev.title || ev.eventType,
+        time: formatDateTime(ev.timestamp, i18n.language),
+        description: ev.message || "",
+      }))
+    : [
+        {
+          title: t("details.adminLayout.timeline.requestCreated"),
+          time: formatDateTime(request.createdAt, i18n.language),
+          description: request.description || t("details.adminLayout.noDescription"),
+        },
+        ...(request.assignments ?? []).map((assignment) => ({
+          title: t("details.adminLayout.timeline.assignmentCreated", { id: assignment.id }),
+          time: formatDateTime(assignment.assignedAt, i18n.language),
+          description: `${assignment.ambulancePlate} → ${assignment.hospitalName ?? t("details.adminLayout.noHospital")}`,
+        })),
+        {
+          title: t("details.adminLayout.timeline.requestUpdated"),
+          time: formatDateTime(request.updatedAt, i18n.language),
+          description: request.comment || t("details.adminLayout.noComment"),
+        },
+      ];
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-6" dir={isRTL ? "rtl" : "ltr"}>

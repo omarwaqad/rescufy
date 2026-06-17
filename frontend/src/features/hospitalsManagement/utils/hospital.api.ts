@@ -87,6 +87,13 @@ export function extractHospitalCollection(payload: unknown): unknown[] {
   return [];
 }
 
+export function hasPaginatedResponse(payload: unknown): boolean {
+  const record = toRecord(payload);
+  const meta = toRecord(record?.meta);
+
+  return Boolean(meta && (meta.totalPages !== undefined || meta.totalItems !== undefined));
+}
+
 export function normalizeHospital(raw: unknown): Hospital | null {
   const record = unwrapObject(raw);
 

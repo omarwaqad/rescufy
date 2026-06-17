@@ -1,6 +1,10 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import type { QueueRequestItem } from "../types/request-ui.types";
+import {
+  isTerminalRequestStatus,
+  normalizeBoardStatus,
+} from "../utils/requestStatus.utils";
 
 function getSeverityBorder(severity?: string | null) {
   const norm = severity?.toLowerCase();
@@ -64,7 +68,13 @@ function getDispatchTheme(dispatchState?: string | null) {
       dot: "bg-red-500",
     };
   }
-
+  if (norm === "CANCELLED" || norm === "CANCELED") {
+    return {
+      badge:
+        "border-red-300 bg-red-100 text-red-700 dark:border-red-500/35 dark:bg-red-500/12 dark:text-red-300",
+      dot: "bg-red-500",
+    };
+  }
   return {
     badge:
       "border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-500/35 dark:bg-slate-500/12 dark:text-slate-300",
@@ -80,7 +90,8 @@ export function useRequestDetailsPanelView(request: QueueRequestItem | null) {
       return null;
     }
     
-    const statusKey = request.status?.toUpperCase() ?? "RECEIVED";
+    const statusKey = normalizeBoardStatus(request.status);
+    const isTerminal = isTerminalRequestStatus(request.status);
     const priorityKey = request.priority?.toLowerCase() ?? "medium";
 
     const description =
@@ -101,7 +112,7 @@ export function useRequestDetailsPanelView(request: QueueRequestItem | null) {
     return {
       severityBorder: getSeverityBorder(request.priority),
       severityBadgeTheme: getSeverityBadgeTheme(request.priority),
-      dispatchTheme: getDispatchTheme(request.status),
+      dispatchTheme: getDispatchTheme(statusKey),
       description,
       etaLabel,
       selectedAmbulanceLabel,
@@ -110,6 +121,7 @@ export function useRequestDetailsPanelView(request: QueueRequestItem | null) {
       userName: request.patientName || "-",
       address: request.location || "-",
       waitingLabel: request.waitingLabel,
+      isTerminal,
     };
   }, [request, t]);
 

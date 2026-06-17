@@ -17,6 +17,10 @@ import AssignmentsSectionCard from "../components/AssignmentsSectionCard";
 import TimelineSectionCard from "../components/TimelineSectionCard";
 import ActionButtons from "../components/ActionButtons";
 import HospitalReportModal from "../components/HospitalReportModal";
+import {
+  isFinishedRequestStatus,
+  isTerminalRequestStatus,
+} from "@/features/requests/utils/requestStatus.utils";
 
 // ─── Helper ──────────────────────────────────────────────────────────────────
 function formatDateTime(iso: string, locale: string): string {
@@ -36,7 +40,7 @@ export default function RequestDetails() {
   const { isRTL } = useLanguage();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const { request, isLoading, fetchRequest } = useGetRequestById();
+  const { request, events, isLoading, fetchRequest } = useGetRequestById();
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
 
   // Derive hospitalId from the latest assignment
@@ -60,24 +64,33 @@ export default function RequestDetails() {
     );
   }
 
-  // Build timeline events from the request data
-  const timelineEvents = [
-    {
-      title: t("details.adminLayout.timeline.requestCreated"),
-      time: formatDateTime(request.createdAt, i18n.language),
-      description: request.description || t("details.adminLayout.noDescription"),
-    },
-    ...(request.assignments ?? []).map((assignment) => ({
-      title: t("details.adminLayout.timeline.assignmentCreated", { id: assignment.id }),
-      time: formatDateTime(assignment.assignedAt, i18n.language),
-      description: `${assignment.ambulancePlate} → ${assignment.hospitalName ?? t("details.adminLayout.noHospital")}`,
-    })),
-    {
-      title: t("details.adminLayout.timeline.requestUpdated"),
-      time: formatDateTime(request.updatedAt, i18n.language),
-      description: request.comment || t("details.adminLayout.noComment"),
-    },
-  ];
+  const isTerminal = isTerminalRequestStatus(request.requestStatus);
+  const showTripReport = isFinishedRequestStatus(request.requestStatus);
+
+  // Build timeline events from the request data or external events
+  const timelineEvents = events && events.length > 0
+    ? events.map((ev: any) => ({
+        title: ev.title || ev.eventType,
+        time: formatDateTime(ev.timestamp, i18n.language),
+        description: ev.message || "",
+      }))
+    : [
+        {
+          title: t("details.adminLayout.timeline.requestCreated"),
+          time: formatDateTime(request.createdAt, i18n.language),
+          description: request.description || t("details.adminLayout.noDescription"),
+        },
+        ...(request.assignments ?? []).map((assignment) => ({
+          title: t("details.adminLayout.timeline.assignmentCreated", { id: assignment.id }),
+          time: formatDateTime(assignment.assignedAt, i18n.language),
+          description: `${assignment.ambulancePlate} → ${assignment.hospitalName ?? t("details.adminLayout.noHospital")}`,
+        })),
+        {
+          title: t("details.adminLayout.timeline.requestUpdated"),
+          time: formatDateTime(request.updatedAt, i18n.language),
+          description: request.comment || t("details.adminLayout.noComment"),
+        },
+      ];
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-6" dir={isRTL ? "rtl" : "ltr"}>
@@ -106,10 +119,13 @@ export default function RequestDetails() {
 
             <AIAnalysisSectionCard aiAnalysis={request.aiAnalysis} />
 
-            <TripReportSectionCard
-              tripReport={request.tripReport}
-              onOpenModal={() => setIsReportModalOpen(true)}
-            />
+            {showTripReport ? (
+              <TripReportSectionCard
+                tripReport={request.tripReport}
+                readOnly
+                onOpenModal={() => setIsReportModalOpen(true)}
+              />
+            ) : null}
           </div>
 
           {/* Right column */}
@@ -126,18 +142,19 @@ export default function RequestDetails() {
           </div>
         </div>
 
-        {/* ── Action Buttons ─────────────────────────────────────── */}
-        <section className="rounded-2xl border border-border/80 bg-bg-card p-5 shadow-card">
-          <div className="mb-3 flex items-center gap-2 text-heading">
-            <Phone className="h-4 w-4 text-primary" />
-            <h3 className="text-base font-semibold">{t("details.actions")}</h3>
-          </div>
-          <ActionButtons
-            requestId={request.id}
-            onCancelled={() => navigate(-1)}
-            onReassigned={() => void fetchRequest(String(request.id))}
-          />
-        </section>
+        {!isTerminal ? (
+          <section className="rounded-2xl border border-border/80 bg-bg-card p-5 shadow-card">
+            <div className="mb-3 flex items-center gap-2 text-heading">
+              <Phone className="h-4 w-4 text-primary" />
+              <h3 className="text-base font-semibold">{t("details.actions")}</h3>
+            </div>
+            <ActionButtons
+              requestId={request.id}
+              onCancelled={() => navigate(-1)}
+              onReassigned={() => void fetchRequest(String(request.id))}
+            />
+          </section>
+        ) : null}
 
       </div>
 

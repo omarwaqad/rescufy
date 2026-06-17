@@ -10,7 +10,7 @@ export function useAllRequestsPage() {
   const { t } = useTranslation(["requests", "auth"]);
   const navigate = useNavigate();
 
-  const { requests, isLoading, fetchAdminStreamRequests, setRequests } =
+  const { requests, isLoading, fetchAdminStreamRequests, setRequests, page, limit, totalPages, setPage, setLimit, filters, setFilters } =
     useGetRequests();
 
   const {
@@ -104,5 +104,12 @@ export function useAllRequestsPage() {
     handleCancelAssignment,
     handleSelectRequest,
     handleViewRequestDetails,
+    page,
+    limit,
+    totalPages,
+    setPage,
+    setLimit,
+    filters,
+    setFilters
   };
 }

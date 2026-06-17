@@ -17,7 +17,6 @@ import {
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import type { AmbulanceProfile } from "../types/ambulances.types";
 import { AssignCrewModal } from "./AssignCrewModal";
-import { useGetAmbulanceById } from "../hooks/useGetAmbulanceById";
 
 type AmbulanceProfileDetailsProps = {
   profile: AmbulanceProfile;
