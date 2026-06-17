@@ -27,9 +27,9 @@ Rescufy addresses this by allowing users to request help with minimal steps whil
 
 ### Current Product Caveats
 
-- Real-time workflows are designed around SignalR, but dependency injection currently registers `MockSignalRService`. The production hub URL exists in code, but the real service is not currently wired.
-- User-side live ambulance tracking is implied by the UI after request submission, but the current "Track" action routes to request history rather than a true live tracking screen.
-- Notifications are represented in UI labels/icons, but no push notification provider, local notification handling, or notification screen is implemented.
+- Real-time workflows are designed around SignalR; the real service is now wired and active.
+- User-side live tracking and feedback flow are not yet implemented. The expected lifecycle is: Request Created → Hospital Assigned → Driver Accepted → ArrivedToPatient → ArrivedToHospital → HospitalReceived → Trip Report Created → Finished → Feedback Notification. Hospital interactions (HospitalReceived, Trip Report) are handled through the hospital web dashboard, not the mobile app.
+- Notifications are fully backend-driven via REST APIs and SignalR services; no Firebase or third-party push provider is used.
 - Admin access is not supported in the mobile app. The app includes an admin-blocked dialog that directs admins to a web dashboard.
 
 ## 2. Goals and KPIs
@@ -329,26 +329,25 @@ Rescufy addresses this by allowing users to request help with minimal steps whil
 
 ### 4.9 Request and Case History
 
-**Description:** User and paramedic history screens exist, but current displayed data is mock/static in the UI.
+**Description:** User request history screen is implemented and fetches real data from the backend. Paramedic case history REST endpoint exists and the UI may be partially connected.
 
 **User story:** As a user or paramedic, I want to review previous requests/cases and response details.
 
 **Acceptance criteria:**
 
-- **Current state:** User request history and paramedic case history are visual/static examples.
-- Paramedic REST endpoint exists for case history, but current paramedic history UI does not consume it.
-- Future implementation should fetch real history from backend and support details, filters, and status timelines.
+- **Current state:** User request history fetches real data from the backend.
+- Paramedic REST endpoint exists for case history; UI integration may be ongoing.
+- Future implementation should support details, filters, and status timelines for both roles.
 
 ### 4.10 Notifications
 
-**Description:** Notification labels and a notification icon appear in the user UI. No push notification or local notification implementation is present.
+**Description:** Notifications are delivered through the backend Notification SignalR hub and REST APIs. The notification icon and UI entry are present; events are consumed in-app without third-party push providers.
 
 **User story:** As a user, I want to receive alerts when my emergency request changes status.
 
 **Acceptance criteria:**
 
-- **Current state:** Notification UI entry exists only.
-- **Gap:** No Firebase Cloud Messaging, local notification plugin, notification data source, or notification screen is implemented.
+- **Current state:** Notifications are delivered via the backend Notification SignalR hub and REST APIs. No Firebase Cloud Messaging or third-party push provider is used. In-app notification streams and event handling are implemented.
 - Future implementation should support:
   - Request created
   - Ambulance assigned
@@ -441,7 +440,7 @@ Rescufy addresses this by allowing users to request help with minimal steps whil
 
 - JWT token and user auth data are stored in `FlutterSecureStorage`.
 - Medical profile data is cached locally in Hive.
-- Production APIs must use HTTPS. Current REST base URL uses `http://back23-4.runasp.net`, which is not acceptable for production medical/auth traffic.
+- Production APIs use HTTPS. REST base URL is `https://final1111.runasp.net`.
 - Medical data access must be role-scoped.
 - Paramedic location is broadcast during active cases only.
 - Patient location must only be used for emergency response and authorized case handling.
@@ -506,7 +505,7 @@ Key Cubits include:
 
 The app uses `DioClient` with:
 
-- Base URL: `http://back23-4.runasp.net`
+- Base URL: `https://final1111.runasp.net`
 - 30-second connect timeout
 - 30-second receive timeout
 - Bearer token auth interceptor
@@ -551,25 +550,25 @@ Outbound events:
 
 ### Backend APIs
 
-- `http://back23-4.runasp.net/api/Auth/login`
-- `http://back23-4.runasp.net/api/Auth/register`
-- `http://back23-4.runasp.net/api/Auth/logout`
-- `http://back23-4.runasp.net/api/Auth/forget-password`
-- `http://back23-4.runasp.net/api/Auth/verify-reset-password-otp`
-- `http://back23-4.runasp.net/api/Auth/reset-password`
-- `http://back23-4.runasp.net/api/Request`
-- `http://back23-4.runasp.net/api/profile`
-- `http://back23-4.runasp.net/api/profile/image`
-- `http://back23-4.runasp.net/api/MedicalData/medications`
-- `http://back23-4.runasp.net/api/MedicalData/allergies`
-- `http://back23-4.runasp.net/api/MedicalData/chronic-diseases`
-- `http://back23-4.runasp.net/api/MedicalData/past-surgeries`
-- `http://back23-4.runasp.net/api/MedicalData/emergency-contacts`
-- `http://back23-4.runasp.net/api/paramedic/incoming-requests`
-- `http://back23-4.runasp.net/api/paramedic/case-history`
-- `http://back23-4.runasp.net/api/paramedic/requests/{requestId}/accept`
-- `http://back23-4.runasp.net/api/paramedic/requests/{requestId}/reject`
-- `http://back23-4.runasp.net/api/paramedic/requests/{requestId}/status`
+- `https://final1111.runasp.net/api/Auth/login`
+- `https://final1111.runasp.net/api/Auth/register`
+- `https://final1111.runasp.net/api/Auth/logout`
+- `https://final1111.runasp.net/api/Auth/forget-password`
+- `https://final1111.runasp.net/api/Auth/verify-reset-password-otp`
+- `https://final1111.runasp.net/api/Auth/reset-password`
+- `https://final1111.runasp.net/api/Request`
+- `https://final1111.runasp.net/api/profile`
+- `https://final1111.runasp.net/api/profile/image`
+- `https://final1111.runasp.net/api/MedicalData/medications`
+- `https://final1111.runasp.net/api/MedicalData/allergies`
+- `https://final1111.runasp.net/api/MedicalData/chronic-diseases`
+- `https://final1111.runasp.net/api/MedicalData/past-surgeries`
+- `https://final1111.runasp.net/api/MedicalData/emergency-contacts`
+- `https://final1111.runasp.net/api/paramedic/incoming-requests`
+- `https://final1111.runasp.net/api/paramedic/case-history`
+- `https://final1111.runasp.net/api/paramedic/requests/{requestId}/accept`
+- `https://final1111.runasp.net/api/paramedic/requests/{requestId}/reject`
+- `https://final1111.runasp.net/api/paramedic/requests/{requestId}/status`
 
 ### SignalR Hub
 
@@ -649,20 +648,21 @@ Mitigation: Enforce HTTPS, certificate validation, secure backend configuration,
 ### Notification Gaps
 
 Risk: User misses status changes if app is backgrounded.  
-Mitigation: Add push notifications and local notification handling.
+Mitigation: Ensure backend notification hub reconnects and in-app notification streams are robust; add background state awareness for in-app alerts.
 
 ## 10. Future Improvements
 
 ### Production Readiness
 
-- Wire real SignalR hub into dependency injection.
-- Replace HTTP REST base URL with HTTPS.
+- SignalR hub is wired into dependency injection; ensure stability and monitoring.
+- REST base URL is already HTTPS; ensure certificate validation and secure backend configuration.
 - Add observability for API failures, SignalR reconnects, and event latency.
 - Add automated tests for critical emergency flows.
 
 ### Emergency Flow Enhancements
 
-- User-side live ambulance tracking.
+- User-side live tracking with ETA display and full lifecycle visibility:
+  - Request Created → Hospital Assigned → Driver Accepted → ArrivedToPatient → ArrivedToHospital → HospitalReceived → Trip Report Created → Finished → Feedback Notification
 - User-side cancel request.
 - Manual address correction when GPS fails.
 - Emergency hotline fallback with location sharing.

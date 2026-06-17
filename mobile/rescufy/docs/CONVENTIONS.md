@@ -76,3 +76,7 @@
 * Keep widgets small
 * Avoid large Cubits (split when needed)
 * Keep logic readable
+
+## Responsive
+
+*use flutter_screenutil

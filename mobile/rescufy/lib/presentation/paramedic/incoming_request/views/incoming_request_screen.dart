@@ -258,10 +258,7 @@ class IncomingRequestScreen extends StatelessWidget {
   }
 
   double _mockDistanceKm(IncomingRequest request) {
-    final seed = request.requestId.codeUnits.fold<int>(
-      0,
-      (value, item) => value + item,
-    );
+    final seed = request.requestId;
     return 1.2 + (seed % 60) / 10;
   }
 }

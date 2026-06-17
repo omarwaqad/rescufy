@@ -33,7 +33,7 @@ class SignalRNotification {
   final SignalRNotificationType type;
   final String eventName;
   final Map<String, dynamic> data;
-  final String? requestId;
+  final int? requestId;
   final String? title;
   final String? message;
   final String? status;
@@ -53,7 +53,7 @@ class AmbulanceLocationUpdate {
     this.raw = const {},
   });
 
-  final String requestId;
+  final int requestId;
   final double latitude;
   final double longitude;
   final DateTime? updatedAt;
@@ -67,7 +67,7 @@ class AmbulanceLocationDto {
     required this.longitude,
   });
 
-  final String requestId;
+  final int requestId;
   final double latitude;
   final double longitude;
 
@@ -87,7 +87,7 @@ class RequestStatusUpdate {
     this.raw = const {},
   });
 
-  final String requestId;
+  final int requestId;
   final String status;
   final String? message;
   final DateTime? updatedAt;

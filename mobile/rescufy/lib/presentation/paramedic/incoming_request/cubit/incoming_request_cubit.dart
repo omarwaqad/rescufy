@@ -17,7 +17,7 @@ class IncomingRequestCubit extends Cubit<IncomingRequestState> {
 
   final AmbulanceSignalRService _ambulanceSignalR;
   final NotificationSignalRService _notificationSignalR;
-  StreamSubscription<String>? _cancelledSubscription;
+  StreamSubscription<int>? _cancelledSubscription;
 
   void initialize() {
     _cancelledSubscription ??= _notificationSignalR.requestCancelled.listen((

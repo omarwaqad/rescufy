@@ -1,14 +1,16 @@
-import 'package:dio/dio.dart';
+import 'package:rescufy/core/network/dio_client.dart';
 import '../../../core/network/endpoints/api_endpoints.dart';
 import '../../../domain/entities/emergency_request.dart';
+import '../../../domain/entities/incoming_request.dart';
 import '../../models/medical_profile/paramedic_emergency_request_model.dart';
 
 abstract class ParamedicEmergencyRemoteDataSource {
   Future<Stream<List<ParamedicEmergencyRequestModel>>> getIncomingRequests();
-  Future<ParamedicEmergencyRequestModel> acceptRequest(String requestId);
-  Future<void> rejectRequest(String requestId);
+  Future<IncomingRequest> getIncomingRequestById(int requestId);
+  Future<ParamedicEmergencyRequestModel> acceptRequest(int requestId);
+  Future<void> rejectRequest(int requestId);
   Future<ParamedicEmergencyRequestModel> updateCaseStatus(
-    String requestId,
+    int requestId,
     EmergencyStatus status,
   );
   Future<List<ParamedicEmergencyRequestModel>> getCaseHistory();
@@ -16,9 +18,9 @@ abstract class ParamedicEmergencyRemoteDataSource {
 
 class EmergencyRemoteDataSourceImpl
     implements ParamedicEmergencyRemoteDataSource {
-  final Dio dio;
+  final DioClient _dioClient;
 
-  EmergencyRemoteDataSourceImpl({required this.dio});
+  EmergencyRemoteDataSourceImpl(this._dioClient);
 
   @override
   Future<Stream<List<ParamedicEmergencyRequestModel>>>
@@ -27,7 +29,7 @@ class EmergencyRemoteDataSourceImpl
     // In production, use WebSocket or Server-Sent Events
     return Stream.periodic(const Duration(seconds: 5), (_) async {
       try {
-        final response = await dio.get(ApiEndpoints.incomingRequests);
+        final response = await _dioClient.get(ApiEndpoints.incomingRequests);
 
         if (response.statusCode == 200) {
           final data = _extractList(response.data);
@@ -41,8 +43,16 @@ class EmergencyRemoteDataSourceImpl
   }
 
   @override
-  Future<ParamedicEmergencyRequestModel> acceptRequest(String requestId) async {
-    final response = await dio.post(ApiEndpoints.acceptRequest(requestId));
+  Future<IncomingRequest> getIncomingRequestById(int requestId) async {
+    final response = await _dioClient.get(ApiEndpoints.requestById(requestId));
+    final data = _extractResponseMap(response.data);
+
+    return IncomingRequest.fromJson(data);
+  }
+
+  @override
+  Future<ParamedicEmergencyRequestModel> acceptRequest(int requestId) async {
+    final response = await _dioClient.post(ApiEndpoints.acceptRequest(requestId));
 
     return ParamedicEmergencyRequestModel.fromJson(
       _extractMap(response.data['data'] ?? response.data),
@@ -50,16 +60,16 @@ class EmergencyRemoteDataSourceImpl
   }
 
   @override
-  Future<void> rejectRequest(String requestId) async {
-    await dio.post(ApiEndpoints.rejectRequest(requestId));
+  Future<void> rejectRequest(int requestId) async {
+    await _dioClient.post(ApiEndpoints.rejectRequest(requestId));
   }
 
   @override
   Future<ParamedicEmergencyRequestModel> updateCaseStatus(
-    String requestId,
+    int requestId,
     EmergencyStatus status,
   ) async {
-    final response = await dio.patch(
+    final response = await _dioClient.dio.patch(
       ApiEndpoints.updateCaseStatus(requestId),
       data: {'status': _statusToString(status)},
     );
@@ -71,7 +81,7 @@ class EmergencyRemoteDataSourceImpl
 
   @override
   Future<List<ParamedicEmergencyRequestModel>> getCaseHistory() async {
-    final response = await dio.get(ApiEndpoints.caseHistory);
+    final response = await _dioClient.get(ApiEndpoints.caseHistory);
 
     final data = _extractList(response.data);
     return data.map(ParamedicEmergencyRequestModel.fromJson).toList();
@@ -96,6 +106,11 @@ class EmergencyRemoteDataSourceImpl
     if (data is Map<String, dynamic>) return data;
     if (data is Map) return _castMap(data);
     return const {};
+  }
+
+  Map<String, dynamic> _extractResponseMap(dynamic data) {
+    final root = _extractMap(data);
+    return _extractMap(root['data'] ?? root);
   }
 
   Map<String, dynamic> _castMap(Map<dynamic, dynamic> map) {

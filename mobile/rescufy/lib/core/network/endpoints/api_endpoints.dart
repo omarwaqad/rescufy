@@ -18,8 +18,9 @@ class ApiEndpoints {
 
   // Request
   static const String createEmergencyRequest = '$baseUrl/api/Request';
-  static const String getEmergencies = '$baseUrl/api/emergency/list';
+  // static const String getEmergencies = '$baseUrl/api/Request/{id}';
   static const String requestHistory = '$baseUrl/api/Request/history';
+  static String requestById(int requestId) => '$baseUrl/api/Request/$requestId';
 
   // Paramedic
   static const String paramedicProfile = '$baseUrl/api/Paramedic/profile';
@@ -27,13 +28,13 @@ class ApiEndpoints {
       '$baseUrl/api/paramedic/incoming-requests';
   static const String caseHistory = '$baseUrl/api/paramedic/case-history';
 
-  static String acceptRequest(String requestId) =>
+  static String acceptRequest(int requestId) =>
       '$baseUrl/api/paramedic/requests/$requestId/accept';
 
-  static String rejectRequest(String requestId) =>
+  static String rejectRequest(int requestId) =>
       '$baseUrl/api/paramedic/requests/$requestId/reject';
 
-  static String updateCaseStatus(String requestId) =>
+  static String updateCaseStatus(int requestId) =>
       '$baseUrl/api/paramedic/requests/$requestId/status';
   static const String paramedicHistory = '/paramedic/history';
   //static const String paramedicProfile = '/paramedic/profile';

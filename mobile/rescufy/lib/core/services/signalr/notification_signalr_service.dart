@@ -25,7 +25,7 @@ class NotificationSignalRService {
       StreamController<SignalRNotification>.broadcast();
   final _emergencyRequestController =
       StreamController<Map<String, dynamic>>.broadcast();
-  final _requestCancelledController = StreamController<String>.broadcast();
+  final _requestCancelledController = StreamController<int>.broadcast();
   final _statusChangedController =
       StreamController<RequestStatusUpdate>.broadcast();
 
@@ -35,7 +35,7 @@ class NotificationSignalRService {
       _notificationController.stream;
   Stream<Map<String, dynamic>> get emergencyRequests =>
       _emergencyRequestController.stream;
-  Stream<String> get requestCancelled => _requestCancelledController.stream;
+  Stream<int> get requestCancelled => _requestCancelledController.stream;
   Stream<RequestStatusUpdate> get statusChanged =>
       _statusChangedController.stream;
 
@@ -154,12 +154,16 @@ class NotificationSignalRService {
       type: type,
       eventName: eventName,
       data: payload,
-      requestId: _readString(payload, const [
+      requestId: _findIntInPayload(payload, const [
         SignalRPayloadKeys.requestId,
         'RequestId',
+        'requestID',
+        'RequestID',
         'id',
         'Id',
+        'ID',
         'value',
+        'Value',
       ]),
       title: _readString(payload, const [
         SignalRPayloadKeys.title,
@@ -221,6 +225,36 @@ class NotificationSignalRService {
       return payload.map((key, value) => MapEntry(key.toString(), value));
     }
     return {'value': payload.toString()};
+  }
+
+  int? _readInt(Map<String, dynamic> data, List<String> keys) {
+    for (final key in keys) {
+      final value = data[key];
+      if (value is int) return value;
+      if (value is num) return value.toInt();
+      if (value != null) {
+        final parsed = int.tryParse(value.toString());
+        if (parsed != null) return parsed;
+      }
+    }
+    return null;
+  }
+
+  int? _findIntInPayload(Map<String, dynamic> payload, List<String> keys) {
+    // Try top-level keys first
+    final topLevel = _readInt(payload, keys);
+    if (topLevel != null) return topLevel;
+
+    // Try nested data/payload objects
+    for (final nestedKey in const ['data', 'Data', 'payload', 'Payload']) {
+      final nested = payload[nestedKey];
+      if (nested is Map<String, dynamic>) {
+        final nestedValue = _readInt(nested, keys);
+        if (nestedValue != null) return nestedValue;
+      }
+    }
+
+    return null;
   }
 
   String? _readString(Map<String, dynamic> data, List<String> keys) {

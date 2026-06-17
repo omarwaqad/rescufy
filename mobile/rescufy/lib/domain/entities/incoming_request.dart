@@ -22,7 +22,7 @@ class IncomingRequest extends Equatable {
     this.bloodType,
   });
 
-  final String requestId;
+  final int requestId;
   final String caseId;
   final String patientName;
   final int patientAge;
@@ -51,28 +51,56 @@ class IncomingRequest extends Equatable {
       'https://www.google.com/maps/dir/?api=1&destination=$latitude,$longitude';
 
   factory IncomingRequest.fromJson(Map<String, dynamic> json) {
+    final patient = _readMap(json['patient'] ?? json['Patient']);
+    final patientProfile = _readMap(patient['profile'] ?? patient['Profile']);
+    final aiAnalysis = _readMap(json['aiAnalysis'] ?? json['AiAnalysis']);
+    final assignment = _readFirstMap(
+      json['assignments'] ?? json['Assignments'],
+    );
+
     return IncomingRequest(
-      requestId: _readString(json, const ['requestId', 'RequestId', 'id']),
-      caseId: _readString(json, const ['caseId', 'CaseId']),
+      requestId: _readInt(json, const ['requestId', 'RequestId', 'id', 'Id']),
+      caseId: _readString(
+        json,
+        const ['caseId', 'CaseId'],
+        fallback: _readString(json, const ['id', 'Id']),
+      ),
       patientName: _readString(json, const [
         'patientName',
         'PatientName',
         'name',
-      ], fallback: 'Unknown'),
+      ], fallback: _readString(patient, const ['name', 'Name'], fallback: 'Unknown')),
       patientAge: _readInt(json, const ['patientAge', 'PatientAge', 'age']),
       patientGender: _readString(json, const [
         'patientGender',
         'PatientGender',
       ]),
-      emergencyType: _readString(json, const [
-        'emergencyType',
-        'EmergencyType',
-        'type',
-      ], fallback: 'Other'),
-      severity: _readString(json, const [
-        'severity',
-        'Severity',
-      ], fallback: 'medium'),
+      emergencyType: _readString(
+        json,
+        const ['emergencyType', 'EmergencyType', 'type'],
+        fallback: _readString(
+          aiAnalysis,
+          const ['condition', 'Condition'],
+          fallback: _readString(
+            json,
+            const ['requestStatus', 'RequestStatus'],
+            fallback: 'Other',
+          ),
+        ),
+      ),
+      severity: _readString(
+        json,
+        const ['severity', 'Severity'],
+        fallback: _readString(
+          aiAnalysis,
+          const ['severity', 'Severity'],
+          fallback: _readString(
+            aiAnalysis,
+            const ['urgency', 'Urgency'],
+            fallback: 'medium',
+          ),
+        ),
+      ),
       description: _readString(json, const ['description', 'Description']),
       latitude: _readDouble(json, const ['latitude', 'Latitude', 'lat']),
       longitude: _readDouble(json, const ['longitude', 'Longitude', 'lng']),
@@ -80,17 +108,36 @@ class IncomingRequest extends Equatable {
       hospitalName: _readString(json, const [
         'hospitalName',
         'HospitalName',
-      ], fallback: 'Nearest Hospital'),
+      ], fallback: _readString(assignment, const [
+        'hospitalName',
+        'HospitalName',
+      ], fallback: 'Nearest Hospital')),
       createdAt:
           _readDate(json, const ['createdAt', 'CreatedAt']) ?? DateTime.now(),
-      aiSummary: _readNullableString(json, const ['aiSummary', 'AiSummary']),
-      bloodType: _readNullableString(json, const ['bloodType', 'BloodType']),
-      allergies: _readStringList(json['allergies'] ?? json['Allergies']),
+      aiSummary:
+          _readNullableString(json, const ['aiSummary', 'AiSummary']) ??
+          _readNullableString(aiAnalysis, const ['summary', 'Summary']) ??
+          _readNullableString(json, const ['comment', 'Comment']),
+      bloodType:
+          _readNullableString(json, const ['bloodType', 'BloodType']) ??
+          _readNullableString(patientProfile, const ['bloodType', 'BloodType']),
+      allergies: _readStringList(
+        json['allergies'] ??
+            json['Allergies'] ??
+            patientProfile['allergies'] ??
+            patientProfile['Allergies'],
+      ),
       chronicDiseases: _readStringList(
-        json['chronicDiseases'] ?? json['ChronicDiseases'],
+        json['chronicDiseases'] ??
+            json['ChronicDiseases'] ??
+            patientProfile['chronicDiseases'] ??
+            patientProfile['ChronicDiseases'],
       ),
       currentMedications: _readStringList(
-        json['currentMedications'] ?? json['CurrentMedications'],
+        json['currentMedications'] ??
+            json['CurrentMedications'] ??
+            patientProfile['medications'] ??
+            patientProfile['Medications'],
       ),
     );
   }
@@ -150,11 +197,39 @@ class IncomingRequest extends Equatable {
   static List<String> _readStringList(dynamic value) {
     if (value is List) {
       return value
-          .map((item) => item?.toString().trim() ?? '')
+          .map((item) {
+            if (item is Map<String, dynamic>) {
+              return _readString(item, const ['name', 'Name']);
+            }
+            if (item is Map) {
+              return _readString(_castMap(item), const ['name', 'Name']);
+            }
+            return item?.toString().trim() ?? '';
+          })
           .where((item) => item.isNotEmpty)
           .toList();
     }
     return const [];
+  }
+
+  static Map<String, dynamic> _readMap(dynamic value) {
+    if (value is Map<String, dynamic>) return value;
+    if (value is Map) return _castMap(value);
+    return const {};
+  }
+
+  static Map<String, dynamic> _readFirstMap(dynamic value) {
+    if (value is List) {
+      for (final item in value) {
+        if (item is Map<String, dynamic>) return item;
+        if (item is Map) return _castMap(item);
+      }
+    }
+    return const {};
+  }
+
+  static Map<String, dynamic> _castMap(Map<dynamic, dynamic> map) {
+    return map.map((key, value) => MapEntry(key.toString(), value));
   }
 
   @override

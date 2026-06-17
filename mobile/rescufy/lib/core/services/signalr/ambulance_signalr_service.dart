@@ -66,11 +66,11 @@ class AmbulanceSignalRService {
     }
   }
 
-  Future<void> joinRequestGroup(String requestId) async {
+  Future<void> joinRequestGroup(int requestId) async {
     await _invoke(AmbulanceHubMethods.joinRequestGroup, [requestId]);
   }
 
-  Future<void> leaveRequestGroup(String requestId) async {
+  Future<void> leaveRequestGroup(int requestId) async {
     await _invoke(AmbulanceHubMethods.leaveRequestGroup, [requestId]);
   }
 
@@ -78,7 +78,7 @@ class AmbulanceSignalRService {
     await _invoke(AmbulanceHubMethods.updateLocation, [dto.toJson()]);
   }
 
-  Future<void> acceptRequest(String requestId) async {
+  Future<void> acceptRequest(int requestId) async {
     await _invoke(AmbulanceHubMethods.acceptRequest, [requestId]);
   }
 
@@ -117,7 +117,7 @@ class AmbulanceSignalRService {
   void _handleLocationUpdate(List<Object?>? args) {
     try {
       final payload = _payloadFromArgs(args);
-      final requestId = _readString(payload, const [
+      final requestId = _readInt(payload, const [
         SignalRPayloadKeys.requestId,
         'RequestId',
       ]);
@@ -195,6 +195,19 @@ class AmbulanceSignalRService {
       return payload.map((key, value) => MapEntry(key.toString(), value));
     }
     return {'value': payload.toString()};
+  }
+
+  int? _readInt(Map<String, dynamic> data, List<String> keys) {
+    for (final key in keys) {
+      final value = data[key];
+      if (value is int) return value;
+      if (value is num) return value.toInt();
+      if (value != null) {
+        final parsed = int.tryParse(value.toString());
+        if (parsed != null) return parsed;
+      }
+    }
+    return null;
   }
 
   String? _readString(Map<String, dynamic> data, List<String> keys) {

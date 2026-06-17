@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import '../../domain/core/failures.dart';
 import '../../domain/entities/emergency_request.dart';
+import '../../domain/entities/incoming_request.dart';
 import '../../domain/repositories/paramedic_emergency_repository.dart';
 import '../datasources/remote/paramedic_emergency_remote_datasource.dart';
 import '../../core/network/network_exceptions.dart';
@@ -27,8 +28,22 @@ class ParamedicEmergencyRepositoryImpl implements ParamedicEmergencyRepository {
   }
 
   @override
+  Future<Either<Failure, IncomingRequest>> getIncomingRequestById(
+    int requestId,
+  ) async {
+    try {
+      final request = await remoteDataSource.getIncomingRequestById(requestId);
+      return Right(request);
+    } on DioException catch (e) {
+      return Left(NetworkExceptions.handleDioException(e));
+    } catch (e) {
+      return Left(ServerFailure('Failed to get request: ${e.toString()}'));
+    }
+  }
+
+  @override
   Future<Either<Failure, EmergencyRequest>> acceptRequest(
-    String requestId,
+    int requestId,
   ) async {
     try {
       final request = await remoteDataSource.acceptRequest(requestId);
@@ -41,7 +56,7 @@ class ParamedicEmergencyRepositoryImpl implements ParamedicEmergencyRepository {
   }
 
   @override
-  Future<Either<Failure, void>> rejectRequest(String requestId) async {
+  Future<Either<Failure, void>> rejectRequest(int requestId) async {
     try {
       await remoteDataSource.rejectRequest(requestId);
       return const Right(null);
@@ -54,7 +69,7 @@ class ParamedicEmergencyRepositoryImpl implements ParamedicEmergencyRepository {
 
   @override
   Future<Either<Failure, EmergencyRequest>> updateCaseStatus(
-    String requestId,
+    int requestId,
     EmergencyStatus status,
   ) async {
     try {
