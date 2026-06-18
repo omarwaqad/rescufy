@@ -818,6 +818,54 @@ abstract class AppLocalizations {
   /// **'Closed'**
   String get requestStatusClosed;
 
+  /// Mark all notifications as read action
+  ///
+  /// In en, this message translates to:
+  /// **'Mark All Read'**
+  String get markAllAsRead;
+
+  /// Notifications load failure fallback
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load notifications.'**
+  String get notificationsLoadFailed;
+
+  /// Empty notifications state title
+  ///
+  /// In en, this message translates to:
+  /// **'No Notifications'**
+  String get notificationsEmptyTitle;
+
+  /// Empty notifications state subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'You have no notifications at the moment.'**
+  String get notificationsEmptyMessage;
+
+  /// Unread notification label
+  ///
+  /// In en, this message translates to:
+  /// **'Unread'**
+  String get unread;
+
+  /// Delete notification dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Notification'**
+  String get deleteNotification;
+
+  /// Delete notification confirmation message
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this notification?'**
+  String get deleteNotificationConfirm;
+
+  /// Delete action
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
   /// Safety tip 1
   ///
   /// In en, this message translates to:

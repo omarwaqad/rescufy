@@ -31,12 +31,13 @@ class IncomingRequestState extends Equatable {
       );
 
   IncomingRequestState copyWith({
+    IncomingRequest? request,
     IncomingRequestStatus? status,
     String? errorMessage,
     String? refusalReason,
     bool clearError = false,
   }) => IncomingRequestState(
-    request: request,
+    request: request ?? this.request,
     status: status ?? this.status,
     errorMessage: clearError ? null : errorMessage ?? this.errorMessage,
     refusalReason: refusalReason ?? this.refusalReason,

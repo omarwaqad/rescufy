@@ -92,3 +92,5 @@ app.*.map.json
 
 #agents
 .agents/
+#docs
+docs/

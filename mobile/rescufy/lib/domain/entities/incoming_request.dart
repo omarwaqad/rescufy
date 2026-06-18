@@ -20,6 +20,7 @@ class IncomingRequest extends Equatable {
     this.chronicDiseases = const [],
     this.currentMedications = const [],
     this.bloodType,
+    this.status,
   });
 
   final int requestId;
@@ -35,6 +36,7 @@ class IncomingRequest extends Equatable {
   final List<String> chronicDiseases;
   final List<String> currentMedications;
   final String? bloodType;
+  final String? status;
   final double latitude;
   final double longitude;
   final String address;
@@ -121,6 +123,7 @@ class IncomingRequest extends Equatable {
       bloodType:
           _readNullableString(json, const ['bloodType', 'BloodType']) ??
           _readNullableString(patientProfile, const ['bloodType', 'BloodType']),
+      status: _readNullableString(json, const ['status', 'Status', 'requestStatus', 'RequestStatus']),
       allergies: _readStringList(
         json['allergies'] ??
             json['Allergies'] ??
@@ -252,5 +255,6 @@ class IncomingRequest extends Equatable {
     chronicDiseases,
     currentMedications,
     bloodType,
+    status,
   ];
 }

@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import '../../domain/core/failures.dart';
 import '../../domain/entities/emergency_request.dart';
 import '../../domain/entities/incoming_request.dart';
+import '../../domain/entities/request_history.dart';
 import '../../domain/repositories/paramedic_emergency_repository.dart';
 import '../datasources/remote/paramedic_emergency_remote_datasource.dart';
 import '../../core/network/network_exceptions.dart';
@@ -96,6 +97,20 @@ class ParamedicEmergencyRepositoryImpl implements ParamedicEmergencyRepository {
       return Left(NetworkExceptions.handleDioException(e));
     } catch (e) {
       return Left(ServerFailure('Failed to get case history: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<RequestHistory>>> getParamedicRequests() async {
+    try {
+      final items = await remoteDataSource.getParamedicRequests();
+      return Right(items);
+    } on DioException catch (e) {
+      return Left(NetworkExceptions.handleDioException(e));
+    } catch (e) {
+      return Left(
+        ServerFailure('Failed to get paramedic requests: ${e.toString()}'),
+      );
     }
   }
 }

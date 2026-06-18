@@ -7,6 +7,7 @@ import 'package:rescufy/core/theme/app_theme_tokens.dart';
 import 'package:rescufy/domain/entities/incoming_request.dart';
 import 'package:rescufy/presentation/paramedic/dashboard/cubit/dashboard_cubit.dart';
 import 'package:rescufy/presentation/paramedic/dashboard/cubit/dashboard_state.dart';
+import 'package:rescufy/presentation/shared/notifications/widgets/notification_badge.dart';
 import 'package:rescufy/shared/widgets/common/app_screen_header.dart';
 
 import '../widgets/dashboard_inline_message.dart';
@@ -74,8 +75,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     AppScreenHeader(
                       title: 'Dispatch Dashboard',
                       subtitle: 'Ambulance unit operations',
-                      trailing: _SystemStatusPill(
-                        status: state.signalRStatus,
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _SystemStatusPill(
+                            status: state.signalRStatus,
+                          ),
+                          SizedBox(width: AppSpacing.sm.w),
+                          const NotificationBadge(),
+                        ],
                       ),
                     ),
                     SizedBox(height: AppSpacing.xl.h),

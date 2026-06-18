@@ -32,9 +32,13 @@ class IncomingRequestScreen extends StatelessWidget {
         }
 
         if (state.status == IncomingRequestStatus.accepted) {
+          // Always navigate using the refreshed request from the cubit state
+          // as the source of truth, not the original local request data.
+          final cubit = context.read<IncomingRequestCubit>();
+          final refreshedRequest = cubit.state.request;
           Navigator.of(context).pushReplacementNamed(
             AppRoutes.paramedicActiveCase,
-            arguments: state.request,
+            arguments: refreshedRequest,
           );
         }
 

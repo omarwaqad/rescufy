@@ -7,6 +7,7 @@ import 'package:rescufy/core/di/injection_container.dart' as di;
 import 'package:rescufy/core/navigation/app_router.dart';
 import 'package:rescufy/core/theme/app_theme.dart';
 import 'package:rescufy/presentation/auth/cubit/auth/auth_cubit.dart';
+import 'package:rescufy/presentation/shared/notifications/cubit/notification_cubit.dart';
 import 'package:rescufy/rescufy_app.dart';
 
 void main() async {
@@ -69,6 +70,9 @@ class RescufyRoot extends StatelessWidget {
         BlocProvider(create: (_) => di.sl<ThemeCubit>()),
         BlocProvider(create: (_) => di.sl<LocaleCubit>()),
         BlocProvider(create: (_) => di.sl<AuthCubit>()),
+        BlocProvider(
+          create: (_) => di.sl<NotificationCubit>()..loadUnreadCount(),
+        ),
       ],
       child: RescufyApp(appRouter: AppRouter()),
     );

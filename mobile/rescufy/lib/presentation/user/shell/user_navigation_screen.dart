@@ -9,6 +9,8 @@ import 'package:rescufy/presentation/user/history/cubit/request_history_cubit.da
 import 'package:rescufy/presentation/user/home/views/home_screen.dart';
 import 'package:rescufy/presentation/user/profile/cubit/profile_cubit.dart';
 import 'package:rescufy/presentation/user/profile/views/profile_screen.dart';
+import 'package:rescufy/presentation/shared/notifications/cubit/notification_cubit.dart';
+import 'package:rescufy/presentation/shared/notifications/views/notifications_screen.dart';
 import 'package:rescufy/shared/widgets/navigation/app_navigation_shell.dart';
 
 class UserNavigationScreen extends StatefulWidget {
@@ -24,19 +26,22 @@ class _UserNavigationScreenState extends State<UserNavigationScreen> {
   late int _currentIndex;
   late final HospitalsCubit _hospitalsCubit;
   late final RequestHistoryCubit _requestHistoryCubit;
+  late final NotificationCubit _notificationCubit;
 
   @override
   void initState() {
     super.initState();
-    _currentIndex = widget.initialIndex.clamp(0, 3);
+    _currentIndex = widget.initialIndex.clamp(0, 4);
     _hospitalsCubit = di.sl<HospitalsCubit>()..loadNearbyHospitals();
     _requestHistoryCubit = di.sl<RequestHistoryCubit>()..loadRequestHistory();
+    _notificationCubit = di.sl<NotificationCubit>()..loadNotifications();
   }
 
   @override
   void dispose() {
     _hospitalsCubit.close();
     _requestHistoryCubit.close();
+    _notificationCubit.close();
     super.dispose();
   }
 
@@ -49,6 +54,7 @@ class _UserNavigationScreenState extends State<UserNavigationScreen> {
         BlocProvider(create: (_) => di.sl<ProfileCubit>()),
         BlocProvider.value(value: _hospitalsCubit),
         BlocProvider.value(value: _requestHistoryCubit),
+        BlocProvider.value(value: _notificationCubit),
       ],
       child: AppNavigationShell(
         currentIndex: _currentIndex,
@@ -61,6 +67,7 @@ class _UserNavigationScreenState extends State<UserNavigationScreen> {
           HomeScreen(showBottomNavigationBar: false),
           HospitalsScreen(),
           RequestHistoryScreen(showBackButton: false),
+          NotificationsScreen(showBackButton: false),
           ProfileScreen(),
         ],
         destinations: [
@@ -78,6 +85,11 @@ class _UserNavigationScreenState extends State<UserNavigationScreen> {
             icon: const Icon(Icons.history_outlined),
             selectedIcon: const Icon(Icons.history),
             label: l10n.history,
+          ),
+          NavigationDestination(
+            icon: const Icon(Icons.notifications_outlined),
+            selectedIcon: const Icon(Icons.notifications),
+            label: l10n.notifications,
           ),
           NavigationDestination(
             icon: const Icon(Icons.person_outline),

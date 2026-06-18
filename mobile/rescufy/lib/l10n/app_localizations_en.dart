@@ -384,6 +384,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String get requestStatusClosed => 'Closed';
 
   @override
+  String get markAllAsRead => 'Mark All Read';
+
+  @override
+  String get notificationsLoadFailed => 'Unable to load notifications.';
+
+  @override
+  String get notificationsEmptyTitle => 'No Notifications';
+
+  @override
+  String get notificationsEmptyMessage =>
+      'You have no notifications at the moment.';
+
+  @override
+  String get unread => 'Unread';
+
+  @override
+  String get deleteNotification => 'Delete Notification';
+
+  @override
+  String get deleteNotificationConfirm =>
+      'Are you sure you want to delete this notification?';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
   String get safetyTip1 => 'Stay calm and assess the situation';
 
   @override

@@ -7,6 +7,7 @@ import 'package:rescufy/core/theme/app_theme_tokens.dart';
 import 'package:rescufy/l10n/app_localizations.dart';
 import 'package:rescufy/presentation/auth/cubit/auth/auth_cubit.dart';
 import 'package:rescufy/presentation/auth/cubit/auth/auth_state.dart';
+import 'package:rescufy/presentation/shared/notifications/widgets/notification_badge.dart';
 import 'package:rescufy/shared/widgets/common/app_screen_header.dart';
 
 import '../widgets/emergency_option_card.dart';
@@ -36,10 +37,7 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(l10n.appName),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_outlined),
-            onPressed: () {},
-          ),
+          const NotificationBadge(),
           SizedBox(width: AppSpacing.xs.w),
         ],
       ),

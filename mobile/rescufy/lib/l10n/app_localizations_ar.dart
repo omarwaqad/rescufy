@@ -383,6 +383,32 @@ class AppLocalizationsAr extends AppLocalizations {
   String get requestStatusClosed => 'مغلق';
 
   @override
+  String get markAllAsRead => 'تحديد الكل مقروء';
+
+  @override
+  String get notificationsLoadFailed => 'تعذر تحميل الإشعارات.';
+
+  @override
+  String get notificationsEmptyTitle => 'لا توجد إشعارات';
+
+  @override
+  String get notificationsEmptyMessage =>
+      'ليس لديك أي إشعارات في الوقت الحالي.';
+
+  @override
+  String get unread => 'غير مقروء';
+
+  @override
+  String get deleteNotification => 'حذف الإشعار';
+
+  @override
+  String get deleteNotificationConfirm =>
+      'هل أنت متأكد أنك تريد حذف هذا الإشعار؟';
+
+  @override
+  String get delete => 'حذف';
+
+  @override
   String get safetyTip1 => 'ابق هادئاً وقيّم الموقف';
 
   @override

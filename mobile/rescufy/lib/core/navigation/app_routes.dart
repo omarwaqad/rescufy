@@ -37,6 +37,11 @@ class AppRoutes {
   static const String paramedicIncomingRequest = '/paramedic/incoming-request';
 
   // =========================
+  // SHARED
+  // =========================
+  static const String notifications = '/notifications';
+
+  // =========================
   // Error
   // =========================
   static const String error = '/error';

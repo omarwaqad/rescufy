@@ -24,23 +24,34 @@ class ApiEndpoints {
 
   // Paramedic
   static const String paramedicProfile = '$baseUrl/api/Paramedic/profile';
+  static const String paramedicRequests = '$baseUrl/api/Paramedic/requests';
   static const String incomingRequests =
       '$baseUrl/api/paramedic/incoming-requests';
   static const String caseHistory = '$baseUrl/api/paramedic/case-history';
 
   static String acceptRequest(int requestId) =>
-      '$baseUrl/api/paramedic/requests/$requestId/accept';
+      '$baseUrl/api/Request/$requestId/accept';
 
   static String rejectRequest(int requestId) =>
       '$baseUrl/api/paramedic/requests/$requestId/reject';
 
   static String updateCaseStatus(int requestId) =>
       '$baseUrl/api/paramedic/requests/$requestId/status';
+
+  static String updateRequestDriverStatus(int requestId) =>
+      '$baseUrl/api/Request/$requestId/status';
   static const String paramedicHistory = '/paramedic/history';
   //static const String paramedicProfile = '/paramedic/profile';
 
   // Hospital
   static const String hospitalNearby = '$baseUrl/api/Hospital/nearby';
+
+  // Notification
+  static const String notifications = '$baseUrl/api/Notification';
+  static const String unreadNotificationsCount = '$baseUrl/api/Notification/unread-count';
+  static String markNotificationAsRead(int id) => '$baseUrl/api/Notification/$id/read';
+  static const String markAllNotificationsRead = '$baseUrl/api/Notification/mark-all-read';
+  static String deleteNotification(int id) => '$baseUrl/api/Notification/$id';
 
   // ── SignalR ─────────────────────────────────────────────────────────────────
   static const String notificationHubUrl = '$signalRBaseUrl/hubs/notifications';

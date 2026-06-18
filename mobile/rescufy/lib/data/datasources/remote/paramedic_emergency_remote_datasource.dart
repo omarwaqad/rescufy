@@ -3,6 +3,7 @@ import '../../../core/network/endpoints/api_endpoints.dart';
 import '../../../domain/entities/emergency_request.dart';
 import '../../../domain/entities/incoming_request.dart';
 import '../../models/medical_profile/paramedic_emergency_request_model.dart';
+import '../../models/request_history_model.dart';
 
 abstract class ParamedicEmergencyRemoteDataSource {
   Future<Stream<List<ParamedicEmergencyRequestModel>>> getIncomingRequests();
@@ -13,7 +14,9 @@ abstract class ParamedicEmergencyRemoteDataSource {
     int requestId,
     EmergencyStatus status,
   );
+  Future<void> updateRequestDriverStatus(int requestId, String status);
   Future<List<ParamedicEmergencyRequestModel>> getCaseHistory();
+  Future<List<RequestHistoryModel>> getParamedicRequests();
 }
 
 class EmergencyRemoteDataSourceImpl
@@ -85,6 +88,21 @@ class EmergencyRemoteDataSourceImpl
 
     final data = _extractList(response.data);
     return data.map(ParamedicEmergencyRequestModel.fromJson).toList();
+  }
+
+  @override
+  Future<List<RequestHistoryModel>> getParamedicRequests() async {
+    final response = await _dioClient.get(ApiEndpoints.paramedicRequests);
+
+    final data = response.data;
+    if (data is! List) {
+      return const [];
+    }
+
+    return data
+        .whereType<Map<String, dynamic>>()
+        .map(RequestHistoryModel.fromJson)
+        .toList(growable: false);
   }
 
   List<Map<String, dynamic>> _extractList(dynamic data) {

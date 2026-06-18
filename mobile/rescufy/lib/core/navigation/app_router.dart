@@ -29,6 +29,9 @@ import 'package:rescufy/presentation/settings/language/language_screen.dart';
 import 'package:rescufy/presentation/paramedic/paramedic_shell/paramedic_navigation_screen.dart';
 import 'package:rescufy/presentation/paramedic/active_case/views/active_case_screen.dart';
 
+// Shared Screens
+import 'package:rescufy/presentation/shared/notifications/views/notifications_screen.dart';
+
 // Cubits
 import 'package:rescufy/presentation/auth/cubit/login/login_cubit.dart';
 import 'package:rescufy/presentation/auth/cubit/register/register_cubit.dart';
@@ -36,6 +39,8 @@ import 'package:rescufy/presentation/auth/cubit/forgot_password/forgot_password_
 import 'package:rescufy/presentation/auth/cubit/verify_reset_otp/verify_reset_otp_cubit.dart';
 import 'package:rescufy/presentation/auth/cubit/reset_password/reset_password_cubit.dart';
 import 'package:rescufy/presentation/user/profile/cubit/profile_cubit.dart';
+
+import 'package:rescufy/presentation/shared/notifications/cubit/notification_cubit.dart';
 
 class AppRouter {
   Route<dynamic> generateRoute(RouteSettings settings) {
@@ -122,7 +127,7 @@ class AppRouter {
 
       case AppRoutes.userProfile:
         return MaterialPageRoute(
-          builder: (_) => const UserNavigationScreen(initialIndex: 3),
+          builder: (_) => const UserNavigationScreen(initialIndex: 4),
         );
 
       case AppRoutes.editProfile:
@@ -170,6 +175,17 @@ class AppRouter {
           builder: (_) => BlocProvider(
             create: (_) => di.sl<ActiveCaseCubit>(param1: request),
             child: const ActiveCaseScreen(),
+          ),
+        );
+
+      // =============================
+      // SHARED
+      // =============================
+      case AppRoutes.notifications:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider.value(
+            value: di.sl<NotificationCubit>()..loadNotifications(),
+            child: const NotificationsScreen(),
           ),
         );
 
