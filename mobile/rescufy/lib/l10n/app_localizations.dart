@@ -901,6 +901,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Know your medical information'**
   String get safetyTip6;
+
+  /// Active request screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Active Request'**
+  String get activeRequestTitle;
+
+  /// View active request button
+  ///
+  /// In en, this message translates to:
+  /// **'View Active Request'**
+  String get viewActiveRequest;
+
+  /// ETA label
+  ///
+  /// In en, this message translates to:
+  /// **'ETA'**
+  String get etaLabel;
+
+  /// Minutes suffix
+  ///
+  /// In en, this message translates to:
+  /// **'minutes'**
+  String get minutes;
+
+  /// Not available fallback
+  ///
+  /// In en, this message translates to:
+  /// **'Not available'**
+  String get notAvailable;
+
+  /// Loading text
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get loading;
+
+  /// Case progress timeline label
+  ///
+  /// In en, this message translates to:
+  /// **'Case Progress'**
+  String get caseProgressLabel;
+
+  /// Status assigned label
+  ///
+  /// In en, this message translates to:
+  /// **'Assigned'**
+  String get statusAssigned;
+
+  /// Status accepted label
+  ///
+  /// In en, this message translates to:
+  /// **'Accepted'**
+  String get statusAccepted;
+
+  /// Status on the way label
+  ///
+  /// In en, this message translates to:
+  /// **'On The Way'**
+  String get statusOnTheWay;
+
+  /// Status arrived label
+  ///
+  /// In en, this message translates to:
+  /// **'Arrived'**
+  String get statusArrived;
+
+  /// Status picked up label
+  ///
+  /// In en, this message translates to:
+  /// **'Picked Up'**
+  String get statusPickedUp;
+
+  /// Status heading to hospital label
+  ///
+  /// In en, this message translates to:
+  /// **'Heading To Hospital'**
+  String get statusHeadingToHospital;
+
+  /// Status delivered label
+  ///
+  /// In en, this message translates to:
+  /// **'Delivered'**
+  String get statusDelivered;
+
+  /// Status cancelled label
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get statusCancelled;
+
+  /// Actions section label
+  ///
+  /// In en, this message translates to:
+  /// **'Actions'**
+  String get actionsLabel;
+
+  /// Rate driver button
+  ///
+  /// In en, this message translates to:
+  /// **'Rate Driver'**
+  String get rateDriver;
+
+  /// Rate paramedic button
+  ///
+  /// In en, this message translates to:
+  /// **'Rate Paramedic'**
+  String get rateParamedic;
+
+  /// Rate hospital button
+  ///
+  /// In en, this message translates to:
+  /// **'Rate Hospital'**
+  String get rateHospital;
+
+  /// Select rating hint
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a rating'**
+  String get selectRating;
+
+  /// Submit feedback button
+  ///
+  /// In en, this message translates to:
+  /// **'Submit Feedback'**
+  String get submitFeedback;
+
+  /// Feedback comment hint
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us about your experience...'**
+  String get feedbackCommentHint;
+
+  /// Feedback submitted success message
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback submitted successfully'**
+  String get feedbackSubmittedSuccess;
+
+  /// Driver feedback submitted label
+  ///
+  /// In en, this message translates to:
+  /// **'✓ Driver Feedback Submitted'**
+  String get driverFeedbackSubmitted;
+
+  /// Paramedic feedback submitted label
+  ///
+  /// In en, this message translates to:
+  /// **'✓ Paramedic Feedback Submitted'**
+  String get paramedicFeedbackSubmitted;
+
+  /// Hospital feedback submitted label
+  ///
+  /// In en, this message translates to:
+  /// **'✓ Hospital Feedback Submitted'**
+  String get hospitalFeedbackSubmitted;
+
+  /// Feedback not available message
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback information is not available for this request.'**
+  String get feedbackNotAvailable;
+
+  /// Rate driver not available
+  ///
+  /// In en, this message translates to:
+  /// **'Rate Driver (Not Available)'**
+  String get rateDriverNotAvailable;
+
+  /// Rate paramedic not available
+  ///
+  /// In en, this message translates to:
+  /// **'Rate Paramedic (Not Available)'**
+  String get rateParamedicNotAvailable;
+
+  /// Rate hospital not available
+  ///
+  /// In en, this message translates to:
+  /// **'Rate Hospital (Not Available)'**
+  String get rateHospitalNotAvailable;
 }
 
 class _AppLocalizationsDelegate

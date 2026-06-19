@@ -11,6 +11,9 @@ class RequestHistoryModel extends RequestHistory {
     super.assignedAmbulancePlate,
     super.driverName,
     super.hospitalName,
+    super.driverId,
+    super.paramedicId,
+    super.hospitalId,
   });
 
   factory RequestHistoryModel.fromJson(Map<String, dynamic> json) {
@@ -28,6 +31,9 @@ class RequestHistoryModel extends RequestHistory {
       ),
       driverName: _readNullableString(json['driverName']),
       hospitalName: _readNullableString(json['hospitalName']),
+      driverId: _readNullableString(json['driverId']),
+      paramedicId: _readNullableString(json['paramedicId']),
+      hospitalId: _readNullableInt(json['hospitalId']),
     );
   }
 
@@ -37,6 +43,12 @@ class RequestHistoryModel extends RequestHistory {
     }
 
     return int.tryParse(value?.toString() ?? '') ?? 0;
+  }
+
+  static int? _readNullableInt(dynamic value) {
+    if (value == null) return null;
+    if (value is num) return value.toInt();
+    return int.tryParse(value.toString());
   }
 
   static String _readString(dynamic value) {

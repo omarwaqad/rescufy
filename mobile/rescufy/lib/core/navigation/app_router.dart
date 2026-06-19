@@ -24,6 +24,8 @@ import 'package:rescufy/presentation/user/request/views/emergency_form_builder.d
 import 'package:rescufy/presentation/user/profile/views/edit_profile_screen.dart';
 import 'package:rescufy/presentation/user/shell/user_navigation_screen.dart';
 import 'package:rescufy/presentation/settings/language/language_screen.dart';
+import 'package:rescufy/presentation/user/active_request/cubit/user_active_request_cubit.dart';
+import 'package:rescufy/presentation/user/active_request/views/user_active_request_screen.dart';
 
 // Paramedic Screens
 import 'package:rescufy/presentation/paramedic/paramedic_shell/paramedic_navigation_screen.dart';
@@ -141,6 +143,15 @@ class AppRouter {
 
       case AppRoutes.language:
         return MaterialPageRoute(builder: (_) => const LanguageScreen());
+
+      case AppRoutes.userActiveRequest:
+        final requestId = settings.arguments as int? ?? 0;
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => di.sl<UserActiveRequestCubit>(),
+            child: UserActiveRequestScreen(requestId: requestId),
+          ),
+        );
 
       // =============================
       // PARAMEDIC MODULE

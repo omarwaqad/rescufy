@@ -44,6 +44,7 @@ import 'package:rescufy/presentation/paramedic/dashboard/cubit/dashboard_cubit.d
 import 'package:rescufy/presentation/paramedic/incoming_request/cubit/incoming_request_cubit.dart';
 import 'package:rescufy/presentation/paramedic/profile/cubit/paramedic_profile_cubit.dart';
 import 'package:rescufy/presentation/shared/notifications/cubit/notification_cubit.dart';
+import 'package:rescufy/presentation/user/feedback/cubit/feedback_cubit.dart';
 import 'package:rescufy/presentation/user/history/cubit/request_history_cubit.dart';
 import 'package:rescufy/presentation/user/hospitals/cubit/hospitals_cubit.dart';
 import 'package:rescufy/presentation/user/profile/cubit/profile_cubit.dart';
@@ -73,10 +74,15 @@ import 'package:rescufy/presentation/auth/cubit/reset_password/reset_password_cu
 import 'package:rescufy/core/cubit/theme/theme_cubit.dart';
 import 'package:rescufy/core/cubit/locale/locale_cubit.dart';
 
+import '../../data/datasources/remote/feedback_remote_datasource.dart';
+import '../../data/repositories/feedback_repository_impl.dart';
+import '../../domain/repositories/feedback_repository.dart';
 import '../../presentation/auth/cubit/verify_reset_otp/verify_reset_otp_cubit.dart';
 
 import 'package:rescufy/data/repositories/emergency_repository_impl.dart';
 import 'package:rescufy/domain/repositories/emergency_repository.dart';
+
+import '../../presentation/user/active_request/cubit/user_active_request_cubit.dart';
 
 final sl = GetIt.instance;
 Future<void>? _initFuture;
@@ -241,6 +247,12 @@ Future<void> _init() async {
   sl.registerLazySingleton<NotificationRepository>(
     () => NotificationRepositoryImpl(sl()),
   );
+  sl.registerLazySingleton<FeedbackRemoteDataSource>(
+    () => FeedbackRemoteDataSourceImpl(sl()),
+  );
+  sl.registerLazySingleton<FeedbackRepository>(
+    () => FeedbackRepositoryImpl(sl()),
+  );
 
   // =============================
   // Global Cubits (Singleton)
@@ -263,6 +275,8 @@ Future<void> _init() async {
   sl.registerFactory(() => EmergencyRequestCubit(sl(), sl()));
   sl.registerFactory(() => HospitalsCubit(sl(), sl()));
   sl.registerFactory(() => RequestHistoryCubit(sl()));
+  sl.registerFactory(() => UserActiveRequestCubit(emergencyRepository: sl()));
+  sl.registerFactory(() => FeedbackCubit(feedbackRepository: sl()));
 
   // Paramedic Cubits
   sl.registerFactory(
@@ -287,6 +301,7 @@ Future<void> _init() async {
       notificationSignalRService: sl(),
       ambulanceSignalRService: sl(),
       locationService: sl(),
+      paramedicEmergencyRepository: sl(),
     ),
   );
 

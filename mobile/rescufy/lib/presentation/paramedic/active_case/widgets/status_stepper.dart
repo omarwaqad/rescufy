@@ -7,10 +7,12 @@ class StatusStepper extends StatelessWidget {
   final CaseStatus currentStatus;
 
   static const _steps = [
-    CaseStatus.pending,
+    CaseStatus.accepted,
     CaseStatus.onTheWay,
     CaseStatus.arrived,
-    CaseStatus.completed,
+    CaseStatus.pickedUp,
+    CaseStatus.underExecuting,
+    CaseStatus.delivered,
   ];
 
   @override

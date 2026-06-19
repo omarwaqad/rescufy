@@ -34,7 +34,7 @@ class _ActiveCaseScreenState extends State<ActiveCaseScreen> {
     return BlocConsumer<ActiveCaseCubit, ActiveCaseState>(
       listenWhen: (prev, curr) =>
           prev.errorMessage != curr.errorMessage ||
-          prev.caseStatus != curr.caseStatus,
+          prev.loadStatus != curr.loadStatus,
       listener: (context, state) {
         if (state.errorMessage != null) {
           ScaffoldMessenger.of(
@@ -42,15 +42,18 @@ class _ActiveCaseScreenState extends State<ActiveCaseScreen> {
           ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
         }
 
-        if (state.caseStatus == CaseStatus.completed) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Case completed successfully')),
-          );
+        if (state.loadStatus == ActiveCaseLoadStatus.cancelled &&
+            context.mounted) {
+          _showCancellationDialog(context);
         }
       },
       builder: (context, state) {
         if (state.loadStatus == ActiveCaseLoadStatus.joining) {
           return _LoadingView(message: 'Joining live case updates...');
+        }
+
+        if (state.loadStatus == ActiveCaseLoadStatus.cancelled) {
+          return _LoadingView(message: 'Case has been cancelled');
         }
 
         if (state.loadStatus == ActiveCaseLoadStatus.error) {
@@ -95,6 +98,28 @@ class _ActiveCaseScreenState extends State<ActiveCaseScreen> {
           ),
         );
       },
+    );
+  }
+
+  void _showCancellationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Case has been cancelled'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                AppRoutes.paramedicShell,
+                (route) => false,
+              );
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -360,6 +385,30 @@ class _BottomActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final actionLabel = state.caseStatus.driverActionLabel;
+
+    Widget child;
+    if (actionLabel != null) {
+      child = _PrimaryActionButton(
+        label: actionLabel,
+        onPressed: state.isUpdatingStatus
+            ? null
+            : () => context.read<ActiveCaseCubit>().updateStatus(),
+      );
+    } else if (state.caseStatus == CaseStatus.delivered) {
+      child = Padding(
+        padding: EdgeInsets.symmetric(vertical: 16.h),
+        child: Text(
+          'Patient delivered to hospital',
+          style: theme.textTheme.bodyLarge?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      );
+    } else {
+      child = const SizedBox.shrink();
+    }
 
     return Container(
       width: double.infinity,
@@ -374,42 +423,7 @@ class _BottomActions extends StatelessWidget {
           ),
         ],
       ),
-      child: SafeArea(
-        top: false,
-        child: switch (state.caseStatus) {
-          CaseStatus.pending || CaseStatus.onTheWay => _PrimaryActionButton(
-            label: 'Arrived',
-            onPressed: state.isUpdatingStatus
-                ? null
-                : () => context.read<ActiveCaseCubit>().updateStatus(
-                    CaseStatus.arrived,
-                  ),
-          ),
-          CaseStatus.arrived => _PrimaryActionButton(
-            label: 'Start Treatment',
-            onPressed: state.isUpdatingStatus
-                ? null
-                : () => context.read<ActiveCaseCubit>().updateStatus(
-                    CaseStatus.treatmentStarted,
-                  ),
-          ),
-          CaseStatus.treatmentStarted => _PrimaryActionButton(
-            label: 'Complete Case',
-            onPressed: state.isUpdatingStatus
-                ? null
-                : () => context.read<ActiveCaseCubit>().updateStatus(
-                    CaseStatus.completed,
-                  ),
-          ),
-          CaseStatus.completed => OutlinedButton(
-            onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(
-              AppRoutes.paramedicShell,
-              (route) => false,
-            ),
-            child: const Text('Back to Dashboard'),
-          ),
-        },
-      ),
+      child: SafeArea(top: false, child: child),
     );
   }
 }

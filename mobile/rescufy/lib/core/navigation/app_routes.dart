@@ -22,6 +22,7 @@ class AppRoutes {
   static const String userHospitals = '/user/hospitals';
   static const String userHistory = '/user/history';
   static const String userProfile = '/user/profile';
+  static const String userActiveRequest = '/user/active-request';
   static const String editProfile = '/user/profile/edit';
   static const String language = '/language';
 

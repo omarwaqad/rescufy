@@ -83,6 +83,17 @@ class EmergencyRemoteDataSourceImpl
   }
 
   @override
+  Future<void> updateRequestDriverStatus(
+    int requestId,
+    String status,
+  ) async {
+    await _dioClient.put(
+      ApiEndpoints.updateRequestDriverStatus(requestId),
+      data: {'status': status, 'comment': ''},
+    );
+  }
+
+  @override
   Future<List<ParamedicEmergencyRequestModel>> getCaseHistory() async {
     final response = await _dioClient.get(ApiEndpoints.caseHistory);
 

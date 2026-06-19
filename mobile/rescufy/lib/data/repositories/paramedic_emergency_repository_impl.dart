@@ -89,6 +89,23 @@ class ParamedicEmergencyRepositoryImpl implements ParamedicEmergencyRepository {
   }
 
   @override
+  Future<Either<Failure, void>> updateRequestDriverStatus(
+    int requestId,
+    String status,
+  ) async {
+    try {
+      await remoteDataSource.updateRequestDriverStatus(requestId, status);
+      return const Right(null);
+    } on DioException catch (e) {
+      return Left(NetworkExceptions.handleDioException(e));
+    } catch (e) {
+      return Left(
+        ServerFailure('Failed to update request status: ${e.toString()}'),
+      );
+    }
+  }
+
+  @override
   Future<Either<Failure, List<EmergencyRequest>>> getCaseHistory() async {
     try {
       final cases = await remoteDataSource.getCaseHistory();

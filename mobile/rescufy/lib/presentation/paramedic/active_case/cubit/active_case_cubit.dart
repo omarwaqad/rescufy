@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer' as developer;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rescufy/core/services/location_service.dart';
 import 'package:rescufy/core/services/signalr/ambulance_signalr_service.dart';
@@ -6,6 +7,7 @@ import 'package:rescufy/core/services/signalr/notification_signalr_service.dart'
 import 'package:rescufy/core/services/signalr/signalr_models.dart';
 import 'package:rescufy/domain/entities/case_status.dart';
 import 'package:rescufy/domain/entities/incoming_request.dart';
+import 'package:rescufy/domain/repositories/paramedic_emergency_repository.dart';
 import 'active_case_state.dart';
 
 class ActiveCaseCubit extends Cubit<ActiveCaseState> {
@@ -14,16 +16,19 @@ class ActiveCaseCubit extends Cubit<ActiveCaseState> {
     required NotificationSignalRService notificationSignalRService,
     required AmbulanceSignalRService ambulanceSignalRService,
     required LocationService locationService,
+    required ParamedicEmergencyRepository paramedicEmergencyRepository,
   }) : _notificationSignalR = notificationSignalRService,
        _ambulanceSignalR = ambulanceSignalRService,
        _locationService = locationService,
+       _paramedicEmergencyRepository = paramedicEmergencyRepository,
        super(ActiveCaseState.initial(request));
 
   final NotificationSignalRService _notificationSignalR;
   final AmbulanceSignalRService _ambulanceSignalR;
   final LocationService _locationService;
+  final ParamedicEmergencyRepository _paramedicEmergencyRepository;
   Timer? _locationTimer;
-  StreamSubscription<RequestStatusUpdate>? _statusUpdateSubscription;
+  StreamSubscription<SignalRNotification>? _notificationSubscription;
   StreamSubscription<AmbulanceLocationUpdate>? _locationUpdateSubscription;
 
   static const _intervalSeconds = 3;
@@ -39,7 +44,7 @@ class ActiveCaseCubit extends Cubit<ActiveCaseState> {
   @override
   Future<void> close() async {
     _locationTimer?.cancel();
-    await _statusUpdateSubscription?.cancel();
+    await _notificationSubscription?.cancel();
     await _locationUpdateSubscription?.cancel();
     if (state.loadStatus == ActiveCaseLoadStatus.ready) {
       try {
@@ -49,13 +54,83 @@ class ActiveCaseCubit extends Cubit<ActiveCaseState> {
     await super.close();
   }
 
-  Future<void> updateStatus(CaseStatus _) async {
-    emit(
-      state.copyWith(
-        isUpdatingStatus: false,
-        errorMessage:
-            'Status updates are read from the notification hub; the ambulance hub does not expose a mobile status update method.',
-      ),
+  Future<void> updateStatus() async {
+    if (state.isUpdatingStatus || state.loadStatus == ActiveCaseLoadStatus.cancelled) {
+      return;
+    }
+
+    final nextStatus = state.caseStatus.nextDriverStatus;
+    if (nextStatus == null) return;
+
+    emit(state.copyWith(isUpdatingStatus: true, clearError: true));
+
+    developer.log(
+      'Driver status update: ${state.caseStatus.serverValue} -> ${nextStatus.serverValue}',
+      name: 'Rescufy.ActiveCaseCubit',
+    );
+
+    final updateResult = await _paramedicEmergencyRepository
+        .updateRequestDriverStatus(
+      state.request.requestId,
+      nextStatus.serverValue,
+    );
+
+    if (isClosed) return;
+
+    final updateFailed = updateResult.isLeft();
+    if (updateFailed) {
+      final failure = updateResult.fold((f) => f, (_) => null);
+      developer.log(
+        'Driver status update failed: ${failure?.message}',
+        name: 'Rescufy.ActiveCaseCubit',
+      );
+      emit(
+        state.copyWith(
+          isUpdatingStatus: false,
+          errorMessage: failure?.message,
+        ),
+      );
+      return;
+    }
+
+    developer.log(
+      'Driver status update success, refreshing request',
+      name: 'Rescufy.ActiveCaseCubit',
+    );
+
+    await _refreshRequest();
+  }
+
+  Future<void> _refreshRequest() async {
+    if (isClosed) return;
+
+    final result = await _paramedicEmergencyRepository.getIncomingRequestById(
+      state.request.requestId,
+    );
+
+    if (isClosed) return;
+
+    result.fold(
+      (failure) {
+        developer.log(
+          'Request refresh failed: ${failure.message}',
+          name: 'Rescufy.ActiveCaseCubit',
+        );
+      },
+      (request) {
+        developer.log(
+          'Request refresh success: status=${request.status}',
+          name: 'Rescufy.ActiveCaseCubit',
+        );
+        final newStatus = request.status?.toCaseStatus();
+        emit(
+          state.copyWith(
+            request: request,
+            caseStatus: newStatus ?? state.caseStatus,
+            lastUpdatedAt: DateTime.now(),
+          ),
+        );
+      },
     );
   }
 
@@ -82,21 +157,19 @@ class ActiveCaseCubit extends Cubit<ActiveCaseState> {
   }
 
   void _listenToCaseUpdates() {
-    _statusUpdateSubscription ??= _notificationSignalR.statusChanged.listen((
-      update,
+    _notificationSubscription ??= _notificationSignalR.notifications.listen((
+      notification,
     ) {
-      if (isClosed || update.requestId != state.request.requestId) {
+      if (isClosed || notification.requestId != state.request.requestId) {
         return;
       }
 
-      emit(
-        state.copyWith(
-          caseStatus: update.status.toCaseStatus(),
-          isUpdatingStatus: false,
-          liveStatusMessage: update.message ?? state.liveStatusMessage,
-          lastUpdatedAt: update.updatedAt ?? DateTime.now(),
-        ),
-      );
+      if (notification.type == SignalRNotificationType.requestCancelled) {
+        _handleCancellation();
+        return;
+      }
+
+      _refreshRequest();
     });
 
     _locationUpdateSubscription ??= _ambulanceSignalR.locationUpdates.listen((
@@ -114,6 +187,26 @@ class ActiveCaseCubit extends Cubit<ActiveCaseState> {
         ),
       );
     });
+  }
+
+  Future<void> _handleCancellation() async {
+    developer.log(
+      'Case cancelled: requestId=${state.request.requestId}',
+      name: 'Rescufy.ActiveCaseCubit',
+    );
+    _locationTimer?.cancel();
+    try {
+      await _ambulanceSignalR.leaveRequestGroup(state.request.requestId);
+    } catch (_) {}
+    if (!isClosed) {
+      emit(
+        state.copyWith(
+          loadStatus: ActiveCaseLoadStatus.cancelled,
+          isTrackingLocation: false,
+          isUpdatingStatus: false,
+        ),
+      );
+    }
   }
 
   void _startLocationTracking() {

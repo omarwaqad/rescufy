@@ -11,6 +11,9 @@ class RequestHistory extends Equatable {
     this.assignedAmbulancePlate,
     this.driverName,
     this.hospitalName,
+    this.driverId,
+    this.paramedicId,
+    this.hospitalId,
   });
 
   final int id;
@@ -22,6 +25,9 @@ class RequestHistory extends Equatable {
   final String? assignedAmbulancePlate;
   final String? driverName;
   final String? hospitalName;
+  final String? driverId;
+  final String? paramedicId;
+  final int? hospitalId;
 
   @override
   List<Object?> get props => [
@@ -34,5 +40,8 @@ class RequestHistory extends Equatable {
     assignedAmbulancePlate,
     driverName,
     hospitalName,
+    driverId,
+    paramedicId,
+    hospitalId,
   ];
 }

@@ -426,4 +426,95 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get safetyTip6 => 'Know your medical information';
+
+  @override
+  String get activeRequestTitle => 'Active Request';
+
+  @override
+  String get viewActiveRequest => 'View Active Request';
+
+  @override
+  String get etaLabel => 'ETA';
+
+  @override
+  String get minutes => 'minutes';
+
+  @override
+  String get notAvailable => 'Not available';
+
+  @override
+  String get loading => 'Loading...';
+
+  @override
+  String get caseProgressLabel => 'Case Progress';
+
+  @override
+  String get statusAssigned => 'Assigned';
+
+  @override
+  String get statusAccepted => 'Accepted';
+
+  @override
+  String get statusOnTheWay => 'On The Way';
+
+  @override
+  String get statusArrived => 'Arrived';
+
+  @override
+  String get statusPickedUp => 'Picked Up';
+
+  @override
+  String get statusHeadingToHospital => 'Heading To Hospital';
+
+  @override
+  String get statusDelivered => 'Delivered';
+
+  @override
+  String get statusCancelled => 'Cancelled';
+
+  @override
+  String get actionsLabel => 'Actions';
+
+  @override
+  String get rateDriver => 'Rate Driver';
+
+  @override
+  String get rateParamedic => 'Rate Paramedic';
+
+  @override
+  String get rateHospital => 'Rate Hospital';
+
+  @override
+  String get selectRating => 'Please select a rating';
+
+  @override
+  String get submitFeedback => 'Submit Feedback';
+
+  @override
+  String get feedbackCommentHint => 'Tell us about your experience...';
+
+  @override
+  String get feedbackSubmittedSuccess => 'Feedback submitted successfully';
+
+  @override
+  String get driverFeedbackSubmitted => '✓ Driver Feedback Submitted';
+
+  @override
+  String get paramedicFeedbackSubmitted => '✓ Paramedic Feedback Submitted';
+
+  @override
+  String get hospitalFeedbackSubmitted => '✓ Hospital Feedback Submitted';
+
+  @override
+  String get feedbackNotAvailable =>
+      'Feedback information is not available for this request.';
+
+  @override
+  String get rateDriverNotAvailable => 'Rate Driver (Not Available)';
+
+  @override
+  String get rateParamedicNotAvailable => 'Rate Paramedic (Not Available)';
+
+  @override
+  String get rateHospitalNotAvailable => 'Rate Hospital (Not Available)';
 }

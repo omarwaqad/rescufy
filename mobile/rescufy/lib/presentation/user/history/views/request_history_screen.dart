@@ -9,6 +9,9 @@ import 'package:rescufy/domain/entities/request_history.dart';
 import 'package:rescufy/l10n/app_localizations.dart';
 import 'package:rescufy/presentation/user/history/cubit/request_history_cubit.dart';
 import 'package:rescufy/presentation/user/history/cubit/request_history_state.dart';
+import 'package:rescufy/presentation/user/feedback/cubit/feedback_cubit.dart';
+import 'package:rescufy/presentation/user/feedback/widgets/feedback_bottom_sheet.dart';
+import 'package:rescufy/core/di/injection_container.dart' as di;
 
 class RequestHistoryScreen extends StatelessWidget {
   const RequestHistoryScreen({super.key, this.showBackButton = true});
@@ -598,6 +601,29 @@ class _RequestHistoryCard extends StatelessWidget {
                 SizedBox(height: 12.h),
                 Row(
                   children: [
+                    if (_isActive(request)) ...[
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () => Navigator.pushNamed(
+                            context,
+                            AppRoutes.userActiveRequest,
+                            arguments: request.id,
+                          ),
+                          icon: const Icon(Icons.track_changes, size: 18),
+                          label: Text(
+                            l10n.viewActiveRequest,
+                            style: AppTextStyles.labelLarge(Colors.white)
+                                .copyWith(fontWeight: FontWeight.w600),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 12.h),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 8.w),
+                    ],
                     Expanded(
                       child: TextButton.icon(
                         onPressed: () => _showRequestDetails(context, request),
@@ -662,131 +688,155 @@ class _RequestHistoryCard extends StatelessWidget {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) {
-        return Container(
-          height: MediaQuery.of(context).size.height * 0.85,
-          decoration: BoxDecoration(
-            color: isDark ? AppColorsDark.surface : Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
-          ),
-          child: Column(
-            children: [
-              Container(
-                margin: EdgeInsets.only(top: 12.h),
-                width: 40.w,
-                height: 4.h,
-                decoration: BoxDecoration(
-                  color: isDark ? AppColorsDark.divider : AppColors.divider,
-                  borderRadius: BorderRadius.circular(2.r),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.all(24.w),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [AppColors.primaryDark, AppColors.primary],
-                  ),
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(24.r),
+        return BlocProvider(
+          create: (_) => di.sl<FeedbackCubit>(),
+          child: Container(
+            height: MediaQuery.of(context).size.height * 0.85,
+            decoration: BoxDecoration(
+              color: isDark ? AppColorsDark.surface : Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+            ),
+            child: Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.only(top: 12.h),
+                  width: 40.w,
+                  height: 4.h,
+                  decoration: BoxDecoration(
+                    color: isDark ? AppColorsDark.divider : AppColors.divider,
+                    borderRadius: BorderRadius.circular(2.r),
                   ),
                 ),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(12.w),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(12.r),
-                      ),
-                      child: Icon(
-                        Icons.description,
-                        color: Colors.white,
-                        size: 28.sp,
-                      ),
-                    ),
-                    SizedBox(width: 16.w),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            l10n.requestHistoryDetailsTitle,
-                            style: AppTextStyles.headlineMedium(
-                              Colors.white,
-                            ).copyWith(fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(height: 4.h),
-                          Text(
-                            '#${request.id}',
-                            style: AppTextStyles.bodyMedium(
-                              Colors.white.withValues(alpha: 0.9),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: const Icon(Icons.close, color: Colors.white),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
+                Container(
                   padding: EdgeInsets.all(24.w),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [AppColors.primaryDark, AppColors.primary],
+                    ),
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(24.r),
+                    ),
+                  ),
+                  child: Row(
                     children: [
-                      _SectionHeader(
-                        title: l10n.requestStatus,
-                        icon: Icons.info_outline,
-                        textColor: textColor,
-                      ),
-                      SizedBox(height: 12.h),
                       Container(
-                        padding: EdgeInsets.all(16.w),
+                        padding: EdgeInsets.all(12.w),
                         decoration: BoxDecoration(
-                          color: statusUi.color.withValues(alpha: 0.1),
+                          color: Colors.white.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(12.r),
-                          border: Border.all(
-                            color: statusUi.color.withValues(alpha: 0.3),
-                          ),
                         ),
-                        child: Row(
+                        child: Icon(
+                          Icons.description,
+                          color: Colors.white,
+                          size: 28.sp,
+                        ),
+                      ),
+                      SizedBox(width: 16.w),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(statusUi.icon, color: statusUi.color),
-                            SizedBox(width: 12.w),
                             Text(
-                              statusUi.label,
-                              style: AppTextStyles.bodyLarge(
-                                statusUi.color,
-                              ).copyWith(fontWeight: FontWeight.w600),
+                              l10n.requestHistoryDetailsTitle,
+                              style: AppTextStyles.headlineMedium(
+                                Colors.white,
+                              ).copyWith(fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(height: 4.h),
+                            Text(
+                              '#${request.id}',
+                              style: AppTextStyles.bodyMedium(
+                                Colors.white.withValues(alpha: 0.9),
+                              ),
                             ),
                           ],
                         ),
                       ),
-                      SizedBox(height: 24.h),
-                      _SectionHeader(
-                        title: l10n.requestHistoryDetailsTitle,
-                        icon: Icons.medical_services,
-                        textColor: textColor,
-                      ),
-                      SizedBox(height: 12.h),
-                      _DetailCard(
-                        items: details,
-                        isDark: isDark,
-                        textColor: textColor,
-                        secondaryTextColor: secondaryTextColor,
+                      IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: const Icon(Icons.close, color: Colors.white),
                       ),
                     ],
                   ),
                 ),
-              ),
-            ],
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.all(24.w),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _SectionHeader(
+                          title: l10n.requestStatus,
+                          icon: Icons.info_outline,
+                          textColor: textColor,
+                        ),
+                        SizedBox(height: 12.h),
+                        Container(
+                          padding: EdgeInsets.all(16.w),
+                          decoration: BoxDecoration(
+                            color: statusUi.color.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(12.r),
+                            border: Border.all(
+                              color: statusUi.color.withValues(alpha: 0.3),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(statusUi.icon, color: statusUi.color),
+                              SizedBox(width: 12.w),
+                              Text(
+                                statusUi.label,
+                                style: AppTextStyles.bodyLarge(
+                                  statusUi.color,
+                                ).copyWith(fontWeight: FontWeight.w600),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 24.h),
+                        _SectionHeader(
+                          title: l10n.requestHistoryDetailsTitle,
+                          icon: Icons.medical_services,
+                          textColor: textColor,
+                        ),
+                        SizedBox(height: 12.h),
+                        _DetailCard(
+                          items: details,
+                          isDark: isDark,
+                          textColor: textColor,
+                          secondaryTextColor: secondaryTextColor,
+                        ),
+                        FeedbackSection(
+                          request: (
+                            id: request.id,
+                            driverId: request.driverId,
+                            paramedicId: request.paramedicId,
+                            hospitalId: request.hospitalId,
+                            status: request.requestStatus,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },
     );
+  }
+
+  static bool _isActive(RequestHistory request) {
+    final s = request.requestStatus.toLowerCase().replaceAll('_', '').replaceAll(' ', '');
+    return const [
+      'assigned',
+      'accepted',
+      'ontheway',
+      'arrived',
+      'pickedup',
+      'underexecuting',
+    ].contains(s);
   }
 
   static bool _hasValue(String? value) {

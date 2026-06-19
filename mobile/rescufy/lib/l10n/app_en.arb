@@ -639,5 +639,126 @@
   "safetyTip6": "Know your medical information",
   "@safetyTip6": {
     "description": "Safety tip 6"
+  },
+
+  "activeRequestTitle": "Active Request",
+  "@activeRequestTitle": {
+    "description": "Active request screen title"
+  },
+  "viewActiveRequest": "View Active Request",
+  "@viewActiveRequest": {
+    "description": "View active request button"
+  },
+  "etaLabel": "ETA",
+  "@etaLabel": {
+    "description": "ETA label"
+  },
+  "minutes": "minutes",
+  "@minutes": {
+    "description": "Minutes suffix"
+  },
+  "notAvailable": "Not available",
+  "@notAvailable": {
+    "description": "Not available fallback"
+  },
+  "loading": "Loading...",
+  "@loading": {
+    "description": "Loading text"
+  },
+  "caseProgressLabel": "Case Progress",
+  "@caseProgressLabel": {
+    "description": "Case progress timeline label"
+  },
+  "statusAssigned": "Assigned",
+  "@statusAssigned": {
+    "description": "Status assigned label"
+  },
+  "statusAccepted": "Accepted",
+  "@statusAccepted": {
+    "description": "Status accepted label"
+  },
+  "statusOnTheWay": "On The Way",
+  "@statusOnTheWay": {
+    "description": "Status on the way label"
+  },
+  "statusArrived": "Arrived",
+  "@statusArrived": {
+    "description": "Status arrived label"
+  },
+  "statusPickedUp": "Picked Up",
+  "@statusPickedUp": {
+    "description": "Status picked up label"
+  },
+  "statusHeadingToHospital": "Heading To Hospital",
+  "@statusHeadingToHospital": {
+    "description": "Status heading to hospital label"
+  },
+  "statusDelivered": "Delivered",
+  "@statusDelivered": {
+    "description": "Status delivered label"
+  },
+  "statusCancelled": "Cancelled",
+  "@statusCancelled": {
+    "description": "Status cancelled label"
+  },
+  "actionsLabel": "Actions",
+  "@actionsLabel": {
+    "description": "Actions section label"
+  },
+  "rateDriver": "Rate Driver",
+  "@rateDriver": {
+    "description": "Rate driver button"
+  },
+  "rateParamedic": "Rate Paramedic",
+  "@rateParamedic": {
+    "description": "Rate paramedic button"
+  },
+  "rateHospital": "Rate Hospital",
+  "@rateHospital": {
+    "description": "Rate hospital button"
+  },
+  "selectRating": "Please select a rating",
+  "@selectRating": {
+    "description": "Select rating hint"
+  },
+  "submitFeedback": "Submit Feedback",
+  "@submitFeedback": {
+    "description": "Submit feedback button"
+  },
+  "feedbackCommentHint": "Tell us about your experience...",
+  "@feedbackCommentHint": {
+    "description": "Feedback comment hint"
+  },
+  "feedbackSubmittedSuccess": "Feedback submitted successfully",
+  "@feedbackSubmittedSuccess": {
+    "description": "Feedback submitted success message"
+  },
+  "driverFeedbackSubmitted": "✓ Driver Feedback Submitted",
+  "@driverFeedbackSubmitted": {
+    "description": "Driver feedback submitted label"
+  },
+  "paramedicFeedbackSubmitted": "✓ Paramedic Feedback Submitted",
+  "@paramedicFeedbackSubmitted": {
+    "description": "Paramedic feedback submitted label"
+  },
+  "hospitalFeedbackSubmitted": "✓ Hospital Feedback Submitted",
+  "@hospitalFeedbackSubmitted": {
+    "description": "Hospital feedback submitted label"
+  },
+  "feedbackNotAvailable": "Feedback information is not available for this request.",
+  "@feedbackNotAvailable": {
+    "description": "Feedback not available message"
+  },
+  "rateDriverNotAvailable": "Rate Driver (Not Available)",
+  "@rateDriverNotAvailable": {
+    "description": "Rate driver not available"
+  },
+  "rateParamedicNotAvailable": "Rate Paramedic (Not Available)",
+  "@rateParamedicNotAvailable": {
+    "description": "Rate paramedic not available"
+  },
+  "rateHospitalNotAvailable": "Rate Hospital (Not Available)",
+  "@rateHospitalNotAvailable": {
+    "description": "Rate hospital not available"
   }
 }

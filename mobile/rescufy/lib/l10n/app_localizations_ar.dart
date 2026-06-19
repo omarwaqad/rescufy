@@ -425,4 +425,94 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get safetyTip6 => 'اعرف معلوماتك الطبية';
+
+  @override
+  String get activeRequestTitle => 'الطلب النشط';
+
+  @override
+  String get viewActiveRequest => 'عرض الطلب النشط';
+
+  @override
+  String get etaLabel => 'الوقت المتوقع';
+
+  @override
+  String get minutes => 'دقيقة';
+
+  @override
+  String get notAvailable => 'غير متاح';
+
+  @override
+  String get loading => 'جاري التحميل...';
+
+  @override
+  String get caseProgressLabel => 'تقدم الحالة';
+
+  @override
+  String get statusAssigned => 'تم التعيين';
+
+  @override
+  String get statusAccepted => 'تم القبول';
+
+  @override
+  String get statusOnTheWay => 'في الطريق';
+
+  @override
+  String get statusArrived => 'تم الوصول';
+
+  @override
+  String get statusPickedUp => 'تم النقل';
+
+  @override
+  String get statusHeadingToHospital => 'في الطريق إلى المستشفى';
+
+  @override
+  String get statusDelivered => 'تم التسليم';
+
+  @override
+  String get statusCancelled => 'ملغي';
+
+  @override
+  String get actionsLabel => 'الإجراءات';
+
+  @override
+  String get rateDriver => 'تقييم السائق';
+
+  @override
+  String get rateParamedic => 'تقييم المسعف';
+
+  @override
+  String get rateHospital => 'تقييم المستشفى';
+
+  @override
+  String get selectRating => 'يرجى اختيار التقييم';
+
+  @override
+  String get submitFeedback => 'إرسال التقييم';
+
+  @override
+  String get feedbackCommentHint => 'أخبرنا عن تجربتك...';
+
+  @override
+  String get feedbackSubmittedSuccess => 'تم إرسال التقييم بنجاح';
+
+  @override
+  String get driverFeedbackSubmitted => '✓ تم تقييم السائق';
+
+  @override
+  String get paramedicFeedbackSubmitted => '✓ تم تقييم المسعف';
+
+  @override
+  String get hospitalFeedbackSubmitted => '✓ تم تقييم المستشفى';
+
+  @override
+  String get feedbackNotAvailable => 'معلومات التقييم غير متوفرة لهذا الطلب.';
+
+  @override
+  String get rateDriverNotAvailable => 'تقييم السائق (غير متاح)';
+
+  @override
+  String get rateParamedicNotAvailable => 'تقييم المسعف (غير متاح)';
+
+  @override
+  String get rateHospitalNotAvailable => 'تقييم المستشفى (غير متاح)';
 }

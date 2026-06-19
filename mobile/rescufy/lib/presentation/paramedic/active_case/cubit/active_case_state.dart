@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:rescufy/domain/entities/case_status.dart';
 import 'package:rescufy/domain/entities/incoming_request.dart';
 
-enum ActiveCaseLoadStatus { joining, ready, error }
+enum ActiveCaseLoadStatus { joining, ready, error, cancelled }
 
 class ActiveCaseState extends Equatable {
   const ActiveCaseState({
@@ -32,11 +32,12 @@ class ActiveCaseState extends Equatable {
   factory ActiveCaseState.initial(IncomingRequest request) => ActiveCaseState(
     request: request,
     loadStatus: ActiveCaseLoadStatus.joining,
-    caseStatus: CaseStatus.onTheWay,
+    caseStatus: request.status?.toCaseStatus() ?? CaseStatus.accepted,
     liveStatusMessage: 'Case accepted. Preparing live updates.',
   );
 
   ActiveCaseState copyWith({
+    IncomingRequest? request,
     ActiveCaseLoadStatus? loadStatus,
     CaseStatus? caseStatus,
     double? paramedicLat,
@@ -48,7 +49,7 @@ class ActiveCaseState extends Equatable {
     String? errorMessage,
     bool clearError = false,
   }) => ActiveCaseState(
-    request: request,
+    request: request ?? this.request,
     loadStatus: loadStatus ?? this.loadStatus,
     caseStatus: caseStatus ?? this.caseStatus,
     paramedicLat: paramedicLat ?? this.paramedicLat,

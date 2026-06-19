@@ -43,7 +43,11 @@ class ApiEndpoints {
   static const String paramedicHistory = '/paramedic/history';
   //static const String paramedicProfile = '/paramedic/profile';
 
-  // Hospital
+  // Feedback
+  static const String driverFeedback = '$baseUrl/api/DriverFeedback';
+  static const String paramedicFeedback = '$baseUrl/api/ParamedicFeedback';
+  static const String hospitalFeedback = '$baseUrl/api/HospitalFeedback';
+
   static const String hospitalNearby = '$baseUrl/api/Hospital/nearby';
 
   // Notification

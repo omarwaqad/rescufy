@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:rescufy/domain/core/failures.dart';
+import 'package:rescufy/domain/entities/user_active_request.dart';
 import 'package:rescufy/domain/repositories/emergency_repository.dart';
 import 'package:rescufy/data/datasources/remote/emergency_remote_datasource.dart';
 import 'package:rescufy/data/models/medical_profile/emergency_request_model.dart';
@@ -32,14 +33,29 @@ class EmergencyRepositoryImpl implements EmergencyRepository {
       final response = await _remoteDataSource.createEmergencyRequest(request);
       return Right(response);
     } on DioException catch (e) {
-      // Handle Dio errors
       if (e.response != null) {
-        // Server responded with an error
         return Left(
           ServerFailure(e.response?.data['message'] ?? 'Server error occurred'),
         );
       } else {
-        // Network error (no internet, timeout, etc.)
+        return Left(ServerFailure(e.message ?? 'Network error occurred'));
+      }
+    } catch (e) {
+      return Left(ServerFailure('Unexpected error: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, UserActiveRequest>> getRequestById(int requestId) async {
+    try {
+      final request = await _remoteDataSource.getRequestById(requestId);
+      return Right(request);
+    } on DioException catch (e) {
+      if (e.response != null) {
+        return Left(
+          ServerFailure(e.response?.data['message'] ?? 'Server error occurred'),
+        );
+      } else {
         return Left(ServerFailure(e.message ?? 'Network error occurred'));
       }
     } catch (e) {

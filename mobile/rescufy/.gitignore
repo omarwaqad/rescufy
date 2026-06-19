@@ -94,3 +94,6 @@ app.*.map.json
 .agents/
 #docs
 docs/
+
+#test
+test/
